@@ -100,137 +100,132 @@
     color: var(--white);
   }
 
-  .products-section {
-    padding: 60px 20px 60px;
-    max-width: 1200px;
-    margin: 0 auto;
+  /* ── CAROUSEL ── */
+  .carousel-section {
+    padding: 60px 0 20px;
+    overflow: hidden;
+    position: relative;
     border-top: 1px solid #e0e0e0;
   }
 
-  .products-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
+  .carousel-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-align: center;
     margin-bottom: 30px;
   }
 
-  .products-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gray);
-    text-align: center;
+  .carousel-section::before,
+  .carousel-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    z-index: 2;
+    pointer-events: none;
   }
 
-  .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #4ade80;
-    display: inline-block;
+  .carousel-section::before {
+    left: 0;
+    background: linear-gradient(to right, var(--white), transparent);
   }
 
-  .status-dot.loading {
-    background: var(--gray);
-    animation: pulse 1s ease infinite;
+  .carousel-section::after {
+    right: 0;
+    background: linear-gradient(to left, var(--white), transparent);
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+  .carousel-track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    animation: scroll var(--scroll-duration, 60s) linear infinite;
   }
 
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 24px;
+  .carousel-track:hover {
+    animation-play-state: paused;
   }
 
-  .product-card {
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .card {
+    flex-shrink: 0;
+    width: 180px;
     text-decoration: none;
     color: var(--black);
-    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    opacity: 0;
-    transform: translateY(12px);
-    animation: cardIn 0.4s ease forwards;
+    transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
   }
 
-  .product-card:hover {
-    transform: translateY(-6px);
+  .card:hover {
+    transform: translateY(-8px) scale(1.03);
   }
 
-  .product-img-wrap {
-    width: 100%;
-    aspect-ratio: 3/4;
-    background: #ececec;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    transition: box-shadow 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .product-card:hover .product-img-wrap {
-    box-shadow: 0 8px 28px rgba(0,0,0,0.14);
-  }
-
-  .product-img-wrap img {
-    width: 100%;
-    height: 100%;
+  .card-img {
+    width: 180px;
+    height: 252px;
     object-fit: cover;
-    display: block;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: box-shadow 0.35s;
+    background: #ececec;
   }
 
-  .product-img-wrap .placeholder {
+  .card:hover .card-img {
+    box-shadow: 0 12px 36px rgba(0,0,0,0.18);
+  }
+
+  .card-name {
     font-size: 10px;
-    color: var(--gray);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-align: center;
-    padding: 10px;
-  }
-
-  .product-name {
-    font-size: 11px;
     font-weight: 600;
-    margin-top: 12px;
-    line-height: 1.3;
-    letter-spacing: 0.5px;
     text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 10px;
+    line-height: 1.3;
+    padding: 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .product-price {
+  .card-price {
     font-size: 12px;
     font-weight: 800;
-    margin-top: 6px;
-    color: var(--black);
+    margin-top: 4px;
   }
 
-  .status-msg {
+  .card-game {
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray);
+    margin-top: 3px;
+  }
+
+  /* ── CTA ── */
+  .cta {
     text-align: center;
+    padding: 40px 20px 60px;
+  }
+
+  .cta-text {
     font-size: 12px;
+    font-weight: 500;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--gray);
-    padding: 40px 20px;
-    grid-column: 1 / -1;
+    margin-bottom: 20px;
   }
 
-  .status-msg a {
-    color: var(--black);
-    font-weight: 700;
-    text-decoration: none;
-    border-bottom: 2px solid var(--black);
-  }
-
-  @keyframes cardIn {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
+  /* ── FOOTER ── */
   footer {
     text-align: center;
     padding: 40px 20px 30px;
@@ -252,6 +247,7 @@
     text-transform: uppercase;
   }
 
+  /* ── ANIMATIONS ── */
   .fade-in {
     opacity: 0;
     transform: translateY(20px);
@@ -268,10 +264,8 @@
   }
 
   @media (max-width: 600px) {
-    .products-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
+    .card { width: 150px; }
+    .card-img { width: 150px; height: 210px; }
   }
 </style>
 </head>
@@ -289,14 +283,14 @@
     <a class="shop-link fade-in fade-in-4" href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">SHOP ON EBAY →</a>
   </section>
 
-  <section class="products-section" id="productsSection">
-    <div class="products-header">
-      <span class="status-dot loading" id="statusDot"></span>
-      <p class="products-label" id="productsLabel">LOADING LISTINGS...</p>
-    </div>
-    <div class="products-grid" id="productsGrid">
-      <p class="status-msg">FETCHING LIVE STOCK FROM EBAY...</p>
-    </div>
+  <section class="carousel-section">
+    <p class="carousel-label">FIND THESE AND MORE ON OUR EBAY STORE</p>
+    <div class="carousel-track" id="carouselTrack"></div>
+  </section>
+
+  <section class="cta">
+    <p class="cta-text">46 CARDS AVAILABLE NOW</p>
+    <a class="shop-link" href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">BROWSE ALL ON EBAY →</a>
   </section>
 
   <footer>
@@ -305,251 +299,109 @@
   </footer>
 
 <script>
-  // eBay URLs to try — active BIN listings for seller keep.tcg
-  const EBAY_URLS = [
-    'https://www.ebay.com.au/sch/i.html?_ssn=keep.tcg&_sop=10&LH_BIN=1&_ipg=60',
-    'https://www.ebay.com.au/sch/keep.tcg/m.html?_sop=10&LH_BIN=1&_ipg=60',
-    'https://www.ebay.com.au/usr/keep.tcg',
+  const PRODUCTS = [
+    {"name":"Dr.Kureha (Parallel) OP08-015","img":"https://tcgplayer-cdn.tcgplayer.com/product/558039_in_1000x1000.jpg","price":"AU $5.65","game":"One Piece"},
+    {"name":"Monkey.D.Luffy P-041 CS 2024","img":"https://tcgplayer-cdn.tcgplayer.com/product/580055_in_1000x1000.jpg","price":"AU $113.00","game":"One Piece"},
+    {"name":"[SEALED] Monkey.D.Luffy P-041","img":"https://tcgplayer-cdn.tcgplayer.com/product/531486_in_1000x1000.jpg","price":"AU $90.40","game":"One Piece"},
+    {"name":"Dracule Mihawk P-081","img":"https://tcgplayer-cdn.tcgplayer.com/product/634530_in_1000x1000.jpg","price":"AU $74.58","game":"One Piece"},
+    {"name":"Monkey.D.Luffy P-043 Stamped","img":"https://tcgplayer-cdn.tcgplayer.com/product/603076_in_1000x1000.jpg","price":"AU $56.50","game":"One Piece"},
+    {"name":"Nami ST01-007 New Year Event","img":"https://tcgplayer-cdn.tcgplayer.com/product/610801_in_1000x1000.jpg","price":"AU $56.50","game":"One Piece"},
+    {"name":"Portgas.D.Ace ST13-002","img":"https://tcgplayer-cdn.tcgplayer.com/product/566953_in_1000x1000.jpg","price":"AU $45.20","game":"One Piece"},
+    {"name":"Sabo ST13-001 Leader","img":"https://tcgplayer-cdn.tcgplayer.com/product/567114_in_1000x1000.jpg","price":"AU $33.90","game":"One Piece"},
+    {"name":"Kaido ST04-001 Leader","img":"https://tcgplayer-cdn.tcgplayer.com/product/567115_in_1000x1000.jpg","price":"AU $16.95","game":"One Piece"},
+    {"name":"Crocodile ST03-001 Leader","img":"https://tcgplayer-cdn.tcgplayer.com/product/567116_in_1000x1000.jpg","price":"AU $11.30","game":"One Piece"},
+    {"name":"Eustass Kid ST02-001","img":"https://tcgplayer-cdn.tcgplayer.com/product/567117_in_1000x1000.jpg","price":"AU $11.30","game":"One Piece"},
+    {"name":"Monkey.D.Luffy ST13-003","img":"https://tcgplayer-cdn.tcgplayer.com/product/566952_in_1000x1000.jpg","price":"AU $113.00","game":"One Piece"},
+    {"name":"Doflamingo Alt Art PRB02-011","img":"https://tcgplayer-cdn.tcgplayer.com/product/653544_in_1000x1000.jpg","price":"AU $11.30","game":"One Piece"},
+    {"name":"Jinbe Alt Art OP11-031","img":"https://tcgplayer-cdn.tcgplayer.com/product/632394_in_1000x1000.jpg","price":"AU $8.10","game":"One Piece"},
+    {"name":"Lim (SP) OP09-037","img":"https://tcgplayer-cdn.tcgplayer.com/product/646564_in_1000x1000.jpg","price":"AU $72.93","game":"One Piece"},
+    {"name":"Nami (Parallel) OP09-050","img":"https://tcgplayer-cdn.tcgplayer.com/product/596982_in_1000x1000.jpg","price":"AU $18.64","game":"One Piece"},
+    {"name":"Sanji EB01-014 Winner Pack","img":"https://tcgplayer-cdn.tcgplayer.com/product/607971_in_1000x1000.jpg","price":"AU $15.75","game":"One Piece"},
+    {"name":"Trafalgar Law OP07-047","img":"https://tcgplayer-cdn.tcgplayer.com/product/646725_in_1000x1000.jpg","price":"AU $16.87","game":"One Piece"},
+    {"name":"Tony Tony.Chopper P-089","img":"https://tcgplayer-cdn.tcgplayer.com/product/646734_in_1000x1000.jpg","price":"AU $43.65","game":"One Piece"},
+    {"name":"Camie Alt Art OP06-025","img":"https://tcgplayer-cdn.tcgplayer.com/product/539789_in_1000x1000.jpg","price":"AU $7.80","game":"One Piece"},
+    {"name":"Nefeltari Vivi OP04-118 Secret","img":"https://tcgplayer-cdn.tcgplayer.com/product/515312_in_1000x1000.jpg","price":"AU $14.06","game":"One Piece"},
+    {"name":"Carina (Parallel) OP07-005","img":"https://tcgplayer-cdn.tcgplayer.com/product/545784_in_1000x1000.jpg","price":"AU $9.21","game":"One Piece"},
+    {"name":"Lilith (Parallel) OP07-111","img":"https://tcgplayer-cdn.tcgplayer.com/product/545911_in_1000x1000.jpg","price":"AU $22.95","game":"One Piece"},
+    {"name":"Alvida Box Topper OP01-064","img":"https://tcgplayer-cdn.tcgplayer.com/product/453518_in_1000x1000.jpg","price":"AU $11.96","game":"One Piece"},
+    {"name":"DON!! Usopp Gold PRB02","img":"https://tcgplayer-cdn.tcgplayer.com/product/655911_in_1000x1000.jpg","price":"AU $169.50","game":"One Piece"},
+    {"name":"Pikachu & Zekrom GX 041/173","img":"https://d31o4i4a5mscn0.cloudfront.net/db-image/static/jp/10fd2423-b4fe-4c72-9ff3-d28f92440681_fd99f01b0553ee7bce84471a9eaf090865e4b39b4d01b278cc4fe384649910cc.jpg","price":"AU $33.90","game":"Pokémon"},
+    {"name":"Mega Sableye & Tyranitar GX","img":"https://d31o4i4a5mscn0.cloudfront.net/db-image/static/jp/f52368ca-f85a-453b-b63b-3fd6cd87820a_d4f4a972834e9e544ed7faf3ca6aced671ea1d22283afc26f95fedca1549fb36.jpg","price":"AU $22.60","game":"Pokémon"},
+    {"name":"Slowpoke & Psyduck GX 011/094","img":"https://d31o4i4a5mscn0.cloudfront.net/db-image/static/jp/bc74e2d3-a0cc-46dc-a984-06bfb7f4f7fe_aeead2be4b08b170bc6b041e6d6140bf773e830e131d685a9f2b99ac9eca81d9.jpg","price":"AU $67.80","game":"Pokémon"},
+    {"name":"Slowpoke & Psyduck GX SR","img":"https://d31o4i4a5mscn0.cloudfront.net/db-image/static/jp/2c8e034e-9c12-4497-b6a9-13a5e16e76e6_2cb2739439e4010733993114986b8ef28d701e41f10c0ca53982e7eff5549ce7.jpg","price":"AU $169.50","game":"Pokémon"},
+    {"name":"Mewtwo & Mew GX 029/094","img":"https://d31o4i4a5mscn0.cloudfront.net/db-image/static/jp/4563f9ab-ae2a-4951-88cc-e2e01755ae38_0286b3748d3c779a790a226d3a8688a5f0a4c79481837924b3e6a9c9fb73f269.jpg","price":"AU $49.72","game":"Pokémon"},
+    {"name":"Greninja & Zoroark GX 072/173","img":"https://d31o4i4a5mscn0.cloudfront.net/db-image/static/jp/f4aa6598-c373-4fdc-96ee-9c2916ad1b43_0b6fa4c477cc10ae3e4f83cc695708020e6abbea269c6b9a46562c854eb9a7b1.jpg","price":"AU $28.25","game":"Pokémon"},
+    {"name":"Glaceon V 076/069 SR","img":"https://d31o4i4a5mscn0.cloudfront.net/db-image/static/jp/3e434796-aeaa-4334-831b-9e21a42096be_fda8e77b078889d6eeb4125d42a591922585e64c451f56114649d42ae8e62dec.jpg","price":"AU $22.83","game":"Pokémon"},
+    {"name":"Urshifu VMAX 093/184","img":"https://d31o4i4a5mscn0.cloudfront.net/db-image/static/jp/28c02ad0-7062-424d-a1bb-e2e562a8af3b_776d508f57aaf8aed2d9b0e4503eca18821194613da4d9473793b38876ae36d9.jpg","price":"AU $4.52","game":"Pokémon"},
+    {"name":"Onix NO. 095 Neo Genesis","img":"https://d31o4i4a5mscn0.cloudfront.net/db-image/updates/card_605e3326-43d1-4259-80d1-7cf0ebe46d45/1767614243557_card.jpg","price":"AU $5.00","game":"Pokémon"},
+    {"name":"Erika's Clefairy Gym Heroes","img":"https://d31o4i4a5mscn0.cloudfront.net/db-image/updates/card_1240721e-27b2-4810-ab88-506e40decfed/1767617743001_card.jpg","price":"AU $20.00","game":"Pokémon"},
+    {"name":"Shadow Rider Calyrex VMAX","img":"https://images.pokemontcg.io/swsh6/75_hires.png","price":"AU $2.66","game":"Pokémon"},
+    {"name":"Rayquaza V 193/203","img":"https://images.pokemontcg.io/swsh7/193_hires.png","price":"AU $51.03","game":"Pokémon"},
+    {"name":"Vaporeon V 172/203","img":"https://images.pokemontcg.io/swsh7/172_hires.png","price":"AU $36.32","game":"Pokémon"},
+    {"name":"Sabrina's Psyduck Gym Challenge","img":"https://images.pokemontcg.io/gym2/99_hires.png","price":"AU $12.07","game":"Pokémon"},
+    {"name":"Erika's Ivysaur Gym Challenge","img":"https://images.pokemontcg.io/gym2/41_hires.png","price":"AU $16.58","game":"Pokémon"},
+    {"name":"Eevee 63/100 Sandstorm","img":"https://images.pokemontcg.io/ex2/63_hires.png","price":"AU $9.56","game":"Pokémon"},
+    {"name":"Houndoom V 178/189","img":"https://images.pokemontcg.io/swsh3/178_hires.png","price":"AU $7.88","game":"Pokémon"},
+    {"name":"Cinderace VMAX Rainbow","img":"https://images.pokemontcg.io/swsh2/194_hires.png","price":"AU $25.66","game":"Pokémon"},
+    {"name":"Rillaboom VMAX Rainbow","img":"https://images.pokemontcg.io/swsh2/193_hires.png","price":"AU $22.01","game":"Pokémon"},
+    {"name":"Inteleon VMAX Rainbow","img":"https://images.pokemontcg.io/swsh2/195_hires.png","price":"AU $20.24","game":"Pokémon"},
+    {"name":"Mega Manectric EX 158/132","img":"https://images.pokemontcg.io/me1/158_hires.png","price":"AU $4.69","game":"Pokémon"},
   ];
 
-  // Multiple CORS proxies — try each in order
-  const PROXIES = [
-    url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
-    url => 'https://corsproxy.io/?' + encodeURIComponent(url),
-    url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
-    url => 'https://thingproxy.freeboard.io/fetch/' + url,
-  ];
-
-  const REFRESH_MS = 60 * 60 * 1000;
-
-  const grid = document.getElementById('productsGrid');
-  const label = document.getElementById('productsLabel');
-  const dot = document.getElementById('statusDot');
-
-  // Try fetching with all proxy + URL combinations
-  async function fetchEbayHtml() {
-    for (const ebayUrl of EBAY_URLS) {
-      for (const proxyFn of PROXIES) {
-        try {
-          const proxyUrl = proxyFn(ebayUrl);
-          console.log('Trying:', proxyUrl);
-          const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-          if (res.ok) {
-            const html = await res.text();
-            // Sanity check — make sure we got real eBay HTML
-            if (html.length > 5000 && (html.includes('ebay') || html.includes('eBay'))) {
-              console.log('Success with proxy:', proxyFn.toString().slice(0, 50));
-              return { html, type: ebayUrl.includes('/sch/') ? 'search' : 'profile' };
-            }
-          }
-        } catch (e) {
-          continue;
-        }
-      }
+  // Shuffle array
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    throw new Error('All fetch attempts failed');
+    return arr;
   }
 
-  // Parse search results page (.s-item elements)
-  function parseSearchPage(html) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const items = [];
-    const seen = new Set();
+  const track = document.getElementById('carouselTrack');
+  const shuffled = shuffle([...PRODUCTS]);
 
-    doc.querySelectorAll('.s-item').forEach(el => {
-      try {
-        const linkEl = el.querySelector('.s-item__link');
-        const titleEl = el.querySelector('.s-item__title span[role="heading"], .s-item__title');
-        const priceEl = el.querySelector('.s-item__price');
-        const imgEl = el.querySelector('.s-item__image-img, .s-item__image img, img');
+  // Build two copies for seamless loop
+  const allCards = [...shuffled, ...shuffled];
 
-        if (!linkEl || !titleEl) return;
-        const title = titleEl.textContent.trim();
-        if (!title || title === 'Shop on eBay' || title.toLowerCase().includes('results')) return;
+  // Set scroll speed based on number of cards
+  const cardWidth = 200; // card + gap
+  const totalWidth = shuffled.length * cardWidth;
+  const speed = 40; // pixels per second
+  const duration = totalWidth / speed;
+  track.style.setProperty('--scroll-duration', duration + 's');
 
-        const url = linkEl.href || '';
-        const price = priceEl ? priceEl.textContent.trim() : '';
-        let img = '';
-        if (imgEl) {
-          img = imgEl.getAttribute('data-src') || imgEl.getAttribute('src') || '';
-          if (img.includes('1x1') || img.endsWith('.gif') || img.includes('spacer')) img = '';
-        }
+  const ebayStore = 'https://www.ebay.com.au/usr/keep.tcg';
 
-        if (seen.has(title)) return;
-        seen.add(title);
-        items.push({ name: title, price, url, img });
-      } catch (e) {}
-    });
+  allCards.forEach(product => {
+    const card = document.createElement('a');
+    card.className = 'card';
+    card.href = ebayStore;
+    card.target = '_blank';
 
-    return items;
-  }
+    const img = document.createElement('img');
+    img.className = 'card-img';
+    img.alt = product.name;
+    img.loading = 'lazy';
+    img.src = product.img;
 
-  // Parse seller profile page (different HTML structure)
-  function parseProfilePage(html) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const items = [];
-    const seen = new Set();
+    const name = document.createElement('div');
+    name.className = 'card-name';
+    name.textContent = product.name;
 
-    // Profile page has item cards with images, titles, prices and links
-    // Look for all anchor tags containing item images and titles
-    const allLinks = doc.querySelectorAll('a[href*="/itm/"]');
+    const price = document.createElement('div');
+    price.className = 'card-price';
+    price.textContent = product.price;
 
-    allLinks.forEach(linkEl => {
-      try {
-        const url = linkEl.href || '';
-        if (!url.includes('/itm/')) return;
+    const game = document.createElement('div');
+    game.className = 'card-game';
+    game.textContent = product.game;
 
-        // Find the title — could be in h3 or heading inside/near the link
-        let title = '';
-        const h3 = linkEl.querySelector('h3');
-        const heading = linkEl.querySelector('[role="heading"]');
-        const spanTitle = linkEl.querySelector('.s-item__title');
-
-        if (h3) title = h3.textContent.trim();
-        else if (heading) title = heading.textContent.trim();
-        else if (spanTitle) title = spanTitle.textContent.trim();
-        else if (linkEl.textContent.trim().length > 5 && linkEl.textContent.trim().length < 200) {
-          title = linkEl.textContent.trim();
-        }
-
-        if (!title || title.length < 3) return;
-
-        // Find image
-        let img = '';
-        const imgEl = linkEl.querySelector('img');
-        if (imgEl) {
-          img = imgEl.getAttribute('data-src') || imgEl.getAttribute('src') || '';
-          if (img.includes('1x1') || img.endsWith('.gif') || img.includes('spacer')) img = '';
-        }
-
-        // Find price — look for sibling or nearby price text
-        let price = '';
-        const parent = linkEl.closest('.s-item') || linkEl.parentElement;
-        if (parent) {
-          const priceEl = parent.querySelector('.s-item__price, [class*="price"]');
-          if (priceEl) price = priceEl.textContent.trim();
-        }
-        // Also try next sibling text content for profile pages
-        if (!price) {
-          let sibling = linkEl.nextElementSibling;
-          while (sibling && !price) {
-            const text = sibling.textContent.trim();
-            if (text.match(/^AU\s*\$/)) {
-              price = text;
-              break;
-            }
-            sibling = sibling.nextElementSibling;
-          }
-        }
-        // Try to extract price from the link's parent container
-        if (!price && parent) {
-          const allText = parent.textContent;
-          const priceMatch = allText.match(/AU\s*\$[\d,.]+/);
-          if (priceMatch) price = priceMatch[0];
-        }
-
-        if (seen.has(title)) return;
-        seen.add(title);
-        items.push({ name: title, price, url, img });
-      } catch (e) {}
-    });
-
-    return items;
-  }
-
-  function proxyImage(src) {
-    if (!src) return '';
-    const bigger = src.replace(/\/s-l\d+\./, '/s-l500.');
-    return 'https://images.weserv.nl/?url=' + encodeURIComponent(bigger) + '&w=400&h=533&fit=cover';
-  }
-
-  function renderProducts(items) {
-    grid.innerHTML = '';
-
-    items.forEach((product, i) => {
-      const card = document.createElement('a');
-      card.className = 'product-card';
-      card.href = product.url;
-      card.target = '_blank';
-      card.style.animationDelay = (i * 0.05) + 's';
-
-      const imgWrap = document.createElement('div');
-      imgWrap.className = 'product-img-wrap';
-
-      if (product.img) {
-        const img = document.createElement('img');
-        img.alt = product.name;
-        img.loading = 'lazy';
-        img.src = proxyImage(product.img);
-        img.onerror = function() {
-          this.referrerPolicy = 'no-referrer';
-          this.src = product.img.replace(/\/s-l\d+\./, '/s-l500.');
-          this.onerror = function() {
-            this.style.display = 'none';
-            const ph = document.createElement('span');
-            ph.className = 'placeholder';
-            ph.textContent = product.name;
-            imgWrap.appendChild(ph);
-          };
-        };
-        imgWrap.appendChild(img);
-      } else {
-        const ph = document.createElement('span');
-        ph.className = 'placeholder';
-        ph.textContent = product.name;
-        imgWrap.appendChild(ph);
-      }
-
-      const name = document.createElement('div');
-      name.className = 'product-name';
-      name.textContent = product.name;
-
-      const price = document.createElement('div');
-      price.className = 'product-price';
-      price.textContent = product.price;
-
-      card.appendChild(imgWrap);
-      card.appendChild(name);
-      card.appendChild(price);
-      grid.appendChild(card);
-    });
-  }
-
-  async function loadListings() {
-    dot.className = 'status-dot loading';
-    label.textContent = 'UPDATING...';
-
-    try {
-      const { html, type } = await fetchEbayHtml();
-      let items = [];
-
-      if (type === 'search') {
-        items = parseSearchPage(html);
-      } else {
-        items = parseProfilePage(html);
-      }
-
-      if (items.length > 0) {
-        renderProducts(items);
-        label.textContent = items.length + ' LISTINGS · LIVE FROM EBAY';
-        dot.className = 'status-dot';
-      } else {
-        grid.innerHTML = '<p class="status-msg">NO LISTINGS FOUND. <a href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">CHECK EBAY →</a></p>';
-        label.textContent = 'LISTINGS';
-        dot.className = 'status-dot';
-      }
-    } catch (e) {
-      console.error('All fetches failed:', e);
-      grid.innerHTML = '<p class="status-msg">COULDN\'T LOAD LISTINGS. <a href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">SHOP ON EBAY DIRECTLY →</a></p>';
-      label.textContent = 'LISTINGS';
-      dot.className = 'status-dot';
-    }
-  }
-
-  loadListings();
-  setInterval(loadListings, REFRESH_MS);
+    card.appendChild(img);
+    card.appendChild(name);
+    card.appendChild(price);
+    card.appendChild(game);
+    track.appendChild(card);
+  });
 </script>
 
 </body>

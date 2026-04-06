@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KEEP. — Trading Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f8f8f8;
+    --gray: #888;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .announcement {
+    background: var(--black);
+    color: var(--white);
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px 10px;
+  }
+
+  .logo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: clamp(64px, 12vw, 120px);
+    letter-spacing: -2px;
+    line-height: 1;
+    color: var(--black);
+    text-transform: uppercase;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 40px 20px 50px;
+  }
+
+  .hero-sub {
+    font-size: clamp(12px, 2vw, 15px);
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 35px;
+  }
+
+  .hero-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: clamp(16px, 3vw, 24px);
+    line-height: 1.5;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-bottom: 40px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .shop-link {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: clamp(14px, 2.5vw, 18px);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--black);
+    text-decoration: none;
+    border: 2px solid var(--black);
+    padding: 16px 50px;
+    transition: all 0.4s;
+  }
+
+  .shop-link:hover {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .products-section {
+    padding: 60px 20px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .products-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+
+  .products-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-align: center;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    display: inline-block;
+  }
+
+  .status-dot.loading {
+    background: var(--gray);
+    animation: pulse 1s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 24px;
+  }
+
+  .product-card {
+    text-decoration: none;
+    color: var(--black);
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    opacity: 0;
+    transform: translateY(12px);
+    animation: cardIn 0.4s ease forwards;
+  }
+
+  .product-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .product-img-wrap {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: #ececec;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    transition: box-shadow 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-card:hover .product-img-wrap {
+    box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+  }
+
+  .product-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .product-img-wrap .placeholder {
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .product-name {
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 12px;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .product-price {
+    font-size: 12px;
+    font-weight: 800;
+    margin-top: 6px;
+    color: var(--black);
+  }
+
+  .status-msg {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    padding: 40px 20px;
+    grid-column: 1 / -1;
+  }
+
+  .status-msg a {
+    color: var(--black);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px solid var(--black);
+  }
+
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px 20px 30px;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .footer-logo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+  }
+
+  .footer-text {
+    font-size: 12px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .fade-in-1 { animation-delay: 0.1s; }
+  .fade-in-2 { animation-delay: 0.25s; }
+  .fade-in-3 { animation-delay: 0.4s; }
+  .fade-in-4 { animation-delay: 0.55s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="announcement">WELCOME TO OUR STORE</div>
+
+  <header>
+    <div class="logo fade-in fade-in-1">KEEP.</div>
+  </header>
+
+  <section class="hero">
+    <p class="hero-sub fade-in fade-in-2">SOMETHING TO KEEP.</p>
+    <h1 class="hero-title fade-in fade-in-3">ONE PIECE TCG. POKEMON TCG. MAGIC THE GATHERING. AND MORE.</h1>
+    <a class="shop-link fade-in fade-in-4" href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">SHOP ON EBAY →</a>
+  </section>
+
+  <section class="products-section" id="productsSection">
+    <div class="products-header">
+      <span class="status-dot loading" id="statusDot"></span>
+      <p class="products-label" id="productsLabel">LOADING LISTINGS...</p>
+    </div>
+    <div class="products-grid" id="productsGrid">
+      <p class="status-msg">FETCHING LIVE STOCK FROM EBAY...</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">KEEP.</div>
+    <p class="footer-text">© 2026 KEEP. ALL RIGHTS RESERVED.</p>
+  </footer>
+
+<script>
+  // eBay URLs to try — active BIN listings for seller keep.tcg
+  const EBAY_URLS = [
+    'https://www.ebay.com.au/sch/i.html?_ssn=keep.tcg&_sop=10&LH_BIN=1&_ipg=60',
+    'https://www.ebay.com.au/sch/keep.tcg/m.html?_sop=10&LH_BIN=1&_ipg=60',
+    'https://www.ebay.com.au/usr/keep.tcg',
+  ];
+
+  // Multiple CORS proxies — try each in order
+  const PROXIES = [
+    url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+    url => 'https://corsproxy.io/?' + encodeURIComponent(url),
+    url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
+    url => 'https://thingproxy.freeboard.io/fetch/' + url,
+  ];
+
+  const REFRESH_MS = 60 * 60 * 1000;
+
+  const grid = document.getElementById('productsGrid');
+  const label = document.getElementById('productsLabel');
+  const dot = document.getElementById('statusDot');
+
+  // Try fetching with all proxy + URL combinations
+  async function fetchEbayHtml() {
+    for (const ebayUrl of EBAY_URLS) {
+      for (const proxyFn of PROXIES) {
+        try {
+          const proxyUrl = proxyFn(ebayUrl);
+          console.log('Trying:', proxyUrl);
+          const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+          if (res.ok) {
+            const html = await res.text();
+            // Sanity check — make sure we got real eBay HTML
+            if (html.length > 5000 && (html.includes('ebay') || html.includes('eBay'))) {
+              console.log('Success with proxy:', proxyFn.toString().slice(0, 50));
+              return { html, type: ebayUrl.includes('/sch/') ? 'search' : 'profile' };
+            }
+          }
+        } catch (e) {
+          continue;
+        }
+      }
+    }
+    throw new Error('All fetch attempts failed');
+  }
+
+  // Parse search results page (.s-item elements)
+  function parseSearchPage(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const items = [];
+    const seen = new Set();
+
+    doc.querySelectorAll('.s-item').forEach(el => {
+      try {
+        const linkEl = el.querySelector('.s-item__link');
+        const titleEl = el.querySelector('.s-item__title span[role="heading"], .s-item__title');
+        const priceEl = el.querySelector('.s-item__price');
+        const imgEl = el.querySelector('.s-item__image-img, .s-item__image img, img');
+
+        if (!linkEl || !titleEl) return;
+        const title = titleEl.textContent.trim();
+        if (!title || title === 'Shop on eBay' || title.toLowerCase().includes('results')) return;
+
+        const url = linkEl.href || '';
+        const price = priceEl ? priceEl.textContent.trim() : '';
+        let img = '';
+        if (imgEl) {
+          img = imgEl.getAttribute('data-src') || imgEl.getAttribute('src') || '';
+          if (img.includes('1x1') || img.endsWith('.gif') || img.includes('spacer')) img = '';
+        }
+
+        if (seen.has(title)) return;
+        seen.add(title);
+        items.push({ name: title, price, url, img });
+      } catch (e) {}
+    });
+
+    return items;
+  }
+
+  // Parse seller profile page (different HTML structure)
+  function parseProfilePage(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const items = [];
+    const seen = new Set();
+
+    // Profile page has item cards with images, titles, prices and links
+    // Look for all anchor tags containing item images and titles
+    const allLinks = doc.querySelectorAll('a[href*="/itm/"]');
+
+    allLinks.forEach(linkEl => {
+      try {
+        const url = linkEl.href || '';
+        if (!url.includes('/itm/')) return;
+
+        // Find the title — could be in h3 or heading inside/near the link
+        let title = '';
+        const h3 = linkEl.querySelector('h3');
+        const heading = linkEl.querySelector('[role="heading"]');
+        const spanTitle = linkEl.querySelector('.s-item__title');
+
+        if (h3) title = h3.textContent.trim();
+        else if (heading) title = heading.textContent.trim();
+        else if (spanTitle) title = spanTitle.textContent.trim();
+        else if (linkEl.textContent.trim().length > 5 && linkEl.textContent.trim().length < 200) {
+          title = linkEl.textContent.trim();
+        }
+
+        if (!title || title.length < 3) return;
+
+        // Find image
+        let img = '';
+        const imgEl = linkEl.querySelector('img');
+        if (imgEl) {
+          img = imgEl.getAttribute('data-src') || imgEl.getAttribute('src') || '';
+          if (img.includes('1x1') || img.endsWith('.gif') || img.includes('spacer')) img = '';
+        }
+
+        // Find price — look for sibling or nearby price text
+        let price = '';
+        const parent = linkEl.closest('.s-item') || linkEl.parentElement;
+        if (parent) {
+          const priceEl = parent.querySelector('.s-item__price, [class*="price"]');
+          if (priceEl) price = priceEl.textContent.trim();
+        }
+        // Also try next sibling text content for profile pages
+        if (!price) {
+          let sibling = linkEl.nextElementSibling;
+          while (sibling && !price) {
+            const text = sibling.textContent.trim();
+            if (text.match(/^AU\s*\$/)) {
+              price = text;
+              break;
+            }
+            sibling = sibling.nextElementSibling;
+          }
+        }
+        // Try to extract price from the link's parent container
+        if (!price && parent) {
+          const allText = parent.textContent;
+          const priceMatch = allText.match(/AU\s*\$[\d,.]+/);
+          if (priceMatch) price = priceMatch[0];
+        }
+
+        if (seen.has(title)) return;
+        seen.add(title);
+        items.push({ name: title, price, url, img });
+      } catch (e) {}
+    });
+
+    return items;
+  }
+
+  function proxyImage(src) {
+    if (!src) return '';
+    const bigger = src.replace(/\/s-l\d+\./, '/s-l500.');
+    return 'https://images.weserv.nl/?url=' + encodeURIComponent(bigger) + '&w=400&h=533&fit=cover';
+  }
+
+  function renderProducts(items) {
+    grid.innerHTML = '';
+
+    items.forEach((product, i) => {
+      const card = document.createElement('a');
+      card.className = 'product-card';
+      card.href = product.url;
+      card.target = '_blank';
+      card.style.animationDelay = (i * 0.05) + 's';
+
+      const imgWrap = document.createElement('div');
+      imgWrap.className = 'product-img-wrap';
+
+      if (product.img) {
+        const img = document.createElement('img');
+        img.alt = product.name;
+        img.loading = 'lazy';
+        img.src = proxyImage(product.img);
+        img.onerror = function() {
+          this.referrerPolicy = 'no-referrer';
+          this.src = product.img.replace(/\/s-l\d+\./, '/s-l500.');
+          this.onerror = function() {
+            this.style.display = 'none';
+            const ph = document.createElement('span');
+            ph.className = 'placeholder';
+            ph.textContent = product.name;
+            imgWrap.appendChild(ph);
+          };
+        };
+        imgWrap.appendChild(img);
+      } else {
+        const ph = document.createElement('span');
+        ph.className = 'placeholder';
+        ph.textContent = product.name;
+        imgWrap.appendChild(ph);
+      }
+
+      const name = document.createElement('div');
+      name.className = 'product-name';
+      name.textContent = product.name;
+
+      const price = document.createElement('div');
+      price.className = 'product-price';
+      price.textContent = product.price;
+
+      card.appendChild(imgWrap);
+      card.appendChild(name);
+      card.appendChild(price);
+      grid.appendChild(card);
+    });
+  }
+
+  async function loadListings() {
+    dot.className = 'status-dot loading';
+    label.textContent = 'UPDATING...';
+
+    try {
+      const { html, type } = await fetchEbayHtml();
+      let items = [];
+
+      if (type === 'search') {
+        items = parseSearchPage(html);
+      } else {
+        items = parseProfilePage(html);
+      }
+
+      if (items.length > 0) {
+        renderProducts(items);
+        label.textContent = items.length + ' LISTINGS · LIVE FROM EBAY';
+        dot.className = 'status-dot';
+      } else {
+        grid.innerHTML = '<p class="status-msg">NO LISTINGS FOUND. <a href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">CHECK EBAY →</a></p>';
+        label.textContent = 'LISTINGS';
+        dot.className = 'status-dot';
+      }
+    } catch (e) {
+      console.error('All fetches failed:', e);
+      grid.innerHTML = '<p class="status-msg">COULDN\'T LOAD LISTINGS. <a href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">SHOP ON EBAY DIRECTLY →</a></p>';
+      label.textContent = 'LISTINGS';
+      dot.className = 'status-dot';
+    }
+  }
+
+  loadListings();
+  setInterval(loadListings, REFRESH_MS);
+</script>
+
+</body>
+</html>

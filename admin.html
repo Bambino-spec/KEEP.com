@@ -3,122 +3,429 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KEEP. — Trading Cards</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>KEEP. — ADMIN</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  :root { --black: #0a0a0a; --white: #f8f8f8; --gray: #888; }
-  html { scroll-behavior: smooth; }
-  body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-  .announcement { background: var(--black); color: var(--white); text-align: center; padding: 10px 20px; font-size: 13px; font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase; }
-  header { display: flex; justify-content: center; align-items: center; padding: 50px 20px 10px; }
-  .logo { font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(64px, 12vw, 120px); letter-spacing: -2px; line-height: 1; color: var(--black); text-transform: uppercase; }
-  .hero { text-align: center; padding: 40px 20px 50px; }
-  .hero-sub { font-size: clamp(12px, 2vw, 15px); font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); margin-bottom: 35px; }
-  .hero-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(16px, 3vw, 24px); line-height: 1.5; letter-spacing: 2px; text-transform: uppercase; color: var(--black); margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; }
-  .shop-link { display: inline-block; font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(14px, 2.5vw, 18px); letter-spacing: 2px; text-transform: uppercase; color: var(--black); text-decoration: none; border: 2px solid var(--black); padding: 16px 50px; transition: all 0.4s; }
-  .shop-link:hover { background: var(--black); color: var(--white); }
-  .carousel-section { padding: 60px 0 20px; overflow: hidden; position: relative; border-top: 1px solid #e0e0e0; }
-  .carousel-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); text-align: center; margin-bottom: 30px; }
-  .carousel-section::before, .carousel-section::after { content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none; }
-  .carousel-section::before { left: 0; background: linear-gradient(to right, var(--white), transparent); }
-  .carousel-section::after { right: 0; background: linear-gradient(to left, var(--white), transparent); }
-  .carousel-track { display: flex; gap: 20px; width: max-content; animation: scroll var(--scroll-duration, 60s) linear infinite; }
-  .carousel-track:hover { animation-play-state: paused; }
-  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-  .card { flex-shrink: 0; width: 180px; text-decoration: none; color: var(--black); transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; }
-  .card:hover { transform: translateY(-8px) scale(1.03); }
-  .card-img { width: 180px; height: 252px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); transition: box-shadow 0.35s; background: #ececec; }
-  .card:hover .card-img { box-shadow: 0 12px 36px rgba(0,0,0,0.18); }
-  .card-name { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 10px; line-height: 1.3; padding: 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-price { font-size: 12px; font-weight: 800; margin-top: 4px; }
-  .card-game { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin-top: 3px; }
-  .cta { text-align: center; padding: 40px 20px 60px; }
-  .cta-text { font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 20px; }
-  footer { text-align: center; padding: 40px 20px 30px; border-top: 1px solid #e0e0e0; }
-  .footer-logo { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -1px; margin-bottom: 12px; }
-  .footer-text { font-size: 12px; color: var(--gray); letter-spacing: 1px; text-transform: uppercase; }
-  .fade-in { opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s ease forwards; }
-  .fade-in-1 { animation-delay: 0.1s; } .fade-in-2 { animation-delay: 0.25s; } .fade-in-3 { animation-delay: 0.4s; } .fade-in-4 { animation-delay: 0.55s; }
-  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-  @media (max-width: 600px) { .card { width: 150px; } .card-img { width: 150px; height: 210px; } }
+  :root { --black: #0a0a0a; --white: #f8f8f8; --gray: #888; --green: #4ade80; --red: #f87171; --yellow: #fbbf24; }
+
+  body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--white); min-height: 100vh; padding: 40px 20px; -webkit-font-smoothing: antialiased; }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { font-weight: 800; font-size: 48px; letter-spacing: -2px; margin-bottom: 5px; }
+  .subtitle { font-size: 12px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 40px; }
+
+  .step-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--yellow); margin-bottom: 12px; }
+
+  .dropzone {
+    border: 2px dashed #333; border-radius: 12px; padding: 40px; text-align: center;
+    transition: all 0.3s; cursor: pointer; margin-bottom: 16px;
+  }
+  .dropzone:hover, .dropzone.active { border-color: var(--white); background: rgba(255,255,255,0.03); }
+  .dropzone-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+  .dropzone-sub { font-size: 11px; color: var(--gray); letter-spacing: 1px; }
+  .dropzone input { display: none; }
+
+  .file-list { margin-bottom: 10px; }
+  .file-item {
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 8px; margin-bottom: 6px;
+    font-size: 12px; letter-spacing: 0.5px;
+  }
+  .file-item .count { font-weight: 700; }
+  .file-item .count.green { color: var(--green); }
+  .file-item .count.yellow { color: var(--yellow); }
+  .file-item .remove { color: var(--red); cursor: pointer; font-weight: 700; font-size: 16px; }
+
+  .section-divider { border: none; border-top: 1px solid #222; margin: 30px 0; }
+
+  .btn-row { display: flex; gap: 12px; margin-bottom: 30px; flex-wrap: wrap; }
+  .btn {
+    font-family: 'Inter', sans-serif; font-weight: 800; font-size: 12px;
+    letter-spacing: 2px; text-transform: uppercase; padding: 14px 28px;
+    border: 2px solid var(--white); background: transparent; color: var(--white);
+    cursor: pointer; transition: all 0.3s;
+  }
+  .btn:hover { background: var(--white); color: var(--black); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn.primary { background: var(--white); color: var(--black); }
+  .btn.primary:hover { background: transparent; color: var(--white); }
+
+  .preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .preview-title { font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+  .preview-count { font-size: 12px; color: var(--gray); letter-spacing: 1px; }
+
+  .preview-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px; margin-bottom: 40px;
+  }
+  .preview-card { background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; transition: transform 0.2s; }
+  .preview-card:hover { transform: translateY(-4px); }
+  .preview-card img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; background: #1a1a1a; }
+  .preview-card .no-img { width: 100%; aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; background: #1a1a1a; font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 1px; padding: 10px; text-align: center; }
+  .preview-card .info { padding: 10px; }
+  .preview-card .pname { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .preview-card .pprice { font-size: 11px; font-weight: 800; margin-top: 4px; }
+  .preview-card .pgame { font-size: 8px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .preview-card .purl { font-size: 8px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .preview-card .purl.linked { color: var(--green); }
+  .preview-card .purl.nolink { color: var(--red); }
+  .preview-card .purl.noimg { color: var(--yellow); }
+
+  .status { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; padding: 14px 0; text-align: center; }
+  .status.success { color: var(--green); }
+
+  .instructions { background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 12px; padding: 30px; margin-top: 30px; }
+  .instructions h2 { font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+  .instructions p { font-size: 13px; color: var(--gray); line-height: 1.8; margin-bottom: 8px; }
+  .instructions strong { color: var(--white); }
 </style>
 </head>
 <body>
-  <div class="announcement">WELCOME TO OUR STORE</div>
-  <header><div class="logo fade-in fade-in-1">KEEP.</div></header>
-  <section class="hero">
-    <p class="hero-sub fade-in fade-in-2">SOMETHING TO KEEP.</p>
-    <h1 class="hero-title fade-in fade-in-3">ONE PIECE TCG. POKEMON TCG. MAGIC THE GATHERING. AND MORE.</h1>
-    <a class="shop-link fade-in fade-in-4" href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">SHOP ON EBAY →</a>
-  </section>
-  <section class="carousel-section">
-    <p class="carousel-label">FIND THESE AND MORE ON OUR EBAY STORE</p>
-    <div class="carousel-track" id="carouselTrack"></div>
-  </section>
-  <section class="cta">
-    <p class="cta-text" id="ctaCount">CARDS AVAILABLE NOW</p>
-    <a class="shop-link" href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">BROWSE ALL ON EBAY →</a>
-  </section>
-  <footer>
-    <div class="footer-logo">KEEP.</div>
-    <p class="footer-text">© 2026 KEEP. ALL RIGHTS RESERVED.</p>
-  </footer>
+<div class="container">
+  <h1>KEEP.</h1>
+  <p class="subtitle">ADMIN — UPDATE YOUR STORE LISTINGS</p>
 
-  <!-- Products loaded from separate file -->
-  <script src="products.js"></script>
-  <script>
-    function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+  <!-- STEP 1: Upload CSVs -->
+  <p class="step-label">STEP 1 — UPLOAD YOUR LISTING CSV(S) WITH IMAGES</p>
+  <div class="dropzone" id="dropzone1">
+    <p class="dropzone-title">DROP LISTING CSV(S) HERE</p>
+    <p class="dropzone-sub">YOUR UPLOAD CSVS WITH TITLE, PICURL, PRICE, GAME</p>
+    <input type="file" id="fileInput1" accept=".csv" multiple>
+  </div>
+  <div class="file-list" id="fileList1"></div>
+
+  <hr class="section-divider">
+
+  <!-- STEP 2: eBay export -->
+  <p class="step-label">STEP 2 (OPTIONAL) — UPLOAD EBAY ACTIVE LISTINGS EXPORT</p>
+  <div class="dropzone" id="dropzone2">
+    <p class="dropzone-title">DROP EBAY EXPORT CSV HERE</p>
+    <p class="dropzone-sub">ADDS DIRECT EBAY LINKS — HAS "ITEM NUMBER" COLUMN</p>
+    <input type="file" id="fileInput2" accept=".csv">
+  </div>
+  <div class="file-list" id="fileList2"></div>
+
+  <hr class="section-divider">
+
+  <!-- STEP 3: Generate -->
+  <p class="step-label">STEP 3 — GENERATE & DOWNLOAD</p>
+  <div class="btn-row">
+    <button class="btn primary" id="generateBtn" disabled>GENERATE PRODUCTS.JS</button>
+    <button class="btn" id="clearBtn" disabled>CLEAR ALL</button>
+  </div>
+  <div id="status"></div>
+
+  <div id="previewSection" style="display:none;">
+    <div class="preview-header">
+      <span class="preview-title">PREVIEW</span>
+      <span class="preview-count" id="previewCount"></span>
+    </div>
+    <div class="preview-grid" id="previewGrid"></div>
+  </div>
+
+  <div class="instructions">
+    <h2>HOW TO UPDATE YOUR SITE</h2>
+    <p><strong>1.</strong> Drop your listing CSV(s) above — these have the images and prices</p>
+    <p><strong>2.</strong> (Optional) Drop your eBay export CSV — this adds direct links to each listing</p>
+    <p><strong>3.</strong> Click <strong>GENERATE PRODUCTS.JS</strong> — downloads automatically</p>
+    <p><strong>4.</strong> Go to GitHub, click <strong>products.js</strong> → pencil icon → select all → delete → paste new content → commit</p>
+    <p><strong>OR</strong> delete old products.js and upload the new one</p>
+    <p style="margin-top:16px;"><strong>EBAY EXPORT:</strong> Seller Hub → Reports → Downloads → Source: Listings → Type: All active listings → Download</p>
+  </div>
+</div>
+
+<script>
+  // ── STATE ──
+  let listingProducts = [];  // From upload CSVs (have images)
+  let ebayMap = {};          // Item number → title mapping from eBay export
+  let listingFiles = [];
+  let ebayFile = null;
+
+  // ── ELEMENTS ──
+  const dz1 = document.getElementById('dropzone1');
+  const fi1 = document.getElementById('fileInput1');
+  const fl1 = document.getElementById('fileList1');
+  const dz2 = document.getElementById('dropzone2');
+  const fi2 = document.getElementById('fileInput2');
+  const fl2 = document.getElementById('fileList2');
+  const generateBtn = document.getElementById('generateBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const statusEl = document.getElementById('status');
+  const previewSection = document.getElementById('previewSection');
+  const previewGrid = document.getElementById('previewGrid');
+  const previewCount = document.getElementById('previewCount');
+
+  // ── DROPZONE 1: Listing CSVs ──
+  dz1.addEventListener('click', () => fi1.click());
+  dz1.addEventListener('dragover', e => { e.preventDefault(); dz1.classList.add('active'); });
+  dz1.addEventListener('dragleave', () => dz1.classList.remove('active'));
+  dz1.addEventListener('drop', e => { e.preventDefault(); dz1.classList.remove('active'); handleListingFiles(e.dataTransfer.files); });
+  fi1.addEventListener('change', e => handleListingFiles(e.target.files));
+
+  // ── DROPZONE 2: eBay export ──
+  dz2.addEventListener('click', () => fi2.click());
+  dz2.addEventListener('dragover', e => { e.preventDefault(); dz2.classList.add('active'); });
+  dz2.addEventListener('dragleave', () => dz2.classList.remove('active'));
+  dz2.addEventListener('drop', e => { e.preventDefault(); dz2.classList.remove('active'); handleEbayFile(e.dataTransfer.files[0]); });
+  fi2.addEventListener('change', e => handleEbayFile(e.target.files[0]));
+
+  function handleListingFiles(files) {
+    Array.from(files).forEach(file => {
+      if (!file.name.endsWith('.csv')) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const items = parseListingCSV(e.target.result);
+        listingFiles.push({ name: file.name, count: items.length });
+        listingProducts.push(...items);
+        updateUI();
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  function handleEbayFile(file) {
+    if (!file || !file.name.endsWith('.csv')) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      ebayMap = parseEbayExport(e.target.result);
+      ebayFile = { name: file.name, count: Object.keys(ebayMap).length };
+      updateUI();
+    };
+    reader.readAsText(file);
+  }
+
+  // ── PARSE LISTING CSV (with images) ──
+  function parseListingCSV(text) {
+    const items = [];
+    const rows = parseCSVRows(text);
+    if (rows.length < 2) return items;
+
+    const headers = rows[0];
+    const titleIdx = headers.findIndex(h => h.includes('Title'));
+    const picIdx = headers.findIndex(h => h.includes('PicURL'));
+    const priceIdx = headers.findIndex(h => h.includes('StartPrice'));
+    const gameIdx = headers.findIndex(h => h.includes('C:Game'));
+    const itemIdIdx = headers.findIndex(h => h === 'ItemID');
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const title = clean(row[titleIdx] || '');
+      const pic = clean(row[picIdx] || '');
+      const price = clean(row[priceIdx] || '');
+      const game = clean(row[gameIdx] || '');
+      const itemId = clean(row[itemIdIdx] || '');
+
+      if (!title) continue;
+
+      let shortName = title
+        .replace(/^One Piece\s+/i, '')
+        .replace(/^Pokemon\s+(japanese\s+)?/i, '')
+        .replace(/\s+One Piece Promotion Cards$/i, '')
+        .replace(/\s+English\s*-?\s*NM$/i, '')
+        .trim();
+      if (shortName.length > 40) shortName = shortName.substring(0, 40) + '…';
+
+      let shortGame = game;
+      if (game.includes('One Piece')) shortGame = 'One Piece';
+      if (game.includes('Poké') || game.includes('Pokemon')) shortGame = 'Pokémon';
+      if (game.includes('Magic')) shortGame = 'MTG';
+
+      items.push({
+        name: shortName,
+        fullTitle: title,
+        img: pic,
+        price: price ? 'AU $' + price : '',
+        game: shortGame,
+        itemId: itemId || '',
+      });
+    }
+    return items;
+  }
+
+  // ── PARSE EBAY EXPORT (with item numbers) ──
+  function parseEbayExport(text) {
+    const map = {};
+    const rows = parseCSVRows(text);
+    if (rows.length < 2) return map;
+
+    const headers = rows[0];
+    const numIdx = headers.findIndex(h => h.includes('Item number') || h.includes('ItemID'));
+    const titleIdx = headers.findIndex(h => h === 'Title' || h.includes('Title'));
+    const priceIdx = headers.findIndex(h => h.includes('Start price') || h.includes('Current price'));
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const itemNum = clean(row[numIdx] || '');
+      const title = clean(row[titleIdx] || '');
+      const price = clean(row[priceIdx] || '');
+      if (itemNum && title) {
+        // Normalize title for matching
+        map[normalizeTitle(title)] = { itemId: itemNum, price: price };
       }
-      return arr;
+    }
+    return map;
+  }
+
+  function normalizeTitle(t) {
+    return t.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 60);
+  }
+
+  // ── MERGE & BUILD FINAL PRODUCTS ──
+  function buildFinalProducts() {
+    return listingProducts.map(p => {
+      let url = 'https://www.ebay.com.au/usr/keep.tcg';
+
+      // Try to match with eBay export by title
+      if (Object.keys(ebayMap).length > 0) {
+        const normalized = normalizeTitle(p.fullTitle);
+        // Try exact match first
+        if (ebayMap[normalized]) {
+          url = 'https://www.ebay.com.au/itm/' + ebayMap[normalized].itemId;
+        } else {
+          // Try partial match
+          for (const [key, val] of Object.entries(ebayMap)) {
+            if (key.includes(normalized.substring(0, 30)) || normalized.includes(key.substring(0, 30))) {
+              url = 'https://www.ebay.com.au/itm/' + val.itemId;
+              break;
+            }
+          }
+        }
+      }
+
+      // If listing CSV had an itemId, use it
+      if (p.itemId) {
+        url = 'https://www.ebay.com.au/itm/' + p.itemId;
+      }
+
+      return {
+        name: p.name,
+        img: p.img,
+        price: p.price,
+        game: p.game,
+        url: url,
+      };
+    });
+  }
+
+  // ── CSV PARSER ──
+  function parseCSVRows(text) {
+    const rows = [];
+    let current = [];
+    let field = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (i + 1 < text.length && text[i + 1] === '"') { field += '"'; i++; }
+          else { inQuotes = false; }
+        } else { field += c; }
+      } else {
+        if (c === '"') { inQuotes = true; }
+        else if (c === ',') { current.push(field); field = ''; }
+        else if (c === '\n' || c === '\r') {
+          if (c === '\r' && i + 1 < text.length && text[i + 1] === '\n') i++;
+          current.push(field); field = '';
+          if (current.length > 1) rows.push(current);
+          current = [];
+        } else { field += c; }
+      }
+    }
+    current.push(field);
+    if (current.length > 1) rows.push(current);
+    return rows;
+  }
+
+  function clean(str) { return str.replace(/^["'\s\ufeff]+|["'\s]+$/g, '').trim(); }
+
+  // ── UI UPDATE ──
+  function updateUI() {
+    // File list 1
+    fl1.innerHTML = '';
+    listingFiles.forEach((f, i) => {
+      const div = document.createElement('div');
+      div.className = 'file-item';
+      div.innerHTML = `<span>${f.name}</span><span class="count green">${f.count} CARDS</span>`;
+      fl1.appendChild(div);
+    });
+
+    // File list 2
+    fl2.innerHTML = '';
+    if (ebayFile) {
+      const div = document.createElement('div');
+      div.className = 'file-item';
+      div.innerHTML = `<span>${ebayFile.name}</span><span class="count yellow">${ebayFile.count} ITEM IDS</span>`;
+      fl2.appendChild(div);
     }
 
-    const track = document.getElementById('carouselTrack');
-    const ctaCount = document.getElementById('ctaCount');
-    const shuffled = shuffle([...PRODUCTS]);
-    const allCards = [...shuffled, ...shuffled];
+    const hasProducts = listingProducts.length > 0;
+    generateBtn.disabled = !hasProducts;
+    clearBtn.disabled = !hasProducts && !ebayFile;
 
-    ctaCount.textContent = PRODUCTS.length + ' CARDS AVAILABLE NOW';
+    // Preview
+    if (hasProducts) {
+      const final = buildFinalProducts();
+      previewSection.style.display = 'block';
+      previewCount.textContent = final.length + ' CARDS';
+      previewGrid.innerHTML = '';
 
-    const cardWidth = 200;
-    const totalWidth = shuffled.length * cardWidth;
-    const duration = totalWidth / 40;
-    track.style.setProperty('--scroll-duration', duration + 's');
+      const linked = final.filter(p => p.url.includes('/itm/')).length;
+      const noImg = final.filter(p => !p.img).length;
+      previewCount.textContent = `${final.length} CARDS · ${linked} LINKED · ${final.length - linked} STORE ONLY`;
 
-    allCards.forEach(product => {
-      const card = document.createElement('a');
-      card.className = 'card';
-      card.href = product.url || 'https://www.ebay.com.au/usr/keep.tcg';
-      card.target = '_blank';
+      final.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'preview-card';
+        const hasLink = p.url.includes('/itm/');
 
-      const img = document.createElement('img');
-      img.className = 'card-img';
-      img.alt = product.name;
-      img.loading = 'lazy';
-      img.src = product.img;
+        let imgHtml = p.img
+          ? `<img src="${p.img}" alt="${p.name}" onerror="this.style.background='#333'">`
+          : `<div class="no-img">${p.name}</div>`;
 
-      const name = document.createElement('div');
-      name.className = 'card-name';
-      name.textContent = product.name;
+        let linkStatus = hasLink
+          ? '<div class="purl linked">✓ DIRECT LINK</div>'
+          : '<div class="purl nolink">→ STORE LINK</div>';
 
-      const price = document.createElement('div');
-      price.className = 'card-price';
-      price.textContent = product.price;
+        if (!p.img) linkStatus += '<div class="purl noimg">⚠ NO IMAGE</div>';
 
-      const game = document.createElement('div');
-      game.className = 'card-game';
-      game.textContent = product.game;
+        card.innerHTML = `${imgHtml}<div class="info"><div class="pname">${p.name}</div><div class="pprice">${p.price}</div><div class="pgame">${p.game}</div>${linkStatus}</div>`;
+        previewGrid.appendChild(card);
+      });
+    } else {
+      previewSection.style.display = 'none';
+    }
+  }
 
-      card.appendChild(img);
-      card.appendChild(name);
-      card.appendChild(price);
-      card.appendChild(game);
-      track.appendChild(card);
-    });
-  </script>
+  // ── GENERATE ──
+  generateBtn.addEventListener('click', () => {
+    const final = buildFinalProducts();
+    const json = JSON.stringify(final, null, 2);
+    const content = 'const PRODUCTS = ' + json + ';\n';
+
+    const blob = new Blob([content], { type: 'text/javascript' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'products.js';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    statusEl.className = 'status success';
+    statusEl.textContent = '✓ PRODUCTS.JS DOWNLOADED — UPLOAD IT TO YOUR GITHUB REPO';
+  });
+
+  // ── CLEAR ──
+  clearBtn.addEventListener('click', () => {
+    listingProducts = [];
+    listingFiles = [];
+    ebayMap = {};
+    ebayFile = null;
+    fi1.value = '';
+    fi2.value = '';
+    statusEl.innerHTML = '';
+    updateUI();
+  });
+</script>
 </body>
 </html>

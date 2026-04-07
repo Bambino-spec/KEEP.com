@@ -8,76 +8,52 @@
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
   :root { --black: #0a0a0a; --white: #f8f8f8; --gray: #888; --green: #4ade80; --red: #f87171; --yellow: #fbbf24; }
-
   body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--white); min-height: 100vh; padding: 40px 20px; -webkit-font-smoothing: antialiased; }
   .container { max-width: 900px; margin: 0 auto; }
   h1 { font-weight: 800; font-size: 48px; letter-spacing: -2px; margin-bottom: 5px; }
   .subtitle { font-size: 12px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 40px; }
-
   .step-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--yellow); margin-bottom: 12px; }
-
-  .dropzone {
-    border: 2px dashed #333; border-radius: 12px; padding: 40px; text-align: center;
-    transition: all 0.3s; cursor: pointer; margin-bottom: 16px;
-  }
+  .dropzone { border: 2px dashed #333; border-radius: 12px; padding: 40px; text-align: center; transition: all 0.3s; cursor: pointer; margin-bottom: 16px; }
   .dropzone:hover, .dropzone.active { border-color: var(--white); background: rgba(255,255,255,0.03); }
   .dropzone-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
   .dropzone-sub { font-size: 11px; color: var(--gray); letter-spacing: 1px; }
   .dropzone input { display: none; }
-
   .file-list { margin-bottom: 10px; }
-  .file-item {
-    display: flex; justify-content: space-between; align-items: center;
-    background: rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 8px; margin-bottom: 6px;
-    font-size: 12px; letter-spacing: 0.5px;
-  }
+  .file-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; font-size: 12px; }
   .file-item .count { font-weight: 700; }
-  .file-item .count.green { color: var(--green); }
-  .file-item .count.yellow { color: var(--yellow); }
-  .file-item .remove { color: var(--red); cursor: pointer; font-weight: 700; font-size: 16px; }
-
+  .count.green { color: var(--green); }
+  .count.yellow { color: var(--yellow); }
   .section-divider { border: none; border-top: 1px solid #222; margin: 30px 0; }
-
   .btn-row { display: flex; gap: 12px; margin-bottom: 30px; flex-wrap: wrap; }
-  .btn {
-    font-family: 'Inter', sans-serif; font-weight: 800; font-size: 12px;
-    letter-spacing: 2px; text-transform: uppercase; padding: 14px 28px;
-    border: 2px solid var(--white); background: transparent; color: var(--white);
-    cursor: pointer; transition: all 0.3s;
-  }
+  .btn { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; padding: 14px 28px; border: 2px solid var(--white); background: transparent; color: var(--white); cursor: pointer; transition: all 0.3s; }
   .btn:hover { background: var(--white); color: var(--black); }
   .btn:disabled { opacity: 0.3; cursor: not-allowed; }
   .btn.primary { background: var(--white); color: var(--black); }
   .btn.primary:hover { background: transparent; color: var(--white); }
-
-  .preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; }
   .preview-title { font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
-  .preview-count { font-size: 12px; color: var(--gray); letter-spacing: 1px; }
-
-  .preview-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 16px; margin-bottom: 40px;
-  }
-  .preview-card { background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; transition: transform 0.2s; }
-  .preview-card:hover { transform: translateY(-4px); }
+  .preview-count { font-size: 11px; color: var(--gray); letter-spacing: 1px; }
+  .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; margin-bottom: 40px; }
+  .preview-card { background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; }
   .preview-card img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; background: #1a1a1a; }
   .preview-card .no-img { width: 100%; aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; background: #1a1a1a; font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 1px; padding: 10px; text-align: center; }
   .preview-card .info { padding: 10px; }
-  .preview-card .pname { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .preview-card .pname { font-size: 9px; font-weight: 600; text-transform: uppercase; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .preview-card .pprice { font-size: 11px; font-weight: 800; margin-top: 4px; }
   .preview-card .pgame { font-size: 8px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-  .preview-card .purl { font-size: 8px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .preview-card .purl.linked { color: var(--green); }
-  .preview-card .purl.nolink { color: var(--red); }
-  .preview-card .purl.noimg { color: var(--yellow); }
-
+  .purl { font-size: 8px; margin-top: 4px; }
+  .purl.linked { color: var(--green); }
+  .purl.nolink { color: var(--red); }
   .status { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; padding: 14px 0; text-align: center; }
   .status.success { color: var(--green); }
-
   .instructions { background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 12px; padding: 30px; margin-top: 30px; }
   .instructions h2 { font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
   .instructions p { font-size: 13px; color: var(--gray); line-height: 1.8; margin-bottom: 8px; }
   .instructions strong { color: var(--white); }
+  .match-stats { font-size: 11px; color: var(--gray); letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase; }
+  .match-stats span { font-weight: 700; }
+  .match-stats .g { color: var(--green); }
+  .match-stats .r { color: var(--red); }
 </style>
 </head>
 <body>
@@ -85,331 +61,256 @@
   <h1>KEEP.</h1>
   <p class="subtitle">ADMIN — UPDATE YOUR STORE LISTINGS</p>
 
-  <!-- STEP 1: Upload CSVs -->
-  <p class="step-label">STEP 1 — UPLOAD YOUR LISTING CSV(S) WITH IMAGES</p>
-  <div class="dropzone" id="dropzone1">
+  <p class="step-label">STEP 1 — DROP YOUR LISTING CSV(S) WITH IMAGES</p>
+  <div class="dropzone" id="dz1">
     <p class="dropzone-title">DROP LISTING CSV(S) HERE</p>
-    <p class="dropzone-sub">YOUR UPLOAD CSVS WITH TITLE, PICURL, PRICE, GAME</p>
-    <input type="file" id="fileInput1" accept=".csv" multiple>
+    <p class="dropzone-sub">THE ONES YOU USE TO UPLOAD TO EBAY — HAS TITLE, PICURL, STARTPRICE, GAME</p>
+    <input type="file" id="fi1" accept=".csv" multiple>
   </div>
-  <div class="file-list" id="fileList1"></div>
+  <div class="file-list" id="fl1"></div>
 
   <hr class="section-divider">
 
-  <!-- STEP 2: eBay export -->
-  <p class="step-label">STEP 2 (OPTIONAL) — UPLOAD EBAY ACTIVE LISTINGS EXPORT</p>
-  <div class="dropzone" id="dropzone2">
+  <p class="step-label">STEP 2 — DROP YOUR EBAY ACTIVE LISTINGS EXPORT</p>
+  <div class="dropzone" id="dz2">
     <p class="dropzone-title">DROP EBAY EXPORT CSV HERE</p>
-    <p class="dropzone-sub">ADDS DIRECT EBAY LINKS — HAS "ITEM NUMBER" COLUMN</p>
-    <input type="file" id="fileInput2" accept=".csv">
+    <p class="dropzone-sub">SELLER HUB → REPORTS → DOWNLOADS → LISTINGS → ALL ACTIVE LISTINGS</p>
+    <input type="file" id="fi2" accept=".csv">
   </div>
-  <div class="file-list" id="fileList2"></div>
+  <div class="file-list" id="fl2"></div>
 
   <hr class="section-divider">
 
-  <!-- STEP 3: Generate -->
   <p class="step-label">STEP 3 — GENERATE & DOWNLOAD</p>
   <div class="btn-row">
-    <button class="btn primary" id="generateBtn" disabled>GENERATE PRODUCTS.JS</button>
+    <button class="btn primary" id="genBtn" disabled>GENERATE PRODUCTS.JS</button>
     <button class="btn" id="clearBtn" disabled>CLEAR ALL</button>
   </div>
   <div id="status"></div>
 
-  <div id="previewSection" style="display:none;">
+  <div id="previewArea" style="display:none">
+    <div class="match-stats" id="matchStats"></div>
     <div class="preview-header">
       <span class="preview-title">PREVIEW</span>
-      <span class="preview-count" id="previewCount"></span>
+      <span class="preview-count" id="prevCount"></span>
     </div>
-    <div class="preview-grid" id="previewGrid"></div>
+    <div class="preview-grid" id="prevGrid"></div>
   </div>
 
   <div class="instructions">
     <h2>HOW TO UPDATE YOUR SITE</h2>
-    <p><strong>1.</strong> Drop your listing CSV(s) above — these have the images and prices</p>
-    <p><strong>2.</strong> (Optional) Drop your eBay export CSV — this adds direct links to each listing</p>
-    <p><strong>3.</strong> Click <strong>GENERATE PRODUCTS.JS</strong> — downloads automatically</p>
-    <p><strong>4.</strong> Go to GitHub, click <strong>products.js</strong> → pencil icon → select all → delete → paste new content → commit</p>
-    <p><strong>OR</strong> delete old products.js and upload the new one</p>
-    <p style="margin-top:16px;"><strong>EBAY EXPORT:</strong> Seller Hub → Reports → Downloads → Source: Listings → Type: All active listings → Download</p>
+    <p><strong>1.</strong> Drop your listing CSV(s) above — these have the card images</p>
+    <p><strong>2.</strong> Drop your eBay active listings export — this gives each card a direct link</p>
+    <p><strong>3.</strong> Click <strong>GENERATE PRODUCTS.JS</strong></p>
+    <p><strong>4.</strong> Go to GitHub → click <strong>products.js</strong> → delete it → upload the new one → commit</p>
+    <p style="margin-top:16px"><strong>EBAY EXPORT:</strong> Seller Hub → Reports → Downloads → Source: Listings → Type: All active listings → Download</p>
   </div>
 </div>
 
 <script>
   // ── STATE ──
-  let listingProducts = [];  // From upload CSVs (have images)
-  let ebayMap = {};          // Item number → title mapping from eBay export
-  let listingFiles = [];
-  let ebayFile = null;
+  let listingItems = [];   // {fullTitle, img, price, game}
+  let ebayItems = [];      // {itemNumber, title}
+  let listingFileInfo = [];
+  let ebayFileInfo = null;
 
-  // ── ELEMENTS ──
-  const dz1 = document.getElementById('dropzone1');
-  const fi1 = document.getElementById('fileInput1');
-  const fl1 = document.getElementById('fileList1');
-  const dz2 = document.getElementById('dropzone2');
-  const fi2 = document.getElementById('fileInput2');
-  const fl2 = document.getElementById('fileList2');
-  const generateBtn = document.getElementById('generateBtn');
+  const dz1 = document.getElementById('dz1');
+  const fi1 = document.getElementById('fi1');
+  const fl1 = document.getElementById('fl1');
+  const dz2 = document.getElementById('dz2');
+  const fi2 = document.getElementById('fi2');
+  const fl2 = document.getElementById('fl2');
+  const genBtn = document.getElementById('genBtn');
   const clearBtn = document.getElementById('clearBtn');
   const statusEl = document.getElementById('status');
-  const previewSection = document.getElementById('previewSection');
-  const previewGrid = document.getElementById('previewGrid');
-  const previewCount = document.getElementById('previewCount');
+  const previewArea = document.getElementById('previewArea');
+  const prevGrid = document.getElementById('prevGrid');
+  const prevCount = document.getElementById('prevCount');
+  const matchStats = document.getElementById('matchStats');
 
-  // ── DROPZONE 1: Listing CSVs ──
-  dz1.addEventListener('click', () => fi1.click());
-  dz1.addEventListener('dragover', e => { e.preventDefault(); dz1.classList.add('active'); });
-  dz1.addEventListener('dragleave', () => dz1.classList.remove('active'));
-  dz1.addEventListener('drop', e => { e.preventDefault(); dz1.classList.remove('active'); handleListingFiles(e.dataTransfer.files); });
-  fi1.addEventListener('change', e => handleListingFiles(e.target.files));
+  // ── DROPZONE WIRING ──
+  function wire(dz, fi, handler) {
+    dz.addEventListener('click', () => fi.click());
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('active'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('active'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('active'); handler(e.dataTransfer.files); });
+    fi.addEventListener('change', e => handler(e.target.files));
+  }
 
-  // ── DROPZONE 2: eBay export ──
-  dz2.addEventListener('click', () => fi2.click());
-  dz2.addEventListener('dragover', e => { e.preventDefault(); dz2.classList.add('active'); });
-  dz2.addEventListener('dragleave', () => dz2.classList.remove('active'));
-  dz2.addEventListener('drop', e => { e.preventDefault(); dz2.classList.remove('active'); handleEbayFile(e.dataTransfer.files[0]); });
-  fi2.addEventListener('change', e => handleEbayFile(e.target.files[0]));
-
-  function handleListingFiles(files) {
-    Array.from(files).forEach(file => {
-      if (!file.name.endsWith('.csv')) return;
-      const reader = new FileReader();
-      reader.onload = e => {
+  wire(dz1, fi1, files => {
+    Array.from(files).forEach(f => {
+      if (!f.name.endsWith('.csv')) return;
+      const r = new FileReader();
+      r.onload = e => {
         const items = parseListingCSV(e.target.result);
-        listingFiles.push({ name: file.name, count: items.length });
-        listingProducts.push(...items);
-        updateUI();
+        listingFileInfo.push({ name: f.name, count: items.length });
+        listingItems.push(...items);
+        refresh();
       };
-      reader.readAsText(file);
+      r.readAsText(f);
     });
-  }
+  });
 
-  function handleEbayFile(file) {
-    if (!file || !file.name.endsWith('.csv')) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      ebayMap = parseEbayExport(e.target.result);
-      ebayFile = { name: file.name, count: Object.keys(ebayMap).length };
-      updateUI();
+  wire(dz2, fi2, files => {
+    const f = files[0];
+    if (!f || !f.name.endsWith('.csv')) return;
+    const r = new FileReader();
+    r.onload = e => {
+      ebayItems = parseEbayCSV(e.target.result);
+      ebayFileInfo = { name: f.name, count: ebayItems.length };
+      refresh();
     };
-    reader.readAsText(file);
+    r.readAsText(f);
+  });
+
+  // ── PARSE LISTING CSV ──
+  // Columns: *Title, PicURL, *StartPrice, *C:Game
+  function parseListingCSV(text) {
+    const rows = csvParse(text);
+    if (rows.length < 2) return [];
+    const h = rows[0];
+
+    const iTitle = h.findIndex(c => c.includes('Title'));
+    const iPic = h.findIndex(c => c.includes('PicURL'));
+    const iPrice = h.findIndex(c => c.includes('StartPrice'));
+    const iGame = h.findIndex(c => c.includes('C:Game'));
+
+    const out = [];
+    for (let i = 1; i < rows.length; i++) {
+      const r = rows[i];
+      const title = s(r[iTitle]);
+      const img = s(r[iPic]);
+      const price = s(r[iPrice]);
+      const game = s(r[iGame]);
+      if (!title) continue;
+      out.push({ fullTitle: title, img, price, game });
+    }
+    return out;
   }
 
-  // ── PARSE LISTING CSV (with images) ──
-  function parseListingCSV(text) {
-    const items = [];
-    const rows = parseCSVRows(text);
-    if (rows.length < 2) return items;
+  // ── PARSE EBAY EXPORT ──
+  // Columns: Item number, Title
+  function parseEbayCSV(text) {
+    const rows = csvParse(text);
+    if (rows.length < 2) return [];
+    const h = rows[0];
 
-    const headers = rows[0];
-    const titleIdx = headers.findIndex(h => h.includes('Title'));
-    const picIdx = headers.findIndex(h => h.includes('PicURL'));
-    const priceIdx = headers.findIndex(h => h.includes('StartPrice'));
-    const gameIdx = headers.findIndex(h => h.includes('C:Game'));
-    const itemIdIdx = headers.findIndex(h => h === 'ItemID');
+    const iNum = h.findIndex(c => c.includes('Item number'));
+    const iTitle = h.findIndex(c => c === 'Title');
 
+    const out = [];
     for (let i = 1; i < rows.length; i++) {
-      const row = rows[i];
-      const title = clean(row[titleIdx] || '');
-      const pic = clean(row[picIdx] || '');
-      const price = clean(row[priceIdx] || '');
-      const game = clean(row[gameIdx] || '');
-      const itemId = clean(row[itemIdIdx] || '');
+      const r = rows[i];
+      const num = s(r[iNum]);
+      const title = s(r[iTitle]);
+      if (num && title) out.push({ itemNumber: num, title });
+    }
+    return out;
+  }
 
-      if (!title) continue;
+  // ── BUILD FINAL PRODUCTS ──
+  function buildProducts() {
+    // Build a map from lowercase trimmed title → item number
+    const ebayMap = {};
+    ebayItems.forEach(e => {
+      ebayMap[e.title.toLowerCase().trim()] = e.itemNumber;
+    });
 
-      let shortName = title
+    return listingItems.map(item => {
+      // Try to find matching eBay item number by exact title
+      const key = item.fullTitle.toLowerCase().trim();
+      const itemNumber = ebayMap[key] || '';
+
+      const url = itemNumber
+        ? 'https://www.ebay.com.au/itm/' + itemNumber
+        : 'https://www.ebay.com.au/usr/keep.tcg';
+
+      // Shorten name for display
+      let name = item.fullTitle
         .replace(/^One Piece\s+/i, '')
         .replace(/^Pokemon\s+(japanese\s+)?/i, '')
         .replace(/\s+One Piece Promotion Cards$/i, '')
         .replace(/\s+English\s*-?\s*NM$/i, '')
         .trim();
-      if (shortName.length > 40) shortName = shortName.substring(0, 40) + '…';
+      if (name.length > 45) name = name.substring(0, 42) + '…';
 
-      let shortGame = game;
-      if (game.includes('One Piece')) shortGame = 'One Piece';
-      if (game.includes('Poké') || game.includes('Pokemon')) shortGame = 'Pokémon';
-      if (game.includes('Magic')) shortGame = 'MTG';
+      // Shorten game
+      let game = item.game;
+      if (game.includes('One Piece')) game = 'One Piece';
+      if (game.includes('Poké') || game.toLowerCase().includes('pokemon')) game = 'Pokémon';
+      if (game.includes('Magic')) game = 'MTG';
 
-      items.push({
-        name: shortName,
-        fullTitle: title,
-        img: pic,
-        price: price ? 'AU $' + price : '',
-        game: shortGame,
-        itemId: itemId || '',
-      });
-    }
-    return items;
-  }
+      // Format price
+      const price = item.price ? 'AU $' + item.price : '';
 
-  // ── PARSE EBAY EXPORT (with item numbers) ──
-  function parseEbayExport(text) {
-    const map = {};
-    const rows = parseCSVRows(text);
-    if (rows.length < 2) return map;
-
-    const headers = rows[0];
-    const numIdx = headers.findIndex(h => h.includes('Item number') || h.includes('ItemID'));
-    const titleIdx = headers.findIndex(h => h === 'Title' || h.includes('Title'));
-    const priceIdx = headers.findIndex(h => h.includes('Start price') || h.includes('Current price'));
-
-    for (let i = 1; i < rows.length; i++) {
-      const row = rows[i];
-      const itemNum = clean(row[numIdx] || '');
-      const title = clean(row[titleIdx] || '');
-      const price = clean(row[priceIdx] || '');
-      if (itemNum && title) {
-        // Normalize title for matching
-        map[normalizeTitle(title)] = { itemId: itemNum, price: price };
-      }
-    }
-    return map;
-  }
-
-  function normalizeTitle(t) {
-    return t.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 60);
-  }
-
-  // ── MERGE & BUILD FINAL PRODUCTS ──
-  function buildFinalProducts() {
-    return listingProducts.map(p => {
-      let url = 'https://www.ebay.com.au/usr/keep.tcg';
-
-      // Try to match with eBay export by title
-      if (Object.keys(ebayMap).length > 0) {
-        const normalized = normalizeTitle(p.fullTitle);
-        // Try exact match first
-        if (ebayMap[normalized]) {
-          url = 'https://www.ebay.com.au/itm/' + ebayMap[normalized].itemId;
-        } else {
-          // Try partial match
-          for (const [key, val] of Object.entries(ebayMap)) {
-            if (key.includes(normalized.substring(0, 30)) || normalized.includes(key.substring(0, 30))) {
-              url = 'https://www.ebay.com.au/itm/' + val.itemId;
-              break;
-            }
-          }
-        }
-      }
-
-      // If listing CSV had an itemId, use it
-      if (p.itemId) {
-        url = 'https://www.ebay.com.au/itm/' + p.itemId;
-      }
-
-      return {
-        name: p.name,
-        img: p.img,
-        price: p.price,
-        game: p.game,
-        url: url,
-      };
+      return { name, img: item.img, price, game, url };
     });
   }
 
-  // ── CSV PARSER ──
-  function parseCSVRows(text) {
-    const rows = [];
-    let current = [];
-    let field = '';
-    let inQuotes = false;
-
-    for (let i = 0; i < text.length; i++) {
-      const c = text[i];
-      if (inQuotes) {
-        if (c === '"') {
-          if (i + 1 < text.length && text[i + 1] === '"') { field += '"'; i++; }
-          else { inQuotes = false; }
-        } else { field += c; }
-      } else {
-        if (c === '"') { inQuotes = true; }
-        else if (c === ',') { current.push(field); field = ''; }
-        else if (c === '\n' || c === '\r') {
-          if (c === '\r' && i + 1 < text.length && text[i + 1] === '\n') i++;
-          current.push(field); field = '';
-          if (current.length > 1) rows.push(current);
-          current = [];
-        } else { field += c; }
-      }
-    }
-    current.push(field);
-    if (current.length > 1) rows.push(current);
-    return rows;
-  }
-
-  function clean(str) { return str.replace(/^["'\s\ufeff]+|["'\s]+$/g, '').trim(); }
-
-  // ── UI UPDATE ──
-  function updateUI() {
-    // File list 1
+  // ── REFRESH UI ──
+  function refresh() {
     fl1.innerHTML = '';
-    listingFiles.forEach((f, i) => {
-      const div = document.createElement('div');
-      div.className = 'file-item';
-      div.innerHTML = `<span>${f.name}</span><span class="count green">${f.count} CARDS</span>`;
-      fl1.appendChild(div);
+    listingFileInfo.forEach(f => {
+      fl1.innerHTML += `<div class="file-item"><span>${f.name}</span><span class="count green">${f.count} CARDS</span></div>`;
     });
 
-    // File list 2
     fl2.innerHTML = '';
-    if (ebayFile) {
-      const div = document.createElement('div');
-      div.className = 'file-item';
-      div.innerHTML = `<span>${ebayFile.name}</span><span class="count yellow">${ebayFile.count} ITEM IDS</span>`;
-      fl2.appendChild(div);
+    if (ebayFileInfo) {
+      fl2.innerHTML = `<div class="file-item"><span>${ebayFileInfo.name}</span><span class="count yellow">${ebayFileInfo.count} LISTINGS WITH ITEM IDS</span></div>`;
     }
 
-    const hasProducts = listingProducts.length > 0;
-    generateBtn.disabled = !hasProducts;
-    clearBtn.disabled = !hasProducts && !ebayFile;
+    const has = listingItems.length > 0;
+    genBtn.disabled = !has;
+    clearBtn.disabled = !has && !ebayFileInfo;
 
-    // Preview
-    if (hasProducts) {
-      const final = buildFinalProducts();
-      previewSection.style.display = 'block';
-      previewCount.textContent = final.length + ' CARDS';
-      previewGrid.innerHTML = '';
+    if (has) {
+      const products = buildProducts();
+      const linked = products.filter(p => p.url.includes('/itm/')).length;
+      const unlinked = products.length - linked;
 
-      const linked = final.filter(p => p.url.includes('/itm/')).length;
-      const noImg = final.filter(p => !p.img).length;
-      previewCount.textContent = `${final.length} CARDS · ${linked} LINKED · ${final.length - linked} STORE ONLY`;
+      previewArea.style.display = 'block';
+      prevCount.textContent = products.length + ' CARDS';
 
-      final.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'preview-card';
+      if (ebayItems.length > 0) {
+        matchStats.innerHTML = `MATCHED: <span class="g">${linked} LINKED</span> · <span class="r">${unlinked} UNMATCHED</span> (OUT OF ${products.length})`;
+      } else {
+        matchStats.innerHTML = 'DROP YOUR EBAY EXPORT IN STEP 2 TO ADD DIRECT LINKS';
+      }
+
+      prevGrid.innerHTML = '';
+      products.forEach(p => {
         const hasLink = p.url.includes('/itm/');
-
-        let imgHtml = p.img
+        const imgHtml = p.img
           ? `<img src="${p.img}" alt="${p.name}" onerror="this.style.background='#333'">`
           : `<div class="no-img">${p.name}</div>`;
 
-        let linkStatus = hasLink
-          ? '<div class="purl linked">✓ DIRECT LINK</div>'
-          : '<div class="purl nolink">→ STORE LINK</div>';
-
-        if (!p.img) linkStatus += '<div class="purl noimg">⚠ NO IMAGE</div>';
-
-        card.innerHTML = `${imgHtml}<div class="info"><div class="pname">${p.name}</div><div class="pprice">${p.price}</div><div class="pgame">${p.game}</div>${linkStatus}</div>`;
-        previewGrid.appendChild(card);
+        prevGrid.innerHTML += `
+          <div class="preview-card">
+            ${imgHtml}
+            <div class="info">
+              <div class="pname">${p.name}</div>
+              <div class="pprice">${p.price}</div>
+              <div class="pgame">${p.game}</div>
+              <div class="purl ${hasLink ? 'linked' : 'nolink'}">${hasLink ? '✓ DIRECT LINK' : '✗ NO MATCH — STORE LINK'}</div>
+            </div>
+          </div>`;
       });
     } else {
-      previewSection.style.display = 'none';
+      previewArea.style.display = 'none';
     }
   }
 
   // ── GENERATE ──
-  generateBtn.addEventListener('click', () => {
-    const final = buildFinalProducts();
-    const json = JSON.stringify(final, null, 2);
-    const content = 'const PRODUCTS = ' + json + ';\n';
+  genBtn.addEventListener('click', () => {
+    const products = buildProducts();
+    const js = 'const PRODUCTS = ' + JSON.stringify(products, null, 2) + ';\n';
 
-    const blob = new Blob([content], { type: 'text/javascript' });
-    const url = URL.createObjectURL(blob);
+    const blob = new Blob([js], { type: 'text/javascript' });
     const a = document.createElement('a');
-    a.href = url;
+    a.href = URL.createObjectURL(blob);
     a.download = 'products.js';
     a.click();
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(a.href);
 
     statusEl.className = 'status success';
     statusEl.textContent = '✓ PRODUCTS.JS DOWNLOADED — UPLOAD IT TO YOUR GITHUB REPO';
@@ -417,15 +318,36 @@
 
   // ── CLEAR ──
   clearBtn.addEventListener('click', () => {
-    listingProducts = [];
-    listingFiles = [];
-    ebayMap = {};
-    ebayFile = null;
-    fi1.value = '';
-    fi2.value = '';
-    statusEl.innerHTML = '';
-    updateUI();
+    listingItems = []; listingFileInfo = []; ebayItems = []; ebayFileInfo = null;
+    fi1.value = ''; fi2.value = ''; statusEl.innerHTML = '';
+    refresh();
   });
+
+  // ── CSV PARSER ──
+  function csvParse(text) {
+    const rows = []; let cur = []; let field = ''; let q = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (q) {
+        if (c === '"') { if (text[i+1] === '"') { field += '"'; i++; } else q = false; }
+        else field += c;
+      } else {
+        if (c === '"') q = true;
+        else if (c === ',') { cur.push(field); field = ''; }
+        else if (c === '\n' || c === '\r') {
+          if (c === '\r' && text[i+1] === '\n') i++;
+          cur.push(field); field = '';
+          if (cur.length > 1) rows.push(cur);
+          cur = [];
+        } else field += c;
+      }
+    }
+    cur.push(field);
+    if (cur.length > 1) rows.push(cur);
+    return rows;
+  }
+
+  function s(v) { return (v || '').replace(/^[\s"'\ufeff]+|[\s"']+$/g, ''); }
 </script>
 </body>
 </html>

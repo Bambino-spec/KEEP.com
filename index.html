@@ -312,7 +312,11 @@
             return g.includes('psa') || n.includes('psa');
           });
         } else {
-          items = items.filter(p => p.game === currentCat);
+          items = items.filter(p => {
+            const g = (p.game || '').toLowerCase();
+            const cat = currentCat.toLowerCase();
+            return g.includes(cat) || g === cat;
+          });
         }
       }
 

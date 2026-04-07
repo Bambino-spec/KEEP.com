@@ -11,239 +11,271 @@
   :root { --black: #0a0a0a; --white: #f8f8f8; --gray: #888; }
   html { scroll-behavior: smooth; }
   body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-  .announcement { background: var(--black); color: var(--white); text-align: center; padding: 10px 20px; font-size: 13px; font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase; }
-  header { display: flex; justify-content: center; align-items: center; padding: 50px 20px 10px; }
-  .logo { font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(64px, 12vw, 120px); letter-spacing: -2px; line-height: 1; color: var(--black); text-transform: uppercase; }
-  .hero { text-align: center; padding: 40px 20px 50px; }
+
+  /* ── BANNER ── */
+  .announcement {
+    background: var(--black); color: var(--white); text-align: center;
+    padding: 10px 20px; font-size: 12px; font-weight: 400;
+    letter-spacing: 1.2px; text-transform: uppercase;
+  }
+  .announcement a { color: var(--white); text-decoration: underline; text-underline-offset: 2px; transition: opacity 0.3s; }
+  .announcement a:hover { opacity: 0.6; }
+  .announcement .sep { margin: 0 8px; opacity: 0.4; }
+
+  /* ── HEADER ── */
+  header { display: flex; justify-content: center; align-items: center; padding: 40px 20px 10px; }
+  .logo-img { max-width: clamp(200px, 40vw, 400px); height: auto; }
+
+  /* ── HERO ── */
+  .hero { text-align: center; padding: 30px 20px 50px; }
   .hero-sub { font-size: clamp(12px, 2vw, 15px); font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); margin-bottom: 35px; }
   .hero-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(16px, 3vw, 24px); line-height: 1.5; letter-spacing: 2px; text-transform: uppercase; color: var(--black); margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; }
   .shop-link { display: inline-block; font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(14px, 2.5vw, 18px); letter-spacing: 2px; text-transform: uppercase; color: var(--black); text-decoration: none; border: 2px solid var(--black); padding: 16px 50px; transition: all 0.4s; }
   .shop-link:hover { background: var(--black); color: var(--white); }
 
+  /* ── CAROUSEL SECTION ── */
   .carousel-section { padding: 60px 0 20px; overflow: hidden; position: relative; border-top: 1px solid #e0e0e0; }
-  .carousel-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); text-align: center; margin-bottom: 30px; }
+  .carousel-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); text-align: center; margin-bottom: 24px; }
+
   .carousel-section::before, .carousel-section::after { content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none; }
   .carousel-section::before { left: 0; background: linear-gradient(to right, var(--white), transparent); }
   .carousel-section::after { right: 0; background: linear-gradient(to left, var(--white), transparent); }
 
   .carousel-track {
-    display: flex;
-    gap: 20px;
-    width: max-content;
-    animation: scroll var(--scroll-duration, 60s) linear infinite;
-    cursor: grab;
-    user-select: none;
-    -webkit-user-select: none;
+    display: flex; gap: 20px; width: max-content;
+    cursor: grab; user-select: none; -webkit-user-select: none;
+    margin-bottom: 20px;
   }
-  .carousel-track.dragging {
-    animation-play-state: paused;
-    cursor: grabbing;
-  }
-  .carousel-track:hover { animation-play-state: paused; }
+  .carousel-track.dragging { cursor: grabbing; }
 
-  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-  .card { flex-shrink: 0; width: 180px; text-decoration: none; color: var(--black); transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; pointer-events: auto; }
+  .card { flex-shrink: 0; width: 160px; text-decoration: none; color: var(--black); transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; }
   .card:hover { transform: translateY(-8px) scale(1.03); }
-  .card.no-click { pointer-events: none; }
-  .card-img { width: 180px; height: 252px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); transition: box-shadow 0.35s; background: #ececec; pointer-events: none; }
+  .card-img { width: 160px; height: 224px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); transition: box-shadow 0.35s; background: #ececec; pointer-events: none; }
   .card:hover .card-img { box-shadow: 0 12px 36px rgba(0,0,0,0.18); }
-  .card-name { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 10px; line-height: 1.3; padding: 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
-  .card-price { font-size: 12px; font-weight: 800; margin-top: 4px; pointer-events: none; }
-  .card-game { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin-top: 3px; pointer-events: none; }
+  .card-name { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 8px; line-height: 1.3; padding: 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+  .card-price { font-size: 11px; font-weight: 800; margin-top: 3px; pointer-events: none; }
+  .card-game { font-size: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin-top: 2px; pointer-events: none; }
 
+  /* ── CTA ── */
   .cta { text-align: center; padding: 40px 20px 60px; }
   .cta-text { font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 20px; }
+
+  /* ── FOOTER ── */
   footer { text-align: center; padding: 40px 20px 30px; border-top: 1px solid #e0e0e0; }
-  .footer-logo { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -1px; margin-bottom: 12px; }
+  .footer-logo { max-width: 120px; height: auto; margin-bottom: 12px; }
   .footer-text { font-size: 12px; color: var(--gray); letter-spacing: 1px; text-transform: uppercase; }
+
   .fade-in { opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s ease forwards; }
   .fade-in-1 { animation-delay: 0.1s; } .fade-in-2 { animation-delay: 0.25s; } .fade-in-3 { animation-delay: 0.4s; } .fade-in-4 { animation-delay: 0.55s; }
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-  @media (max-width: 600px) { .card { width: 150px; } .card-img { width: 150px; height: 210px; } }
+
+  @media (max-width: 600px) {
+    .card { width: 130px; }
+    .card-img { width: 130px; height: 182px; }
+    .announcement { font-size: 10px; letter-spacing: 0.8px; }
+  }
 </style>
 </head>
 <body>
-  <div class="announcement">WELCOME TO OUR STORE</div>
-  <header><div class="logo fade-in fade-in-1">KEEP.</div></header>
+
+  <div class="announcement">
+    WE ARE BUYING STUFF YOU DO NOT WANT TO KEEP.
+    <span class="sep">|</span>
+    <a href="mailto:keeptcg.store@gmail.com">EMAIL US</a>
+    <span class="sep">|</span>
+    <a href="https://www.instagram.com/keep.tcg/?hl=en" target="_blank">INSTAGRAM</a>
+  </div>
+
+  <header>
+    <img src="LOGO1white.svg" alt="KEEP." class="logo-img fade-in fade-in-1">
+  </header>
+
   <section class="hero">
     <p class="hero-sub fade-in fade-in-2">SOMETHING TO KEEP.</p>
     <h1 class="hero-title fade-in fade-in-3">ONE PIECE TCG. POKEMON TCG. MAGIC THE GATHERING. AND MORE.</h1>
     <a class="shop-link fade-in fade-in-4" href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">SHOP ON EBAY →</a>
   </section>
+
   <section class="carousel-section">
     <p class="carousel-label">FIND THESE AND MORE ON OUR EBAY STORE</p>
-    <div class="carousel-track" id="carouselTrack"></div>
+    <div class="carousel-track" id="track1"></div>
+    <div class="carousel-track" id="track2"></div>
   </section>
+
   <section class="cta">
     <p class="cta-text" id="ctaCount">CARDS AVAILABLE NOW</p>
     <a class="shop-link" href="https://www.ebay.com.au/usr/keep.tcg" target="_blank">BROWSE ALL ON EBAY →</a>
   </section>
+
   <footer>
-    <div class="footer-logo">KEEP.</div>
+    <img src="LOGO1white.svg" alt="KEEP." class="footer-logo">
     <p class="footer-text">© 2026 KEEP. ALL RIGHTS RESERVED.</p>
   </footer>
 
   <script src="products.js"></script>
   <script>
+    // ── SHUFFLE ──
     function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+        [a[i], a[j]] = [a[j], a[i]];
       }
-      return arr;
+      return a;
     }
 
-    const track = document.getElementById('carouselTrack');
-    const ctaCount = document.getElementById('ctaCount');
-    const shuffled = shuffle([...PRODUCTS]);
-    const allCards = [...shuffled, ...shuffled];
+    // ── SPLIT PRODUCTS INTO TWO ROWS ──
+    const shuffled = shuffle(PRODUCTS);
+    const half = Math.ceil(shuffled.length / 2);
+    const row1Data = shuffled.slice(0, half);
+    const row2Data = shuffled.slice(half);
 
-    ctaCount.textContent = PRODUCTS.length + ' CARDS AVAILABLE NOW';
+    document.getElementById('ctaCount').textContent = PRODUCTS.length + ' CARDS AVAILABLE NOW';
 
-    const cardWidth = 200;
-    const totalWidth = shuffled.length * cardWidth;
-    const duration = totalWidth / 40;
-    track.style.setProperty('--scroll-duration', duration + 's');
+    // ── BUILD A CAROUSEL ROW ──
+    function buildRow(trackEl, data, direction) {
+      // Double up for seamless loop
+      const cards = [...data, ...data];
 
-    allCards.forEach(product => {
-      const card = document.createElement('a');
-      card.className = 'card';
-      card.href = product.url || 'https://www.ebay.com.au/usr/keep.tcg';
-      card.target = '_blank';
+      cards.forEach(product => {
+        const card = document.createElement('a');
+        card.className = 'card';
+        card.href = product.url || 'https://www.ebay.com.au/usr/keep.tcg';
+        card.target = '_blank';
 
-      const img = document.createElement('img');
-      img.className = 'card-img';
-      img.alt = product.name;
-      img.loading = 'lazy';
-      img.src = product.img;
+        const img = document.createElement('img');
+        img.className = 'card-img';
+        img.alt = product.name;
+        img.loading = 'lazy';
+        img.src = product.img;
 
-      const name = document.createElement('div');
-      name.className = 'card-name';
-      name.textContent = product.name;
+        const name = document.createElement('div');
+        name.className = 'card-name';
+        name.textContent = product.name;
 
-      const price = document.createElement('div');
-      price.className = 'card-price';
-      price.textContent = product.price;
+        const price = document.createElement('div');
+        price.className = 'card-price';
+        price.textContent = product.price;
 
-      const game = document.createElement('div');
-      game.className = 'card-game';
-      game.textContent = product.game;
+        const game = document.createElement('div');
+        game.className = 'card-game';
+        game.textContent = product.game;
 
-      card.appendChild(img);
-      card.appendChild(name);
-      card.appendChild(price);
-      card.appendChild(game);
-      track.appendChild(card);
-    });
+        card.appendChild(img);
+        card.appendChild(name);
+        card.appendChild(price);
+        card.appendChild(game);
+        trackEl.appendChild(card);
+      });
 
-    // ── DRAG TO SCRUB ──
-    let isDragging = false;
-    let startX = 0;
-    let scrollStart = 0;
-    let currentOffset = 0;
-    let dragDistance = 0;
-    let autoScrollOffset = 0;
-    let animationStopped = false;
-    let rafId = null;
-    const halfWidth = totalWidth;
+      // ── AUTO SCROLL ──
+      const cardW = 180; // card width + gap
+      const totalW = data.length * cardW;
+      const speed = direction === 'left' ? 35 : 30; // slightly different speeds
+      const dur = totalW / speed;
 
-    // Get the current translateX from the animation
-    function getCurrentTranslateX() {
-      const style = window.getComputedStyle(track);
-      const matrix = new DOMMatrix(style.transform);
-      return matrix.m41;
-    }
+      // Use CSS animation
+      const animName = direction === 'left' ? 'scrollLeft' : 'scrollRight';
+      const keyframes = direction === 'left'
+        ? `@keyframes ${animName} { 0% { transform: translateX(0); } 100% { transform: translateX(-${totalW}px); } }`
+        : `@keyframes ${animName} { 0% { transform: translateX(-${totalW}px); } 100% { transform: translateX(0); } }`;
 
-    function stopAutoScroll() {
-      if (!animationStopped) {
-        currentOffset = getCurrentTranslateX();
-        track.style.animation = 'none';
-        track.style.transform = `translateX(${currentOffset}px)`;
-        animationStopped = true;
+      const style = document.createElement('style');
+      style.textContent = keyframes;
+      document.head.appendChild(style);
+
+      trackEl.style.animation = `${animName} ${dur}s linear infinite`;
+
+      // ── DRAG TO SCRUB ──
+      let isDragging = false;
+      let startX = 0;
+      let scrollStart = 0;
+      let currentOffset = 0;
+      let dragDistance = 0;
+      let animStopped = false;
+
+      function getCurrentX() {
+        const m = new DOMMatrix(getComputedStyle(trackEl).transform);
+        return m.m41;
       }
-    }
 
-    function resumeAutoScroll() {
-      // Normalize offset to stay within bounds
-      currentOffset = currentOffset % halfWidth;
-      if (currentOffset > 0) currentOffset -= halfWidth;
-
-      // Calculate what percentage through the animation we are
-      const progress = Math.abs(currentOffset) / halfWidth;
-
-      track.style.transform = '';
-      track.style.animation = `scroll ${duration}s linear infinite`;
-      track.style.animationDelay = `-${progress * duration}s`;
-      animationStopped = false;
-    }
-
-    // Mouse events
-    track.addEventListener('mousedown', e => {
-      isDragging = true;
-      dragDistance = 0;
-      startX = e.clientX;
-      stopAutoScroll();
-      scrollStart = currentOffset;
-      track.classList.add('dragging');
-      e.preventDefault();
-    });
-
-    window.addEventListener('mousemove', e => {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      dragDistance = Math.abs(dx);
-      currentOffset = scrollStart + dx;
-      // Wrap around
-      if (currentOffset > 0) currentOffset -= halfWidth;
-      if (currentOffset < -halfWidth) currentOffset += halfWidth;
-      track.style.transform = `translateX(${currentOffset}px)`;
-    });
-
-    window.addEventListener('mouseup', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      track.classList.remove('dragging');
-      resumeAutoScroll();
-    });
-
-    // Prevent clicks after dragging
-    track.addEventListener('click', e => {
-      if (dragDistance > 5) {
-        e.preventDefault();
-        e.stopPropagation();
+      function stopAnim() {
+        if (!animStopped) {
+          currentOffset = getCurrentX();
+          trackEl.style.animation = 'none';
+          trackEl.style.transform = `translateX(${currentOffset}px)`;
+          animStopped = true;
+        }
       }
-    }, true);
 
-    // Touch events
-    let touchStartX = 0;
-    let touchDragDistance = 0;
+      function resumeAnim() {
+        currentOffset = currentOffset % totalW;
+        if (direction === 'left') {
+          if (currentOffset > 0) currentOffset -= totalW;
+          const progress = Math.abs(currentOffset) / totalW;
+          trackEl.style.transform = '';
+          trackEl.style.animation = `${animName} ${dur}s linear infinite`;
+          trackEl.style.animationDelay = `-${progress * dur}s`;
+        } else {
+          if (currentOffset < -totalW) currentOffset += totalW;
+          if (currentOffset > 0) currentOffset -= totalW;
+          const progress = (totalW + currentOffset) / totalW;
+          trackEl.style.transform = '';
+          trackEl.style.animation = `${animName} ${dur}s linear infinite`;
+          trackEl.style.animationDelay = `-${progress * dur}s`;
+        }
+        animStopped = false;
+      }
 
-    track.addEventListener('touchstart', e => {
-      isDragging = true;
-      touchDragDistance = 0;
-      touchStartX = e.touches[0].clientX;
-      stopAutoScroll();
-      scrollStart = currentOffset;
-      track.classList.add('dragging');
-    }, { passive: true });
+      // Mouse
+      trackEl.addEventListener('mousedown', e => {
+        isDragging = true; dragDistance = 0; startX = e.clientX;
+        stopAnim(); scrollStart = currentOffset;
+        trackEl.classList.add('dragging'); e.preventDefault();
+      });
+      window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX; dragDistance = Math.abs(dx);
+        currentOffset = scrollStart + dx;
+        if (currentOffset > 0) currentOffset -= totalW;
+        if (currentOffset < -totalW) currentOffset += totalW;
+        trackEl.style.transform = `translateX(${currentOffset}px)`;
+      });
+      window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false; trackEl.classList.remove('dragging');
+        resumeAnim();
+      });
+      trackEl.addEventListener('click', e => { if (dragDistance > 5) { e.preventDefault(); e.stopPropagation(); } }, true);
 
-    track.addEventListener('touchmove', e => {
-      if (!isDragging) return;
-      const dx = e.touches[0].clientX - touchStartX;
-      touchDragDistance = Math.abs(dx);
-      currentOffset = scrollStart + dx;
-      if (currentOffset > 0) currentOffset -= halfWidth;
-      if (currentOffset < -halfWidth) currentOffset += halfWidth;
-      track.style.transform = `translateX(${currentOffset}px)`;
-    }, { passive: true });
+      // Touch
+      let touchStartX = 0;
+      trackEl.addEventListener('touchstart', e => {
+        isDragging = true; dragDistance = 0; touchStartX = e.touches[0].clientX;
+        stopAnim(); scrollStart = currentOffset; trackEl.classList.add('dragging');
+      }, { passive: true });
+      trackEl.addEventListener('touchmove', e => {
+        if (!isDragging) return;
+        const dx = e.touches[0].clientX - touchStartX; dragDistance = Math.abs(dx);
+        currentOffset = scrollStart + dx;
+        if (currentOffset > 0) currentOffset -= totalW;
+        if (currentOffset < -totalW) currentOffset += totalW;
+        trackEl.style.transform = `translateX(${currentOffset}px)`;
+      }, { passive: true });
+      trackEl.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        isDragging = false; trackEl.classList.remove('dragging');
+        resumeAnim();
+      });
 
-    track.addEventListener('touchend', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      track.classList.remove('dragging');
-      resumeAutoScroll();
-    });
+      // Pause on hover (non-drag)
+      trackEl.addEventListener('mouseenter', () => { if (!isDragging) stopAnim(); });
+      trackEl.addEventListener('mouseleave', () => { if (!isDragging) resumeAnim(); });
+    }
+
+    // Build both rows — opposite directions for visual interest
+    buildRow(document.getElementById('track1'), row1Data, 'left');
+    buildRow(document.getElementById('track2'), row2Data, 'right');
   </script>
 </body>
 </html>

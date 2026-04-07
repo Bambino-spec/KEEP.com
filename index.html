@@ -132,7 +132,7 @@
     <button class="cat-btn" data-cat="MTG">MAGIC: THE GATHERING.</button>
     <button class="cat-btn" data-cat="Dragon Ball">DRAGON BALL.</button>
     <button class="cat-btn" data-cat="Gundam">GUNDAM.</button>
-    <button class="cat-btn" data-cat="Graded">GRADED CARDS.</button>
+    <button class="cat-btn" data-cat="PSA">PSA.</button>
   </div>
 
   <div class="sort-bar" id="sortBar" style="display:none;">
@@ -305,12 +305,11 @@
       let items = [...PRODUCTS];
 
       if (currentCat !== 'ALL') {
-        if (currentCat === 'Graded') {
-          const graders = ['psa', 'cgc', 'bgs', 'tag', 'ace', 'graded', 'beckett'];
+        if (currentCat === 'PSA') {
           items = items.filter(p => {
             const g = (p.game || '').toLowerCase();
             const n = (p.name || '').toLowerCase();
-            return graders.some(gr => g.includes(gr) || n.includes(gr));
+            return g.includes('psa') || n.includes('psa');
           });
         } else {
           items = items.filter(p => p.game === currentCat);

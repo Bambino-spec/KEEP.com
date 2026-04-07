@@ -19,21 +19,39 @@
   .hero-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(16px, 3vw, 24px); line-height: 1.5; letter-spacing: 2px; text-transform: uppercase; color: var(--black); margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; }
   .shop-link { display: inline-block; font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(14px, 2.5vw, 18px); letter-spacing: 2px; text-transform: uppercase; color: var(--black); text-decoration: none; border: 2px solid var(--black); padding: 16px 50px; transition: all 0.4s; }
   .shop-link:hover { background: var(--black); color: var(--white); }
+
   .carousel-section { padding: 60px 0 20px; overflow: hidden; position: relative; border-top: 1px solid #e0e0e0; }
   .carousel-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); text-align: center; margin-bottom: 30px; }
   .carousel-section::before, .carousel-section::after { content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none; }
   .carousel-section::before { left: 0; background: linear-gradient(to right, var(--white), transparent); }
   .carousel-section::after { right: 0; background: linear-gradient(to left, var(--white), transparent); }
-  .carousel-track { display: flex; gap: 20px; width: max-content; animation: scroll var(--scroll-duration, 60s) linear infinite; }
+
+  .carousel-track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    animation: scroll var(--scroll-duration, 60s) linear infinite;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .carousel-track.dragging {
+    animation-play-state: paused;
+    cursor: grabbing;
+  }
   .carousel-track:hover { animation-play-state: paused; }
+
   @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-  .card { flex-shrink: 0; width: 180px; text-decoration: none; color: var(--black); transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; }
+
+  .card { flex-shrink: 0; width: 180px; text-decoration: none; color: var(--black); transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; pointer-events: auto; }
   .card:hover { transform: translateY(-8px) scale(1.03); }
-  .card-img { width: 180px; height: 252px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); transition: box-shadow 0.35s; background: #ececec; }
+  .card.no-click { pointer-events: none; }
+  .card-img { width: 180px; height: 252px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); transition: box-shadow 0.35s; background: #ececec; pointer-events: none; }
   .card:hover .card-img { box-shadow: 0 12px 36px rgba(0,0,0,0.18); }
-  .card-name { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 10px; line-height: 1.3; padding: 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-price { font-size: 12px; font-weight: 800; margin-top: 4px; }
-  .card-game { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin-top: 3px; }
+  .card-name { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 10px; line-height: 1.3; padding: 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+  .card-price { font-size: 12px; font-weight: 800; margin-top: 4px; pointer-events: none; }
+  .card-game { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin-top: 3px; pointer-events: none; }
+
   .cta { text-align: center; padding: 40px 20px 60px; }
   .cta-text { font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 20px; }
   footer { text-align: center; padding: 40px 20px 30px; border-top: 1px solid #e0e0e0; }
@@ -66,7 +84,6 @@
     <p class="footer-text">© 2026 KEEP. ALL RIGHTS RESERVED.</p>
   </footer>
 
-  <!-- Products loaded from separate file -->
   <script src="products.js"></script>
   <script>
     function shuffle(arr) {
@@ -118,6 +135,114 @@
       card.appendChild(price);
       card.appendChild(game);
       track.appendChild(card);
+    });
+
+    // ── DRAG TO SCRUB ──
+    let isDragging = false;
+    let startX = 0;
+    let scrollStart = 0;
+    let currentOffset = 0;
+    let dragDistance = 0;
+    let autoScrollOffset = 0;
+    let animationStopped = false;
+    let rafId = null;
+    const halfWidth = totalWidth;
+
+    // Get the current translateX from the animation
+    function getCurrentTranslateX() {
+      const style = window.getComputedStyle(track);
+      const matrix = new DOMMatrix(style.transform);
+      return matrix.m41;
+    }
+
+    function stopAutoScroll() {
+      if (!animationStopped) {
+        currentOffset = getCurrentTranslateX();
+        track.style.animation = 'none';
+        track.style.transform = `translateX(${currentOffset}px)`;
+        animationStopped = true;
+      }
+    }
+
+    function resumeAutoScroll() {
+      // Normalize offset to stay within bounds
+      currentOffset = currentOffset % halfWidth;
+      if (currentOffset > 0) currentOffset -= halfWidth;
+
+      // Calculate what percentage through the animation we are
+      const progress = Math.abs(currentOffset) / halfWidth;
+
+      track.style.transform = '';
+      track.style.animation = `scroll ${duration}s linear infinite`;
+      track.style.animationDelay = `-${progress * duration}s`;
+      animationStopped = false;
+    }
+
+    // Mouse events
+    track.addEventListener('mousedown', e => {
+      isDragging = true;
+      dragDistance = 0;
+      startX = e.clientX;
+      stopAutoScroll();
+      scrollStart = currentOffset;
+      track.classList.add('dragging');
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      dragDistance = Math.abs(dx);
+      currentOffset = scrollStart + dx;
+      // Wrap around
+      if (currentOffset > 0) currentOffset -= halfWidth;
+      if (currentOffset < -halfWidth) currentOffset += halfWidth;
+      track.style.transform = `translateX(${currentOffset}px)`;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.classList.remove('dragging');
+      resumeAutoScroll();
+    });
+
+    // Prevent clicks after dragging
+    track.addEventListener('click', e => {
+      if (dragDistance > 5) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    // Touch events
+    let touchStartX = 0;
+    let touchDragDistance = 0;
+
+    track.addEventListener('touchstart', e => {
+      isDragging = true;
+      touchDragDistance = 0;
+      touchStartX = e.touches[0].clientX;
+      stopAutoScroll();
+      scrollStart = currentOffset;
+      track.classList.add('dragging');
+    }, { passive: true });
+
+    track.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      const dx = e.touches[0].clientX - touchStartX;
+      touchDragDistance = Math.abs(dx);
+      currentOffset = scrollStart + dx;
+      if (currentOffset > 0) currentOffset -= halfWidth;
+      if (currentOffset < -halfWidth) currentOffset += halfWidth;
+      track.style.transform = `translateX(${currentOffset}px)`;
+    }, { passive: true });
+
+    track.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.classList.remove('dragging');
+      resumeAutoScroll();
     });
   </script>
 </body>

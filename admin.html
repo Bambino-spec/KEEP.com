@@ -175,6 +175,12 @@
     const iPrice = h.findIndex(c => c.includes('StartPrice'));
     const iGame = h.findIndex(c => c.includes('C:Game'));
 
+    // Reject if this doesn't look like a listing CSV (missing PicURL or StartPrice)
+    if (iPic === -1 || iPrice === -1) {
+      alert('This CSV doesn\'t look like a listing CSV — it\'s missing PicURL or StartPrice columns. If this is your eBay export, drop it in Step 2 instead.');
+      return [];
+    }
+
     const out = [];
     for (let i = 1; i < rows.length; i++) {
       const r = rows[i];
@@ -216,7 +222,17 @@
       ebayMap[e.title.toLowerCase().trim()] = e.itemNumber;
     });
 
-    return listingItems.map(item => {
+    // Deduplicate listing items by title (keep first occurrence)
+    const seen = new Set();
+    const unique = [];
+    for (const item of listingItems) {
+      const key = item.fullTitle.toLowerCase().trim();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      unique.push(item);
+    }
+
+    return unique.map(item => {
       // Try to find matching eBay item number by exact title
       const key = item.fullTitle.toLowerCase().trim();
       const itemNumber = ebayMap[key] || '';

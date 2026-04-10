@@ -51,7 +51,7 @@
   }
   .carousel-track.dragging { cursor: grabbing; }
   .carousel-track .card { width: 160px; }
-  .carousel-track .card-img { width: 160px; height: 224px; }
+  .carousel-track .card-img { width: 160px; height: 224px; min-height: 224px; aspect-ratio: 5/7; }
 
   /* ── GRID ── */
   .grid-section { padding: 10px 20px 30px; max-width: 1200px; margin: 0 auto; border-top: 1px solid var(--light); }
@@ -88,7 +88,7 @@
     .cat-btn { padding: 8px 12px; font-size: 9px; letter-spacing: 1px; }
     .announcement { font-size: 10px; letter-spacing: 0.8px; }
     .carousel-track .card { width: 130px; }
-    .carousel-track .card-img { width: 130px; height: 182px; }
+    .carousel-track .card-img { width: 130px; height: 182px; min-height: 182px; }
   }
 </style>
 </head>
@@ -184,7 +184,7 @@
       return m ? parseFloat(m[0]) : 0;
     }
 
-    function makeCard(product) {
+    function makeCard(product, isCarousel) {
       const card = document.createElement('a');
       card.className = 'card';
       card.href = product.url || 'https://www.ebay.com.au/usr/keep.tcg';
@@ -194,15 +194,28 @@
         const img = document.createElement('img');
         img.className = 'card-img';
         img.alt = product.name;
-        img.referrerPolicy = 'no-referrer';
         img.src = product.img;
-        img.onerror = function() {
-          this.style.display = 'none';
-          const ph = document.createElement('div');
-          ph.className = 'card-placeholder';
-          ph.textContent = product.name;
-          card.insertBefore(ph, card.firstChild);
-        };
+
+        if (isCarousel) {
+          // In carousel: retry on error instead of showing placeholder
+          // CORB can falsely trigger onerror even for valid images
+          let retries = 0;
+          img.onerror = function() {
+            if (retries < 3) {
+              retries++;
+              setTimeout(() => { this.src = product.img + '?r=' + retries; }, retries * 500);
+            }
+          };
+        } else {
+          // In grid: show placeholder on error
+          img.onerror = function() {
+            this.style.display = 'none';
+            const ph = document.createElement('div');
+            ph.className = 'card-placeholder';
+            ph.textContent = product.name;
+            card.insertBefore(ph, card.firstChild);
+          };
+        }
         card.appendChild(img);
       } else {
         const ph = document.createElement('div');
@@ -250,7 +263,7 @@
 
       // Double up for seamless loop
       const cards = [...data, ...data];
-      cards.forEach(p => trackEl.appendChild(makeCard(p)));
+      cards.forEach(p => trackEl.appendChild(makeCard(p, true)));
 
       const cardW = 180; // card + gap
       const halfW = data.length * cardW;
@@ -391,7 +404,7 @@
       gridLabel.textContent = (currentCat === 'ALL' ? 'ALL' : currentCat.toUpperCase()) + ' — ' + items.length + ' CARDS';
 
       items.forEach((p, i) => {
-        const card = makeCard(p);
+        const card = makeCard(p, false);
         card.style.opacity = '0';
         card.style.transform = 'translateY(12px)';
         card.style.animation = `fadeUp 0.35s ease forwards ${i * 0.025}s`;

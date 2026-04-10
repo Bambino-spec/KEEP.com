@@ -168,7 +168,10 @@
     const sortBar = document.getElementById('sortBar');
     const catTabs = document.getElementById('categoryTabs');
 
-    ctaCount.textContent = PRODUCTS.length + ' CARDS AVAILABLE NOW';
+    // Filter out incomplete entries (duplicates from admin page with no image/price)
+    const VALID_PRODUCTS = PRODUCTS.filter(p => p.img && p.img.length > 5 && p.price);
+
+    ctaCount.textContent = VALID_PRODUCTS.length + ' CARDS AVAILABLE NOW';
 
     function shuffle(arr) {
       const a = [...arr];
@@ -252,7 +255,7 @@
       carouselInstances.forEach(c => cancelAnimationFrame(c.rafId));
       carouselInstances.length = 0;
 
-      const shuffled = shuffle(PRODUCTS);
+      const shuffled = shuffle(VALID_PRODUCTS);
       const half = Math.ceil(shuffled.length / 2);
       buildCarouselRow(document.getElementById('track1'), shuffled.slice(0, half), 0.6);
       buildCarouselRow(document.getElementById('track2'), shuffled.slice(half), -0.5);
@@ -367,7 +370,7 @@
     // GRID
     // ══════════════════════════════════════
     function renderGrid() {
-      let items = [...PRODUCTS];
+      let items = [...VALID_PRODUCTS];
 
       if (currentCat !== 'ALL') {
         if (currentCat === 'PSA') {

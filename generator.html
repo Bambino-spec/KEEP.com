@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>KEEP. — IMAGE GENERATOR</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,40 +15,43 @@
     --white: #fff; --gray: #888; --dim: #555;
     --font: 'Inter', sans-serif;
   }
-  body { background: var(--bg); color: var(--white); font-family: var(--font); min-height: 100vh; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { background: var(--bg); color: var(--white); font-family: var(--font); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
   .header {
-    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 12px; position: sticky; top: 0; background: var(--bg); z-index: 50;
+    flex-wrap: wrap; gap: 10px; position: sticky; top: 0; background: var(--bg); z-index: 50;
   }
-  .header h1 { font-size: 24px; letter-spacing: 2px; font-weight: 800; }
+  .header h1 { font-size: 22px; letter-spacing: 2px; font-weight: 800; }
   .header .sub { color: var(--dim); font-size: 10px; font-family: monospace; font-weight: 400; margin-top: 2px; }
   .header-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1; justify-content: flex-end; }
   .search-input {
     background: #111; border: 1px solid var(--border); border-radius: 4px;
-    color: var(--white); padding: 8px 14px; font-family: monospace;
-    font-size: 12px; outline: none; width: 220px; max-width: 40%;
+    color: var(--white); padding: 10px 14px; font-family: monospace;
+    font-size: 14px; outline: none; flex: 1; min-width: 100px; max-width: 240px;
   }
   .search-input:focus { border-color: var(--border-light); }
   .filter-select {
     background: #111; border: 1px solid var(--border); border-radius: 4px;
-    color: var(--white); padding: 8px 12px; font-family: monospace;
-    font-size: 12px; outline: none; cursor: pointer;
+    color: var(--white); padding: 10px 12px; font-family: monospace;
+    font-size: 14px; outline: none; cursor: pointer;
     -webkit-appearance: none; appearance: none; padding-right: 28px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 8px center;
   }
   .filter-select option { background: #111; }
-  .count { color: var(--dim); font-size: 11px; font-family: monospace; }
+  .count { color: var(--dim); font-size: 11px; font-family: monospace; white-space: nowrap; }
   .grid {
-    padding: 20px 24px;
+    padding: 12px;
     display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px;
   }
   .product-card {
     background: var(--card); border: 1px solid var(--border); border-radius: 6px;
     cursor: pointer; transition: all 0.15s; overflow: hidden;
+    -webkit-touch-callout: none; user-select: none;
   }
-  .product-card:hover { background: var(--card-hover); border-color: var(--border-light); transform: translateY(-2px); }
+  .product-card:active { transform: scale(0.97); }
+  .product-card:hover { background: var(--card-hover); border-color: var(--border-light); }
   .product-card .img-wrap {
     width: 100%; aspect-ratio: 3/4; background: #0a0a0a;
     display: flex; align-items: center; justify-content: center; overflow: hidden;
@@ -67,58 +70,86 @@
   .empty { text-align: center; color: var(--dim); font-family: monospace; font-size: 12px; padding: 60px 20px; }
   .modal-overlay {
     display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.92); z-index: 100;
-    align-items: center; justify-content: center; padding: 20px; overflow: auto;
+    background: var(--bg); z-index: 100;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
   }
-  .modal-overlay.active { display: flex; }
-  .modal {
-    background: #111; border: 1px solid var(--border); border-radius: 10px;
-    max-width: 900px; width: 100%; max-height: 95vh; overflow: auto;
-  }
+  .modal-overlay.active { display: block; }
+  .modal { width: 100%; min-height: 100%; }
   .modal-header {
-    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; background: var(--bg); z-index: 10;
   }
-  .modal-header .label { font-size: 11px; font-family: monospace; color: var(--dim); }
+  .modal-header .label { font-size: 10px; font-family: monospace; color: var(--dim); }
   .modal-header .title {
-    font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
-    max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
+    max-width: 70vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
-  .modal-body { padding: 20px; display: flex; gap: 20px; flex-wrap: wrap; }
-  .preview-wrap { flex: 0 0 auto; }
-  .preview-wrap canvas { width: 300px; height: 375px; border-radius: 6px; background: #000; display: block; }
-  .fields { flex: 1; min-width: 260px; display: flex; flex-direction: column; gap: 10px; }
-  .field label {
-    font-size: 10px; font-family: monospace; color: var(--dim);
-    margin-bottom: 4px; display: block; text-transform: uppercase; letter-spacing: 1px;
-  }
-  .field input {
-    background: #0a0a0a; border: 1px solid var(--border); border-radius: 4px;
-    color: var(--white); padding: 10px 12px; font-family: var(--font);
-    font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; outline: none; width: 100%;
-  }
-  .field input:focus { border-color: var(--border-light); }
-  .field input.hl { border-color: #555; font-size: 15px; }
-  .sliders { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-  .sliders label { color: var(--dim); font-size: 10px; font-family: monospace; flex: 1; min-width: 70px; }
-  .sliders input[type=range] { width: 100%; accent-color: #fff; margin-top: 4px; display: block; }
   .btn-close {
     background: none; border: 1px solid var(--border-light); color: var(--gray);
-    border-radius: 4px; padding: 4px 14px; cursor: pointer; font-size: 12px; font-family: var(--font); font-weight: 800;
+    border-radius: 4px; padding: 8px 16px; cursor: pointer; font-size: 13px;
+    font-family: var(--font); font-weight: 800; min-height: 44px;
+    display: flex; align-items: center;
   }
+  .modal-body { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+  .preview-wrap { width: 100%; }
+  .preview-wrap canvas {
+    width: 100%; height: auto; aspect-ratio: 1080/1350;
+    border-radius: 6px; background: #000; display: block;
+  }
+  .fields { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+  .field label {
+    font-size: 10px; font-family: monospace; color: var(--dim);
+    margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .field input {
+    background: #0a0a0a; border: 1px solid var(--border); border-radius: 6px;
+    color: var(--white); padding: 14px 14px; font-family: var(--font);
+    font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+    outline: none; width: 100%; min-height: 48px;
+  }
+  .field input:focus { border-color: var(--border-light); }
+  .field input.hl { border-color: #555; }
+  .sliders { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .sliders label { color: var(--dim); font-size: 10px; font-family: monospace; flex: 1; min-width: 80px; }
+  .sliders input[type=range] { width: 100%; accent-color: #fff; margin-top: 6px; display: block; height: 36px; }
   .btn-export {
-    margin-top: 12px; background: var(--white); border: none; color: #000;
-    border-radius: 4px; padding: 14px 24px; cursor: pointer;
-    font-family: var(--font); font-size: 14px; font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase; width: 100%;
+    margin-top: 8px; background: var(--white); border: none; color: #000;
+    border-radius: 6px; padding: 18px 24px; cursor: pointer;
+    font-family: var(--font); font-size: 16px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase; width: 100%; min-height: 56px;
   }
-  .btn-export:hover { opacity: 0.85; }
+  .btn-export:active { opacity: 0.8; }
   .btn-export.loading { opacity: 0.5; pointer-events: none; }
-  @media (max-width: 600px) {
-    .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
-    .preview-wrap canvas { width: 100%; height: auto; aspect-ratio: 1080/1350; }
-    .modal-body { flex-direction: column; }
-    .search-input { width: 140px; max-width: 50%; }
+  .modal-body { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+  @media (min-width: 700px) {
+    .header { padding: 16px 24px; }
+    .grid { padding: 20px 24px; }
+    .modal-overlay {
+      background: rgba(0,0,0,0.92);
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      max-width: 900px; max-height: 95vh; overflow: auto;
+      background: #111; border: 1px solid var(--border); border-radius: 10px; min-height: auto;
+    }
+    .modal-header { position: relative; }
+    .modal-body { flex-direction: row; gap: 20px; padding: 20px; }
+    .preview-wrap { flex: 0 0 auto; width: auto; }
+    .preview-wrap canvas { width: 320px; height: 400px; aspect-ratio: auto; }
+    .fields { flex: 1; min-width: 280px; }
+    .field input { font-size: 14px; padding: 10px 12px; min-height: auto; border-radius: 4px; }
+    .btn-export { padding: 14px 24px; font-size: 14px; min-height: auto; border-radius: 4px; }
+    .btn-close { padding: 4px 14px; font-size: 12px; min-height: auto; }
+    .sliders input[type=range] { height: auto; }
+    .search-input { font-size: 12px; padding: 8px 14px; }
+    .filter-select { font-size: 12px; padding: 8px 12px; }
+  }
+  @media (max-width: 380px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; }
+    .header h1 { font-size: 20px; }
+    .search-input { min-width: 80px; }
   }
 </style>
 </head>
@@ -127,9 +158,9 @@
 <div class="header">
   <div><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p></div>
   <div class="header-controls">
-    <input type="text" class="search-input" id="searchInput" placeholder="SEARCH...">
+    <input type="text" class="search-input" id="searchInput" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
     <select class="filter-select" id="gameFilter"><option value="ALL">ALL</option></select>
-    <span class="count"><span id="shownCount">0</span> SHOWN</span>
+    <span class="count"><span id="shownCount">0</span></span>
   </div>
 </div>
 
@@ -145,15 +176,15 @@
     <div class="modal-body">
       <div class="preview-wrap"><canvas id="previewCanvas" width="1080" height="1350"></canvas></div>
       <div class="fields">
-        <div class="field"><label>TAGLINE — THE HOOK</label><input type="text" id="fTagline" class="hl" placeholder='E.G. "THE ACTUAL BEST GEN 1 STARTER EVO"'></div>
-        <div class="field"><label>LINE 1 — CARD NAME</label><input type="text" id="fLine1"></div>
-        <div class="field"><label>LINE 2 — NUMBER / GRADE</label><input type="text" id="fLine2"></div>
-        <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3"></div>
-        <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4"></div>
+        <div class="field"><label>TAGLINE</label><input type="text" id="fTagline" class="hl" placeholder='THE HOOK LINE' autocomplete="off" autocorrect="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 1 — NAME</label><input type="text" id="fLine1" autocomplete="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 2 — NUMBER</label><input type="text" id="fLine2" autocomplete="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3" autocomplete="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4" autocomplete="off" autocapitalize="characters"></div>
         <div class="sliders">
-          <label>X POS<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
-          <label>Y POS<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
-          <label>SCALE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
+          <label>X<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
+          <label>Y<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
+          <label>SIZE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
         </div>
         <button class="btn-export" id="exportBtn" onclick="exportImage()">EXPORT PNG</button>
       </div>
@@ -187,25 +218,30 @@
     });
   }
 
-  // ── Seigaiha (wave) pattern only ──
+  // ── Clean Seigaiha ──
+  // Proper concentric semicircles in a fish-scale arrangement
   function drawSeigaiha(ctx, w, h) {
-    var r = 48;
-    var cols = Math.ceil(w / (r * 2)) + 2;
-    var rows = Math.ceil(h / (r * 0.75)) + 2;
+    var r = 52;
+    var stepX = r * 2;
+    var stepY = r;
+    var cols = Math.ceil(w / stepX) + 2;
+    var rows = Math.ceil(h / stepY) + 2;
+    var rings = [1.0, 0.75, 0.5, 0.28];
+    var alphas = [0.025, 0.020, 0.015, 0.010];
+
     ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    for (var row = 0; row < rows; row++) {
-      for (var col = 0; col < cols; col++) {
-        var ox = (row % 2) ? r : 0;
-        var cx = col * r * 2 + ox;
-        var cy = row * r * 0.75;
-        for (var ring = 0; ring < 4; ring++) {
-          var rr = r - ring * (r / 4);
-          if (rr <= 0) continue;
+    for (var row = -1; row < rows; row++) {
+      var offset = (row % 2 === 0) ? 0 : r;
+      for (var col = -1; col < cols; col++) {
+        var cx = col * stepX + offset;
+        var cy = row * stepY;
+
+        for (var i = 0; i < rings.length; i++) {
+          var arcR = r * rings[i];
           ctx.beginPath();
-          ctx.arc(cx, cy, rr, Math.PI, 0, false);
-          ctx.strokeStyle = 'rgba(255,255,255,' + (0.014 - ring * 0.002) + ')';
-          ctx.lineWidth = 1;
+          ctx.arc(cx, cy, arcR, Math.PI, 2 * Math.PI);
+          ctx.strokeStyle = 'rgba(255,255,255,' + alphas[i] + ')';
+          ctx.lineWidth = 0.8;
           ctx.stroke();
         }
       }
@@ -224,7 +260,9 @@
     ['fTagline','fLine1','fLine2','fLine3','fLine4','sX','sY','sScale'].forEach(function(id) {
       document.getElementById(id).addEventListener('input', redraw);
     });
-    document.getElementById('modal').addEventListener('click', function(e) { if (e.target === document.getElementById('modal')) closeModal(); });
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === document.getElementById('modal') && window.innerWidth >= 700) closeModal();
+    });
     document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
   }
 
@@ -246,7 +284,7 @@
       var c = document.createElement('div'); c.className = 'product-card';
       c.onclick = function() { openEditor(p); };
       var src = getFirstImg(p.img);
-      c.innerHTML = '<div class="img-wrap">'+(src?'<img src="'+src+'" alt="" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">':'<span class="no-img">NO IMAGE</span>')+'</div><div class="info"><p class="name">'+p.name+'</p><div class="meta"><span class="game">'+(p.game||'')+'</span><span class="price">'+(p.price||'')+'</span></div></div>';
+      c.innerHTML = '<div class="img-wrap">'+(src?'<img src="'+src+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">':'<span class="no-img">NO IMAGE</span>')+'</div><div class="info"><p class="name">'+p.name+'</p><div class="meta"><span class="game">'+(p.game||'')+'</span><span class="price">'+(p.price||'')+'</span></div></div>';
       grid.appendChild(c);
     });
   }
@@ -270,6 +308,7 @@
     currentProduct = product; currentImg = null;
     document.getElementById('modalTitle').textContent = product.name;
     document.getElementById('modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
     var p = parseName(product.name);
     document.getElementById('fTagline').value = '';
     document.getElementById('fLine1').value = p.line1;
@@ -281,7 +320,7 @@
     document.getElementById('sScale').value = 0.58;
     var btn = document.getElementById('exportBtn');
     btn.textContent = 'LOADING IMAGE...'; btn.classList.add('loading');
-    setTimeout(function() { document.getElementById('fTagline').focus(); }, 100);
+    document.getElementById('modal').scrollTop = 0;
     redraw();
     var src = getFirstImg(product.img);
     if (src) {
@@ -293,6 +332,7 @@
 
   window.closeModal = function() {
     document.getElementById('modal').classList.remove('active');
+    document.body.style.overflow = '';
     currentProduct = null; currentImg = null;
   };
 
@@ -301,23 +341,27 @@
     var ctx = canvas.getContext('2d');
     canvas.width = CW; canvas.height = CH;
 
-    // ── BACKGROUND ──
+    // Background
     ctx.fillStyle = '#0c0c0c';
     ctx.fillRect(0, 0, CW, CH);
-    var rg = ctx.createRadialGradient(CW * 0.45, CH * 0.4, 100, CW * 0.45, CH * 0.4, CW * 0.9);
-    rg.addColorStop(0, 'rgba(255,255,255,0.03)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = rg; ctx.fillRect(0, 0, CW, CH);
 
-    // Seigaiha only
+    // Subtle centre vignette
+    var rg = ctx.createRadialGradient(CW * 0.45, CH * 0.35, 80, CW * 0.45, CH * 0.35, CW * 0.85);
+    rg.addColorStop(0, 'rgba(255,255,255,0.02)');
+    rg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = rg;
+    ctx.fillRect(0, 0, CW, CH);
+
+    // Seigaiha
     drawSeigaiha(ctx, CW, CH);
 
-    // Grain
-    for (var i = 0; i < 12000; i++) {
-      ctx.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.03) + ')';
+    // Fine grain
+    for (var i = 0; i < 10000; i++) {
+      ctx.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.025) + ')';
       ctx.fillRect(Math.random() * CW, Math.random() * CH, 1, 1);
     }
 
-    // ── CARD IMAGE ──
+    // Card
     var px = parseFloat(document.getElementById('sX').value);
     var py = parseFloat(document.getElementById('sY').value);
     var ps = parseFloat(document.getElementById('sScale').value);
@@ -327,67 +371,42 @@
       var iw = currentImg.naturalWidth || currentImg.width;
       var ih = currentImg.naturalHeight || currentImg.height;
       var ratio = iw / ih;
-      var maxH = CH * ps;
-      var maxW = CW * 0.58;
+      var maxH = CH * ps, maxW = CW * 0.58;
       var dh = maxH, dw = maxH * ratio;
       if (dw > maxW) { dw = maxW; dh = maxW / ratio; }
-
-      var cardX = CW * px;
-      var cardY = CH * py;
+      var cardX = CW * px, cardY = CH * py;
       cardBottom = cardY + dh;
 
-      // Centre of card for glow
-      var glowCX = cardX + dw * 0.5;
-      var glowCY = cardY + dh * 0.5;
-      var glowR = Math.max(dw, dh) * 0.7;
+      // Glow — toned down
+      var glowCX = cardX + dw * 0.5, glowCY = cardY + dh * 0.5;
+      var glowR = Math.max(dw, dh) * 0.65;
 
-      // ── Prominent radial glow behind card ──
-      // Layer 1: wide soft glow
-      var g1 = ctx.createRadialGradient(glowCX, glowCY, 0, glowCX, glowCY, glowR * 1.2);
-      g1.addColorStop(0, 'rgba(255,255,255,0.18)');
-      g1.addColorStop(0.4, 'rgba(255,255,255,0.08)');
-      g1.addColorStop(0.7, 'rgba(255,255,255,0.03)');
+      // Single soft radial glow
+      var g1 = ctx.createRadialGradient(glowCX, glowCY, 0, glowCX, glowCY, glowR);
+      g1.addColorStop(0, 'rgba(255,255,255,0.10)');
+      g1.addColorStop(0.4, 'rgba(255,255,255,0.04)');
+      g1.addColorStop(0.75, 'rgba(255,255,255,0.01)');
       g1.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.fillStyle = g1;
       ctx.fillRect(0, 0, CW, CH);
 
-      // Layer 2: tighter hot glow
-      var g2 = ctx.createRadialGradient(glowCX, glowCY, 0, glowCX, glowCY, glowR * 0.6);
-      g2.addColorStop(0, 'rgba(255,255,255,0.12)');
-      g2.addColorStop(0.5, 'rgba(255,255,255,0.04)');
-      g2.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = g2;
-      ctx.fillRect(0, 0, CW, CH);
-
-      // Draw card with shadow glow
+      // Card shadow glow — single pass, moderate
       ctx.save();
-      ctx.shadowColor = 'rgba(255,255,255,0.35)';
-      ctx.shadowBlur = 120;
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
+      ctx.shadowColor = 'rgba(255,255,255,0.22)';
+      ctx.shadowBlur = 80;
       ctx.drawImage(currentImg, cardX, cardY, dw, dh);
       ctx.restore();
 
-      // Second pass: sharper shadow
-      ctx.save();
-      ctx.shadowColor = 'rgba(255,255,255,0.2)';
-      ctx.shadowBlur = 50;
-      ctx.drawImage(currentImg, cardX, cardY, dw, dh);
-      ctx.restore();
-
-      // Final crisp draw
+      // Crisp card
       ctx.drawImage(currentImg, cardX, cardY, dw, dh);
     }
 
-    // ── TEXT ──
+    // Text
     ctx.fillStyle = '#FFFFFF';
-
-    // KEEP. logo
     ctx.font = "800 80px 'Inter', sans-serif";
     ctx.textBaseline = 'top';
     ctx.fillText('KEEP.', 55, 55);
 
-    // Text zone below card
     var textPad = 30;
     var textTop = cardBottom + textPad;
     var footerY = CH - 55;
@@ -403,11 +422,8 @@
       document.getElementById('fLine4').value
     ].filter(function(l) { return l; });
 
-    var lineH = 68;
+    var lineH = 68, mainFontSize = 56, tagFontSize = 24;
     var totalTextH = taglineH + (lines.length * lineH);
-    var mainFontSize = 56;
-    var tagFontSize = 24;
-
     if (totalTextH > availableH && availableH > 0) {
       var scale = availableH / totalTextH;
       mainFontSize = Math.max(28, Math.floor(56 * scale));
@@ -423,13 +439,9 @@
       ctx.fillText(tagline.toUpperCase(), 55, curY);
       curY += taglineH;
     }
-
     ctx.font = "800 " + mainFontSize + "px 'Inter', sans-serif";
     ctx.textBaseline = 'top';
-    lines.forEach(function(line) {
-      ctx.fillText(line.toUpperCase(), 55, curY);
-      curY += lineH;
-    });
+    lines.forEach(function(line) { ctx.fillText(line.toUpperCase(), 55, curY); curY += lineH; });
 
     ctx.font = "800 56px 'Inter', sans-serif";
     ctx.textBaseline = 'bottom';

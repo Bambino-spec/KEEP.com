@@ -151,9 +151,9 @@
         <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3"></div>
         <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4"></div>
         <div class="sliders">
-          <label>X POS<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.42"></label>
+          <label>X POS<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
           <label>Y POS<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
-          <label>SCALE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.75"></label>
+          <label>SCALE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
         </div>
         <button class="btn-export" id="exportBtn" onclick="exportImage()">EXPORT PNG</button>
       </div>
@@ -169,7 +169,6 @@
   var currentProduct = null;
   var currentImg = null;
 
-  // Pre-load Inter 800 for canvas
   var interFont = new FontFace('Inter', "url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)", { weight: '800' });
   interFont.load().then(function(l) { document.fonts.add(l); }).catch(function(){});
 
@@ -179,44 +178,33 @@
     return fetch(url).then(function(r) { return r.blob(); }).then(function(blob) {
       return new Promise(function(resolve) {
         var u = URL.createObjectURL(blob);
-        var img = new Image();
-        img.onload = function() { resolve(img); };
-        img.onerror = function() { resolve(null); };
-        img.src = u;
+        var img = new Image(); img.onload = function() { resolve(img); }; img.onerror = function() { resolve(null); }; img.src = u;
       });
     }).catch(function() {
       return new Promise(function(resolve) {
-        var img = new Image();
-        img.onload = function() { resolve(img); };
-        img.onerror = function() { resolve(null); };
-        img.src = url;
+        var img = new Image(); img.onload = function() { resolve(img); }; img.onerror = function() { resolve(null); }; img.src = url;
       });
     });
   }
 
-  // ── Japanese seigaiha (wave) pattern — embossed look ──
+  // ── Seigaiha (wave) pattern only ──
   function drawSeigaiha(ctx, w, h) {
-    var r = 48; // radius of each arc
+    var r = 48;
     var cols = Math.ceil(w / (r * 2)) + 2;
     var rows = Math.ceil(h / (r * 0.75)) + 2;
-
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-
     for (var row = 0; row < rows; row++) {
       for (var col = 0; col < cols; col++) {
-        var offsetX = (row % 2) ? r : 0;
-        var cx = col * r * 2 + offsetX;
+        var ox = (row % 2) ? r : 0;
+        var cx = col * r * 2 + ox;
         var cy = row * r * 0.75;
-
-        // Multiple concentric arcs for the wave scale pattern
         for (var ring = 0; ring < 4; ring++) {
-          var ringR = r - ring * (r / 4);
-          if (ringR <= 0) continue;
-
+          var rr = r - ring * (r / 4);
+          if (rr <= 0) continue;
           ctx.beginPath();
-          ctx.arc(cx, cy, ringR, Math.PI, 0, false);
-          ctx.strokeStyle = 'rgba(255,255,255,' + (0.012 - ring * 0.002) + ')';
+          ctx.arc(cx, cy, rr, Math.PI, 0, false);
+          ctx.strokeStyle = 'rgba(255,255,255,' + (0.014 - ring * 0.002) + ')';
           ctx.lineWidth = 1;
           ctx.stroke();
         }
@@ -225,113 +213,10 @@
     ctx.restore();
   }
 
-  // ── Asanoha (hemp leaf) geometric pattern ──
-  function drawAsanoha(ctx, w, h) {
-    var size = 80;
-    var cols = Math.ceil(w / size) + 1;
-    var rows = Math.ceil(h / (size * 0.866)) + 1;
-
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255,255,255,0.018)';
-    ctx.lineWidth = 0.8;
-
-    for (var row = 0; row < rows; row++) {
-      for (var col = 0; col < cols; col++) {
-        var ox = (row % 2) ? size * 0.5 : 0;
-        var cx = col * size + ox;
-        var cy = row * size * 0.866;
-        var half = size * 0.5;
-
-        // Diamond shape with internal lines — hemp leaf motif
-        ctx.beginPath();
-        // Outer diamond
-        ctx.moveTo(cx, cy - half);
-        ctx.lineTo(cx + half, cy);
-        ctx.lineTo(cx, cy + half);
-        ctx.lineTo(cx - half, cy);
-        ctx.closePath();
-        ctx.stroke();
-
-        // Internal cross lines
-        ctx.beginPath();
-        ctx.moveTo(cx, cy - half);
-        ctx.lineTo(cx, cy + half);
-        ctx.moveTo(cx - half, cy);
-        ctx.lineTo(cx + half, cy);
-        ctx.stroke();
-
-        // Diagonal internal lines to center
-        ctx.beginPath();
-        ctx.moveTo(cx, cy - half);
-        ctx.lineTo(cx + half * 0.5, cy - half * 0.25);
-        ctx.moveTo(cx, cy - half);
-        ctx.lineTo(cx - half * 0.5, cy - half * 0.25);
-
-        ctx.moveTo(cx + half, cy);
-        ctx.lineTo(cx + half * 0.5, cy - half * 0.25);
-        ctx.moveTo(cx + half, cy);
-        ctx.lineTo(cx + half * 0.5, cy + half * 0.25);
-
-        ctx.moveTo(cx, cy + half);
-        ctx.lineTo(cx + half * 0.5, cy + half * 0.25);
-        ctx.moveTo(cx, cy + half);
-        ctx.lineTo(cx - half * 0.5, cy + half * 0.25);
-
-        ctx.moveTo(cx - half, cy);
-        ctx.lineTo(cx - half * 0.5, cy + half * 0.25);
-        ctx.moveTo(cx - half, cy);
-        ctx.lineTo(cx - half * 0.5, cy - half * 0.25);
-        ctx.stroke();
-      }
-    }
-    ctx.restore();
-  }
-
-  // ── Kumo (cloud) wisps ──
-  function drawKumo(ctx, w, h) {
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255,255,255,0.015)';
-    ctx.lineWidth = 1.2;
-
-    var seeds = [
-      [0.15, 0.20], [0.75, 0.10], [0.10, 0.60], [0.80, 0.45],
-      [0.50, 0.80], [0.25, 0.90], [0.65, 0.70], [0.90, 0.85],
-    ];
-
-    seeds.forEach(function(s) {
-      var cx = w * s[0], cy = h * s[1];
-      // Stylized cloud — series of overlapping arcs
-      var lobes = 3 + Math.floor(s[0] * 3);
-      var cloudW = 60 + s[1] * 80;
-      ctx.beginPath();
-      for (var i = 0; i < lobes; i++) {
-        var lx = cx - cloudW / 2 + (cloudW / lobes) * i + (cloudW / lobes) * 0.5;
-        var lr = cloudW / lobes * 0.6;
-        ctx.moveTo(lx + lr, cy);
-        ctx.arc(lx, cy, lr, 0, Math.PI, true);
-      }
-      ctx.stroke();
-
-      // Second layer slightly offset
-      ctx.beginPath();
-      for (var j = 0; j < lobes - 1; j++) {
-        var lx2 = cx - cloudW / 2 + (cloudW / lobes) * j + (cloudW / lobes);
-        var lr2 = cloudW / lobes * 0.45;
-        ctx.moveTo(lx2 + lr2, cy - lr2 * 0.5);
-        ctx.arc(lx2, cy - lr2 * 0.5, lr2, 0, Math.PI, true);
-      }
-      ctx.stroke();
-    });
-    ctx.restore();
-  }
-
   function init() {
     if (typeof PRODUCTS !== 'undefined') products = PRODUCTS;
     else if (typeof window.keepProducts !== 'undefined') products = window.keepProducts;
-    else {
-      document.getElementById('emptyMsg').textContent = 'COULD NOT LOAD PRODUCTS.JS';
-      document.getElementById('emptyMsg').style.display = 'block'; return;
-    }
+    else { document.getElementById('emptyMsg').textContent = 'COULD NOT LOAD PRODUCTS.JS'; document.getElementById('emptyMsg').style.display = 'block'; return; }
     document.getElementById('totalCount').textContent = products.length;
     buildFilters(); renderGrid();
     document.getElementById('searchInput').addEventListener('input', renderGrid);
@@ -339,9 +224,7 @@
     ['fTagline','fLine1','fLine2','fLine3','fLine4','sX','sY','sScale'].forEach(function(id) {
       document.getElementById(id).addEventListener('input', redraw);
     });
-    document.getElementById('modal').addEventListener('click', function(e) {
-      if (e.target === document.getElementById('modal')) closeModal();
-    });
+    document.getElementById('modal').addEventListener('click', function(e) { if (e.target === document.getElementById('modal')) closeModal(); });
     document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
   }
 
@@ -349,18 +232,14 @@
     var gs = {};
     products.forEach(function(p) { if (p.game) gs[p.game] = true; });
     var sel = document.getElementById('gameFilter');
-    Object.keys(gs).sort().forEach(function(g) {
-      var o = document.createElement('option'); o.value = g; o.textContent = g; sel.appendChild(o);
-    });
+    Object.keys(gs).sort().forEach(function(g) { var o = document.createElement('option'); o.value = g; o.textContent = g; sel.appendChild(o); });
   }
 
   function renderGrid() {
     var s = document.getElementById('searchInput').value.toLowerCase();
     var g = document.getElementById('gameFilter').value;
     var grid = document.getElementById('productGrid'); grid.innerHTML = '';
-    var f = products.filter(function(p) {
-      return (!s || p.name.toLowerCase().indexOf(s) !== -1) && (g === 'ALL' || p.game === g);
-    });
+    var f = products.filter(function(p) { return (!s || p.name.toLowerCase().indexOf(s) !== -1) && (g === 'ALL' || p.game === g); });
     document.getElementById('shownCount').textContent = f.length;
     document.getElementById('emptyMsg').style.display = f.length === 0 ? 'block' : 'none';
     f.forEach(function(p) {
@@ -397,9 +276,9 @@
     document.getElementById('fLine2').value = p.line2;
     document.getElementById('fLine3').value = p.line3;
     document.getElementById('fLine4').value = p.line4;
-    document.getElementById('sX').value = 0.42;
+    document.getElementById('sX').value = 0.33;
     document.getElementById('sY').value = 0.04;
-    document.getElementById('sScale').value = 0.75;
+    document.getElementById('sScale').value = 0.58;
     var btn = document.getElementById('exportBtn');
     btn.textContent = 'LOADING IMAGE...'; btn.classList.add('loading');
     setTimeout(function() { document.getElementById('fTagline').focus(); }, 100);
@@ -423,83 +302,138 @@
     canvas.width = CW; canvas.height = CH;
 
     // ── BACKGROUND ──
-    // Base dark fill
     ctx.fillStyle = '#0c0c0c';
     ctx.fillRect(0, 0, CW, CH);
-
-    // Subtle radial gradient — darker edges, slightly lighter centre
     var rg = ctx.createRadialGradient(CW * 0.45, CH * 0.4, 100, CW * 0.45, CH * 0.4, CW * 0.9);
-    rg.addColorStop(0, 'rgba(255,255,255,0.03)');
-    rg.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = rg;
-    ctx.fillRect(0, 0, CW, CH);
+    rg.addColorStop(0, 'rgba(255,255,255,0.03)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = rg; ctx.fillRect(0, 0, CW, CH);
 
-    // ── JAPANESE PATTERN LAYERS (embossed look) ──
-    // Seigaiha waves — full coverage
+    // Seigaiha only
     drawSeigaiha(ctx, CW, CH);
 
-    // Asanoha geometric overlay
-    drawAsanoha(ctx, CW, CH);
-
-    // Kumo clouds — scattered wisps
-    drawKumo(ctx, CW, CH);
-
-    // Fine noise grain on top
+    // Grain
     for (var i = 0; i < 12000; i++) {
       ctx.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.03) + ')';
       ctx.fillRect(Math.random() * CW, Math.random() * CH, 1, 1);
     }
 
     // ── CARD IMAGE ──
+    var px = parseFloat(document.getElementById('sX').value);
+    var py = parseFloat(document.getElementById('sY').value);
+    var ps = parseFloat(document.getElementById('sScale').value);
+    var cardBottom = CH * 0.55;
+
     if (currentImg) {
-      var px = parseFloat(document.getElementById('sX').value);
-      var py = parseFloat(document.getElementById('sY').value);
-      var ps = parseFloat(document.getElementById('sScale').value);
       var iw = currentImg.naturalWidth || currentImg.width;
       var ih = currentImg.naturalHeight || currentImg.height;
       var ratio = iw / ih;
-      var maxH = CH * ps, maxW = CW * 0.55;
+      var maxH = CH * ps;
+      var maxW = CW * 0.58;
       var dh = maxH, dw = maxH * ratio;
       if (dw > maxW) { dw = maxW; dh = maxW / ratio; }
 
+      var cardX = CW * px;
+      var cardY = CH * py;
+      cardBottom = cardY + dh;
+
+      // Centre of card for glow
+      var glowCX = cardX + dw * 0.5;
+      var glowCY = cardY + dh * 0.5;
+      var glowR = Math.max(dw, dh) * 0.7;
+
+      // ── Prominent radial glow behind card ──
+      // Layer 1: wide soft glow
+      var g1 = ctx.createRadialGradient(glowCX, glowCY, 0, glowCX, glowCY, glowR * 1.2);
+      g1.addColorStop(0, 'rgba(255,255,255,0.18)');
+      g1.addColorStop(0.4, 'rgba(255,255,255,0.08)');
+      g1.addColorStop(0.7, 'rgba(255,255,255,0.03)');
+      g1.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = g1;
+      ctx.fillRect(0, 0, CW, CH);
+
+      // Layer 2: tighter hot glow
+      var g2 = ctx.createRadialGradient(glowCX, glowCY, 0, glowCX, glowCY, glowR * 0.6);
+      g2.addColorStop(0, 'rgba(255,255,255,0.12)');
+      g2.addColorStop(0.5, 'rgba(255,255,255,0.04)');
+      g2.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = g2;
+      ctx.fillRect(0, 0, CW, CH);
+
+      // Draw card with shadow glow
       ctx.save();
-      ctx.shadowColor = 'rgba(255,255,255,0.08)'; ctx.shadowBlur = 80;
-      ctx.drawImage(currentImg, CW * px, CH * py, dw, dh);
+      ctx.shadowColor = 'rgba(255,255,255,0.35)';
+      ctx.shadowBlur = 120;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      ctx.drawImage(currentImg, cardX, cardY, dw, dh);
       ctx.restore();
-      ctx.drawImage(currentImg, CW * px, CH * py, dw, dh);
+
+      // Second pass: sharper shadow
+      ctx.save();
+      ctx.shadowColor = 'rgba(255,255,255,0.2)';
+      ctx.shadowBlur = 50;
+      ctx.drawImage(currentImg, cardX, cardY, dw, dh);
+      ctx.restore();
+
+      // Final crisp draw
+      ctx.drawImage(currentImg, cardX, cardY, dw, dh);
     }
 
     // ── TEXT ──
     ctx.fillStyle = '#FFFFFF';
 
-    // KEEP.
+    // KEEP. logo
     ctx.font = "800 80px 'Inter', sans-serif";
     ctx.textBaseline = 'top';
     ctx.fillText('KEEP.', 55, 55);
 
-    // Tagline
-    var tagY = CH * 0.50;
+    // Text zone below card
+    var textPad = 30;
+    var textTop = cardBottom + textPad;
+    var footerY = CH - 55;
+    var footerHeight = 70;
+    var availableH = footerY - footerHeight - textTop;
+
     var tagline = document.getElementById('fTagline').value;
-    if (tagline) {
-      ctx.font = "800 italic 24px 'Inter', sans-serif";
-      ctx.fillText(tagline.toUpperCase(), 55, tagY);
+    var taglineH = tagline ? 36 : 0;
+    var lines = [
+      document.getElementById('fLine1').value,
+      document.getElementById('fLine2').value,
+      document.getElementById('fLine3').value,
+      document.getElementById('fLine4').value
+    ].filter(function(l) { return l; });
+
+    var lineH = 68;
+    var totalTextH = taglineH + (lines.length * lineH);
+    var mainFontSize = 56;
+    var tagFontSize = 24;
+
+    if (totalTextH > availableH && availableH > 0) {
+      var scale = availableH / totalTextH;
+      mainFontSize = Math.max(28, Math.floor(56 * scale));
+      tagFontSize = Math.max(14, Math.floor(24 * scale));
+      lineH = Math.max(34, Math.floor(68 * scale));
+      taglineH = tagline ? Math.max(20, Math.floor(36 * scale)) : 0;
     }
 
-    // Main lines
-    ctx.font = "800 56px 'Inter', sans-serif";
-    var startY = tagY + (tagline ? 42 : 0);
-    [document.getElementById('fLine1').value,
-     document.getElementById('fLine2').value,
-     document.getElementById('fLine3').value,
-     document.getElementById('fLine4').value]
-      .filter(function(l) { return l; })
-      .forEach(function(line, i) {
-        ctx.fillText(line.toUpperCase(), 55, startY + i * 68);
-      });
+    var curY = textTop;
+    if (tagline) {
+      ctx.font = "800 italic " + tagFontSize + "px 'Inter', sans-serif";
+      ctx.textBaseline = 'top';
+      ctx.fillText(tagline.toUpperCase(), 55, curY);
+      curY += taglineH;
+    }
 
-    // NOW AVAILABLE.
+    ctx.font = "800 " + mainFontSize + "px 'Inter', sans-serif";
+    ctx.textBaseline = 'top';
+    lines.forEach(function(line) {
+      ctx.fillText(line.toUpperCase(), 55, curY);
+      curY += lineH;
+    });
+
+    ctx.font = "800 56px 'Inter', sans-serif";
     ctx.textBaseline = 'bottom';
-    ctx.fillText('NOW AVAILABLE.', 55, CH - 55);
+    ctx.fillText('NOW AVAILABLE.', 55, footerY);
   }
 
   window.exportImage = function() {

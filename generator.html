@@ -4,41 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KEEP. — IMAGE GENERATOR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
-    --bg: #0a0a0a;
-    --card: #141414;
-    --card-hover: #1c1c1c;
-    --border: #282828;
-    --border-light: #444;
-    --white: #ffffff;
-    --gray: #888888;
-    --dim: #555555;
+    --bg: #0a0a0a; --card: #141414; --card-hover: #1c1c1c;
+    --border: #282828; --border-light: #444;
+    --white: #fff; --gray: #888; --dim: #555;
+    --font: 'Inter', sans-serif;
   }
-
-  body {
-    background: var(--bg);
-    color: var(--white);
-    font-family: 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
-    min-height: 100vh;
-  }
+  body { background: var(--bg); color: var(--white); font-family: var(--font); min-height: 100vh; }
 
   .header {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    z-index: 50;
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px; position: sticky; top: 0; background: var(--bg); z-index: 50;
   }
-  .header h1 { font-size: 24px; letter-spacing: 2px; }
+  .header h1 { font-size: 24px; letter-spacing: 2px; font-weight: 800; }
   .header .sub { color: var(--dim); font-size: 10px; font-family: monospace; font-weight: 400; margin-top: 2px; }
   .header-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1; justify-content: flex-end; }
 
@@ -61,17 +45,11 @@
 
   .grid {
     padding: 20px 24px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-    gap: 10px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px;
   }
   .product-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.15s;
-    overflow: hidden;
+    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    cursor: pointer; transition: all 0.15s; overflow: hidden;
   }
   .product-card:hover { background: var(--card-hover); border-color: var(--border-light); transform: translateY(-2px); }
   .product-card .img-wrap {
@@ -92,11 +70,9 @@
   .empty { text-align: center; color: var(--dim); font-family: monospace; font-size: 12px; padding: 60px 20px; }
 
   .modal-overlay {
-    display: none;
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0,0,0,0.92); z-index: 100;
-    align-items: center; justify-content: center;
-    padding: 20px; overflow: auto;
+    align-items: center; justify-content: center; padding: 20px; overflow: auto;
   }
   .modal-overlay.active { display: flex; }
   .modal {
@@ -109,14 +85,12 @@
   }
   .modal-header .label { font-size: 11px; font-family: monospace; color: var(--dim); }
   .modal-header .title {
-    font-size: 13px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
+    font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
     max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .modal-body { padding: 20px; display: flex; gap: 20px; flex-wrap: wrap; }
-
   .preview-wrap { flex: 0 0 auto; }
   .preview-wrap canvas { width: 300px; height: 375px; border-radius: 6px; background: #000; display: block; }
-
   .fields { flex: 1; min-width: 260px; display: flex; flex-direction: column; gap: 10px; }
   .field label {
     font-size: 10px; font-family: monospace; color: var(--dim);
@@ -124,29 +98,26 @@
   }
   .field input {
     background: #0a0a0a; border: 1px solid var(--border); border-radius: 4px;
-    color: var(--white); padding: 10px 12px; font-family: 'Arial Black', sans-serif;
-    font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
-    outline: none; width: 100%;
+    color: var(--white); padding: 10px 12px; font-family: var(--font);
+    font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; outline: none; width: 100%;
   }
   .field input:focus { border-color: var(--border-light); }
   .field input.hl { border-color: #555; font-size: 15px; }
-
   .sliders { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
   .sliders label { color: var(--dim); font-size: 10px; font-family: monospace; flex: 1; min-width: 70px; }
   .sliders input[type=range] { width: 100%; accent-color: #fff; margin-top: 4px; display: block; }
-
   .btn-close {
     background: none; border: 1px solid var(--border-light); color: var(--gray);
-    border-radius: 4px; padding: 4px 14px; cursor: pointer;
-    font-size: 12px; font-family: 'Arial Black', sans-serif;
+    border-radius: 4px; padding: 4px 14px; cursor: pointer; font-size: 12px; font-family: var(--font); font-weight: 800;
   }
   .btn-export {
     margin-top: 12px; background: var(--white); border: none; color: #000;
     border-radius: 4px; padding: 14px 24px; cursor: pointer;
-    font-family: 'Arial Black', sans-serif; font-size: 14px;
-    letter-spacing: 2px; text-transform: uppercase; font-weight: 900; width: 100%;
+    font-family: var(--font); font-size: 14px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase; width: 100%;
   }
   .btn-export:hover { opacity: 0.85; }
+  .btn-export.loading { opacity: 0.5; pointer-events: none; }
 
   @media (max-width: 600px) {
     .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
@@ -191,28 +162,16 @@
           <label>TAGLINE — THE HOOK</label>
           <input type="text" id="fTagline" class="hl" placeholder='E.G. "THE ACTUAL BEST GEN 1 STARTER EVO"'>
         </div>
-        <div class="field">
-          <label>LINE 1 — CARD NAME</label>
-          <input type="text" id="fLine1">
-        </div>
-        <div class="field">
-          <label>LINE 2 — NUMBER / GRADE</label>
-          <input type="text" id="fLine2">
-        </div>
-        <div class="field">
-          <label>LINE 3 — RARITY</label>
-          <input type="text" id="fLine3">
-        </div>
-        <div class="field">
-          <label>LINE 4 — SET</label>
-          <input type="text" id="fLine4">
-        </div>
+        <div class="field"><label>LINE 1 — CARD NAME</label><input type="text" id="fLine1"></div>
+        <div class="field"><label>LINE 2 — NUMBER / GRADE</label><input type="text" id="fLine2"></div>
+        <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3"></div>
+        <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4"></div>
         <div class="sliders">
-          <label>X POS<input type="range" id="sX" min="0" max="0.7" step="0.01" value="0.38"></label>
-          <label>Y POS<input type="range" id="sY" min="0" max="0.5" step="0.01" value="0.12"></label>
-          <label>SCALE<input type="range" id="sScale" min="0.3" max="0.9" step="0.01" value="0.6"></label>
+          <label>X POS<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.42"></label>
+          <label>Y POS<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
+          <label>SCALE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.75"></label>
         </div>
-        <button class="btn-export" onclick="exportImage()">EXPORT PNG</button>
+        <button class="btn-export" id="exportBtn" onclick="exportImage()">EXPORT PNG</button>
       </div>
     </div>
   </div>
@@ -221,256 +180,236 @@
 <script src="products.js"></script>
 <script>
 (function() {
-  const CW = 1080, CH = 1350;
-  let products = [];
-  let currentProduct = null;
-  let currentImg = null;
+  var CW = 1080, CH = 1350;
+  var products = [];
+  var currentProduct = null;
+  var currentImg = null;
+  var interLoaded = false;
 
-  function getFirstImg(imgField) {
-    if (!imgField) return '';
-    // Handle pipe-separated multiple images — take the first one
-    return imgField.split('|')[0].trim();
+  // Pre-load Inter 800 for canvas rendering
+  var interFont = new FontFace('Inter', "url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)", { weight: '800' });
+  interFont.load().then(function(loaded) {
+    document.fonts.add(loaded);
+    interLoaded = true;
+  }).catch(function() {
+    // Font load failed, will fallback
+  });
+
+  // Also load italic variant for tagline
+  var interItalic = new FontFace('Inter', "url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)", { weight: '800', style: 'italic' });
+  interItalic.load().then(function(loaded) {
+    document.fonts.add(loaded);
+  }).catch(function() {});
+
+  function getFirstImg(f) { return f ? f.split('|')[0].trim() : ''; }
+
+  function loadImageAsBlob(url) {
+    return fetch(url)
+      .then(function(r) { return r.blob(); })
+      .then(function(blob) {
+        return new Promise(function(resolve) {
+          var u = URL.createObjectURL(blob);
+          var img = new Image();
+          img.onload = function() { resolve(img); };
+          img.onerror = function() { resolve(null); };
+          img.src = u;
+        });
+      })
+      .catch(function() {
+        return new Promise(function(resolve) {
+          var img = new Image();
+          img.onload = function() { resolve(img); };
+          img.onerror = function() { resolve(null); };
+          img.src = url;
+        });
+      });
   }
 
   function init() {
-    // products.js uses: const PRODUCTS = [...]
-    if (typeof PRODUCTS !== 'undefined') {
-      products = PRODUCTS;
-    } else if (typeof window.keepProducts !== 'undefined') {
-      products = window.keepProducts;
-    } else {
+    if (typeof PRODUCTS !== 'undefined') products = PRODUCTS;
+    else if (typeof window.keepProducts !== 'undefined') products = window.keepProducts;
+    else {
       document.getElementById('emptyMsg').textContent = 'COULD NOT LOAD PRODUCTS.JS';
       document.getElementById('emptyMsg').style.display = 'block';
       return;
     }
-
     document.getElementById('totalCount').textContent = products.length;
-    buildFilters();
-    renderGrid();
-
+    buildFilters(); renderGrid();
     document.getElementById('searchInput').addEventListener('input', renderGrid);
     document.getElementById('gameFilter').addEventListener('change', renderGrid);
-
     ['fTagline','fLine1','fLine2','fLine3','fLine4','sX','sY','sScale'].forEach(function(id) {
       document.getElementById(id).addEventListener('input', redraw);
     });
-
     document.getElementById('modal').addEventListener('click', function(e) {
       if (e.target === document.getElementById('modal')) closeModal();
     });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeModal();
-    });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
   }
 
   function buildFilters() {
-    var gameSet = {};
-    products.forEach(function(p) { if (p.game) gameSet[p.game] = true; });
-    var games = Object.keys(gameSet).sort();
+    var gs = {};
+    products.forEach(function(p) { if (p.game) gs[p.game] = true; });
     var sel = document.getElementById('gameFilter');
-    games.forEach(function(g) {
-      var opt = document.createElement('option');
-      opt.value = g; opt.textContent = g;
-      sel.appendChild(opt);
+    Object.keys(gs).sort().forEach(function(g) {
+      var o = document.createElement('option'); o.value = g; o.textContent = g; sel.appendChild(o);
     });
   }
 
   function renderGrid() {
-    var search = document.getElementById('searchInput').value.toLowerCase();
-    var game = document.getElementById('gameFilter').value;
+    var s = document.getElementById('searchInput').value.toLowerCase();
+    var g = document.getElementById('gameFilter').value;
     var grid = document.getElementById('productGrid');
     grid.innerHTML = '';
-
-    var filtered = products.filter(function(p) {
-      var ms = !search || p.name.toLowerCase().indexOf(search) !== -1;
-      var mg = game === 'ALL' || p.game === game;
-      return ms && mg;
+    var f = products.filter(function(p) {
+      return (!s || p.name.toLowerCase().indexOf(s) !== -1) && (g === 'ALL' || p.game === g);
     });
-
-    document.getElementById('shownCount').textContent = filtered.length;
-    document.getElementById('emptyMsg').style.display = filtered.length === 0 ? 'block' : 'none';
-
-    filtered.forEach(function(product) {
-      var card = document.createElement('div');
-      card.className = 'product-card';
-      card.onclick = function() { openEditor(product); };
-
-      var imgSrc = getFirstImg(product.img);
-      card.innerHTML =
-        '<div class="img-wrap">' +
-          (imgSrc ? '<img src="' + imgSrc + '" alt="" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">' : '<span class="no-img">NO IMAGE</span>') +
-        '</div>' +
-        '<div class="info">' +
-          '<p class="name">' + product.name + '</p>' +
-          '<div class="meta">' +
-            '<span class="game">' + (product.game || '') + '</span>' +
-            '<span class="price">' + (product.price || '') + '</span>' +
-          '</div>' +
-        '</div>';
-      grid.appendChild(card);
+    document.getElementById('shownCount').textContent = f.length;
+    document.getElementById('emptyMsg').style.display = f.length === 0 ? 'block' : 'none';
+    f.forEach(function(p) {
+      var c = document.createElement('div'); c.className = 'product-card';
+      c.onclick = function() { openEditor(p); };
+      var src = getFirstImg(p.img);
+      c.innerHTML =
+        '<div class="img-wrap">'+(src?'<img src="'+src+'" alt="" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">':'<span class="no-img">NO IMAGE</span>')+'</div>' +
+        '<div class="info"><p class="name">'+p.name+'</p><div class="meta"><span class="game">'+(p.game||'')+'</span><span class="price">'+(p.price||'')+'</span></div></div>';
+      grid.appendChild(c);
     });
   }
 
   function parseName(name) {
     var parts = name.split(/\s+/);
     var cardName = '', number = '', extra = '';
-    var numPattern = /^\d+\/\d+$|^[A-Z]*\d+-\d+$|^#?\d+$|^\d+$/;
-
     for (var i = 0; i < parts.length; i++) {
-      if (numPattern.test(parts[i])) {
-        cardName = parts.slice(0, i).join(' ');
-        number = parts[i];
-        extra = parts.slice(i + 1).join(' ');
-        break;
+      if (parts[i].toUpperCase() === 'NO.' && parts[i+1] && /^\d+$/.test(parts[i+1])) {
+        cardName = parts.slice(0, i).join(' '); number = parts[i]+' '+parts[i+1]; extra = parts.slice(i+2).join(' '); break;
+      }
+      if (/^\d+\/\d+$|^[A-Z]*\d+-\d+$/i.test(parts[i])) {
+        cardName = parts.slice(0, i).join(' '); number = parts[i]; extra = parts.slice(i+1).join(' '); break;
       }
     }
     if (!cardName) cardName = name;
-
-    return {
-      line1: cardName ? cardName.toUpperCase() + '.' : '',
-      line2: number ? number.toUpperCase() + '.' : '',
-      line3: '',
-      line4: extra ? extra.toUpperCase() + '.' : '',
-    };
+    return { line1: cardName ? cardName.toUpperCase()+'.' : '', line2: number ? number.toUpperCase()+'.' : '', line3: '', line4: extra ? extra.toUpperCase()+'.' : '' };
   }
 
   function openEditor(product) {
-    currentProduct = product;
+    currentProduct = product; currentImg = null;
     document.getElementById('modalTitle').textContent = product.name;
     document.getElementById('modal').classList.add('active');
-
-    var parsed = parseName(product.name);
+    var p = parseName(product.name);
     document.getElementById('fTagline').value = '';
-    document.getElementById('fLine1').value = parsed.line1;
-    document.getElementById('fLine2').value = parsed.line2;
-    document.getElementById('fLine3').value = parsed.line3;
-    document.getElementById('fLine4').value = parsed.line4;
-
-    document.getElementById('sX').value = 0.38;
-    document.getElementById('sY').value = 0.12;
-    document.getElementById('sScale').value = 0.6;
-
+    document.getElementById('fLine1').value = p.line1;
+    document.getElementById('fLine2').value = p.line2;
+    document.getElementById('fLine3').value = p.line3;
+    document.getElementById('fLine4').value = p.line4;
+    document.getElementById('sX').value = 0.42;
+    document.getElementById('sY').value = 0.04;
+    document.getElementById('sScale').value = 0.75;
+    var btn = document.getElementById('exportBtn');
+    btn.textContent = 'LOADING IMAGE...'; btn.classList.add('loading');
     setTimeout(function() { document.getElementById('fTagline').focus(); }, 100);
-
-    // Load image
-    currentImg = null;
     redraw();
-
-    var imgSrc = getFirstImg(product.img);
-    if (imgSrc) {
-      var img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = function() { currentImg = img; redraw(); };
-      img.onerror = function() {
-        // Retry without crossOrigin (won't allow export but will show preview)
-        var img2 = new Image();
-        img2.onload = function() { currentImg = img2; redraw(); };
-        img2.onerror = function() { currentImg = null; redraw(); };
-        img2.src = imgSrc;
-      };
-      img.src = imgSrc;
-    }
+    var src = getFirstImg(product.img);
+    if (src) {
+      loadImageAsBlob(src).then(function(img) {
+        currentImg = img; btn.textContent = 'EXPORT PNG'; btn.classList.remove('loading'); redraw();
+      });
+    } else { btn.textContent = 'EXPORT PNG'; btn.classList.remove('loading'); }
   }
 
   window.closeModal = function() {
     document.getElementById('modal').classList.remove('active');
-    currentProduct = null;
-    currentImg = null;
+    currentProduct = null; currentImg = null;
   };
 
   function redraw() {
     var canvas = document.getElementById('previewCanvas');
     var ctx = canvas.getContext('2d');
-    canvas.width = CW;
-    canvas.height = CH;
+    canvas.width = CW; canvas.height = CH;
 
+    // Background
     var bg = ctx.createLinearGradient(0, 0, CW, CH);
-    bg.addColorStop(0, '#0a0a0a');
-    bg.addColorStop(0.5, '#111111');
-    bg.addColorStop(1, '#0a0a0a');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, CW, CH);
+    bg.addColorStop(0, '#0d0d0d'); bg.addColorStop(0.5, '#111111'); bg.addColorStop(1, '#0a0a0a');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, CW, CH);
 
-    for (var i = 0; i < 15000; i++) {
-      ctx.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.06) + ')';
+    // Noise
+    for (var i = 0; i < 18000; i++) {
+      ctx.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.05) + ')';
       ctx.fillRect(Math.random() * CW, Math.random() * CH, 1, 1);
     }
 
+    // Card
     if (currentImg) {
       var px = parseFloat(document.getElementById('sX').value);
       var py = parseFloat(document.getElementById('sY').value);
       var ps = parseFloat(document.getElementById('sScale').value);
-      var maxH = CH * ps, maxW = CW * ps;
       var iw = currentImg.naturalWidth || currentImg.width;
       var ih = currentImg.naturalHeight || currentImg.height;
       var ratio = iw / ih;
-      var dw, dh;
-      if (ratio > maxW / maxH) { dw = maxW; dh = maxW / ratio; }
-      else { dh = maxH; dw = maxH * ratio; }
-      var cx = CW * px, cy = CH * py;
+      var maxH = CH * ps;
+      var maxW = CW * 0.55;
+      var dh = maxH, dw = maxH * ratio;
+      if (dw > maxW) { dw = maxW; dh = maxW / ratio; }
 
       ctx.save();
-      ctx.shadowColor = 'rgba(255,255,255,0.12)';
-      ctx.shadowBlur = 60;
-      ctx.drawImage(currentImg, cx, cy, dw, dh);
+      ctx.shadowColor = 'rgba(255,255,255,0.08)'; ctx.shadowBlur = 80;
+      ctx.drawImage(currentImg, CW * px, CH * py, dw, dh);
       ctx.restore();
-      ctx.drawImage(currentImg, cx, cy, dw, dh);
+      ctx.drawImage(currentImg, CW * px, CH * py, dw, dh);
     }
+
+    // ── TEXT — Inter ExtraBold ──
+    var fontMain = "800 56px 'Inter', sans-serif";
+    var fontLogo = "800 80px 'Inter', sans-serif";
+    var fontTag  = "800 italic 24px 'Inter', sans-serif";
 
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = "bold 72px 'Arial Black', 'Helvetica Neue', sans-serif";
-    ctx.textBaseline = 'top';
-    ctx.fillText('KEEP.', 50, 60);
 
-    var tagY = CH * 0.52;
+    // KEEP. logo
+    ctx.font = fontLogo;
+    ctx.textBaseline = 'top';
+    ctx.fillText('KEEP.', 55, 55);
+
+    // Tagline
+    var tagY = CH * 0.50;
     var tagline = document.getElementById('fTagline').value;
     if (tagline) {
-      ctx.font = "bold italic 22px 'Arial', sans-serif";
-      ctx.fillText(tagline.toUpperCase(), 50, tagY);
+      ctx.font = fontTag;
+      ctx.fillText(tagline.toUpperCase(), 55, tagY);
     }
 
-    ctx.font = "bold 52px 'Arial Black', 'Helvetica Neue', sans-serif";
-    var startY = tagY + 40;
-    var lines = [
-      document.getElementById('fLine1').value,
-      document.getElementById('fLine2').value,
-      document.getElementById('fLine3').value,
-      document.getElementById('fLine4').value,
-    ].filter(function(l) { return l; });
-    lines.forEach(function(line, i) {
-      ctx.fillText(line.toUpperCase(), 50, startY + i * 64);
-    });
+    // Main lines
+    ctx.font = fontMain;
+    var startY = tagY + (tagline ? 42 : 0);
+    var lineH = 68;
+    [document.getElementById('fLine1').value,
+     document.getElementById('fLine2').value,
+     document.getElementById('fLine3').value,
+     document.getElementById('fLine4').value]
+      .filter(function(l) { return l; })
+      .forEach(function(line, i) {
+        ctx.fillText(line.toUpperCase(), 55, startY + i * lineH);
+      });
 
+    // NOW AVAILABLE.
     ctx.textBaseline = 'bottom';
-    ctx.fillText('NOW AVAILABLE.', 50, CH - 50);
+    ctx.fillText('NOW AVAILABLE.', 55, CH - 55);
   }
 
   window.exportImage = function() {
     var canvas = document.getElementById('previewCanvas');
-    try {
-      canvas.toBlob(function(blob) {
-        if (!blob) {
-          alert('Export failed — image may be from a cross-origin source. Try right-clicking the preview and saving instead.');
-          return;
-        }
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        var safeName = (currentProduct ? currentProduct.name : 'card').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 50);
-        a.download = 'KEEP_' + safeName + '.png';
-        a.click();
-        URL.revokeObjectURL(url);
-      }, 'image/png');
-    } catch(e) {
-      alert('Export failed — canvas is tainted by cross-origin image. Try right-clicking the preview and saving instead.');
-    }
+    canvas.toBlob(function(blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      var sn = (currentProduct ? currentProduct.name : 'card').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 50);
+      a.download = 'KEEP_' + sn + '.png';
+      a.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png');
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 </script>
 </body>

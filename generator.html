@@ -17,6 +17,39 @@
   }
   html { -webkit-text-size-adjust: 100%; }
   body { background: var(--bg); color: var(--white); font-family: var(--font); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+
+  /* ── PASSWORD GATE ── */
+  #gate {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg); z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 40px;
+  }
+  #gate.hidden { display: none; }
+  #gate h1 { font-size: 48px; font-weight: 800; letter-spacing: 3px; margin-bottom: 6px; }
+  #gate .sub { color: var(--dim); font-size: 11px; font-family: monospace; font-weight: 400; margin-bottom: 40px; }
+  #gate .pw-wrap { width: 100%; max-width: 280px; display: flex; flex-direction: column; gap: 12px; }
+  #gate input {
+    background: #111; border: 1px solid var(--border); border-radius: 6px;
+    color: var(--white); padding: 16px 18px; font-family: var(--font);
+    font-size: 18px; font-weight: 800; text-align: center; letter-spacing: 8px;
+    outline: none; width: 100%; min-height: 56px;
+    -webkit-text-security: disc;
+  }
+  #gate input:focus { border-color: var(--border-light); }
+  #gate button {
+    background: var(--white); border: none; color: #000;
+    border-radius: 6px; padding: 16px; cursor: pointer;
+    font-family: var(--font); font-size: 14px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase; width: 100%; min-height: 52px;
+  }
+  #gate button:active { opacity: 0.8; }
+  #gate .error { color: #f44; font-size: 12px; font-family: monospace; text-align: center; min-height: 18px; }
+
+  /* ── APP (hidden until auth) ── */
+  #app { display: none; }
+  #app.visible { display: block; }
+
   .header {
     padding: 14px 16px; border-bottom: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: center;
@@ -155,38 +188,52 @@
 </head>
 <body>
 
-<div class="header">
-  <div><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p></div>
-  <div class="header-controls">
-    <input type="text" class="search-input" id="searchInput" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-    <select class="filter-select" id="gameFilter"><option value="ALL">ALL</option></select>
-    <span class="count"><span id="shownCount">0</span></span>
+<!-- PASSWORD GATE -->
+<div id="gate">
+  <h1>KEEP.</h1>
+  <p class="sub">IMAGE GENERATOR</p>
+  <div class="pw-wrap">
+    <input type="password" id="pwInput" placeholder="••••" inputmode="numeric" autocomplete="off">
+    <button onclick="checkPassword()">ENTER</button>
+    <p class="error" id="pwError"></p>
   </div>
 </div>
 
-<div class="grid" id="productGrid"></div>
-<p class="empty" id="emptyMsg" style="display:none;">NO PRODUCTS MATCH YOUR SEARCH</p>
-
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <div class="modal-header">
-      <div><p class="label">EDITING</p><p class="title" id="modalTitle"></p></div>
-      <button class="btn-close" onclick="closeModal()">✕ CLOSE</button>
+<!-- APP -->
+<div id="app">
+  <div class="header">
+    <div><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p></div>
+    <div class="header-controls">
+      <input type="text" class="search-input" id="searchInput" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <select class="filter-select" id="gameFilter"><option value="ALL">ALL</option></select>
+      <span class="count"><span id="shownCount">0</span></span>
     </div>
-    <div class="modal-body">
-      <div class="preview-wrap"><canvas id="previewCanvas" width="1080" height="1350"></canvas></div>
-      <div class="fields">
-        <div class="field"><label>TAGLINE</label><input type="text" id="fTagline" class="hl" placeholder='THE HOOK LINE' autocomplete="off" autocorrect="off" autocapitalize="characters"></div>
-        <div class="field"><label>LINE 1 — NAME</label><input type="text" id="fLine1" autocomplete="off" autocapitalize="characters"></div>
-        <div class="field"><label>LINE 2 — NUMBER</label><input type="text" id="fLine2" autocomplete="off" autocapitalize="characters"></div>
-        <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3" autocomplete="off" autocapitalize="characters"></div>
-        <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4" autocomplete="off" autocapitalize="characters"></div>
-        <div class="sliders">
-          <label>X<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
-          <label>Y<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
-          <label>SIZE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
+  </div>
+
+  <div class="grid" id="productGrid"></div>
+  <p class="empty" id="emptyMsg" style="display:none;">NO PRODUCTS MATCH YOUR SEARCH</p>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div><p class="label">EDITING</p><p class="title" id="modalTitle"></p></div>
+        <button class="btn-close" onclick="closeModal()">✕ CLOSE</button>
+      </div>
+      <div class="modal-body">
+        <div class="preview-wrap"><canvas id="previewCanvas" width="1080" height="1350"></canvas></div>
+        <div class="fields">
+          <div class="field"><label>TAGLINE</label><input type="text" id="fTagline" class="hl" placeholder='THE HOOK LINE' autocomplete="off" autocorrect="off" autocapitalize="characters"></div>
+          <div class="field"><label>LINE 1 — NAME</label><input type="text" id="fLine1" autocomplete="off" autocapitalize="characters"></div>
+          <div class="field"><label>LINE 2 — NUMBER</label><input type="text" id="fLine2" autocomplete="off" autocapitalize="characters"></div>
+          <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3" autocomplete="off" autocapitalize="characters"></div>
+          <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4" autocomplete="off" autocapitalize="characters"></div>
+          <div class="sliders">
+            <label>X<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
+            <label>Y<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
+            <label>SIZE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
+          </div>
+          <button class="btn-export" id="exportBtn" onclick="exportImage()">EXPORT PNG</button>
         </div>
-        <button class="btn-export" id="exportBtn" onclick="exportImage()">EXPORT PNG</button>
       </div>
     </div>
   </div>
@@ -195,10 +242,52 @@
 <script src="products.js"></script>
 <script>
 (function() {
+  // ── PASSWORD ──
+  var PW_HASH = '9ff8476644903ba6cb3f90e79bf40b67133a95e44b39123a1d4caf800f216b6b';
+  var SESSION_KEY = 'keep_gen_auth';
+
+  async function sha256(str) {
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+  }
+
+  // Check if already authed this session
+  if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+    unlock();
+  } else {
+    document.getElementById('pwInput').focus();
+  }
+
+  // Enter key on password field
+  document.getElementById('pwInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+
+  window.checkPassword = async function() {
+    var input = document.getElementById('pwInput').value;
+    var hash = await sha256(input);
+    if (hash === PW_HASH) {
+      sessionStorage.setItem(SESSION_KEY, 'true');
+      unlock();
+    } else {
+      document.getElementById('pwError').textContent = 'WRONG PASSWORD';
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwInput').focus();
+    }
+  };
+
+  function unlock() {
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('app').classList.add('visible');
+    initApp();
+  }
+
+  // ── APP ──
   var CW = 1080, CH = 1350;
   var products = [];
   var currentProduct = null;
   var currentImg = null;
+  var appInited = false;
 
   var interFont = new FontFace('Inter', "url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)", { weight: '800' });
   interFont.load().then(function(l) { document.fonts.add(l); }).catch(function(){});
@@ -218,8 +307,6 @@
     });
   }
 
-  // ── Clean Seigaiha ──
-  // Proper concentric semicircles in a fish-scale arrangement
   function drawSeigaiha(ctx, w, h) {
     var r = 52;
     var stepX = r * 2;
@@ -228,14 +315,12 @@
     var rows = Math.ceil(h / stepY) + 2;
     var rings = [1.0, 0.75, 0.5, 0.28];
     var alphas = [0.025, 0.020, 0.015, 0.010];
-
     ctx.save();
     for (var row = -1; row < rows; row++) {
       var offset = (row % 2 === 0) ? 0 : r;
       for (var col = -1; col < cols; col++) {
         var cx = col * stepX + offset;
         var cy = row * stepY;
-
         for (var i = 0; i < rings.length; i++) {
           var arcR = r * rings[i];
           ctx.beginPath();
@@ -249,7 +334,10 @@
     ctx.restore();
   }
 
-  function init() {
+  function initApp() {
+    if (appInited) return;
+    appInited = true;
+
     if (typeof PRODUCTS !== 'undefined') products = PRODUCTS;
     else if (typeof window.keepProducts !== 'undefined') products = window.keepProducts;
     else { document.getElementById('emptyMsg').textContent = 'COULD NOT LOAD PRODUCTS.JS'; document.getElementById('emptyMsg').style.display = 'block'; return; }
@@ -341,27 +429,19 @@
     var ctx = canvas.getContext('2d');
     canvas.width = CW; canvas.height = CH;
 
-    // Background
     ctx.fillStyle = '#0c0c0c';
     ctx.fillRect(0, 0, CW, CH);
-
-    // Subtle centre vignette
     var rg = ctx.createRadialGradient(CW * 0.45, CH * 0.35, 80, CW * 0.45, CH * 0.35, CW * 0.85);
-    rg.addColorStop(0, 'rgba(255,255,255,0.02)');
-    rg.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = rg;
-    ctx.fillRect(0, 0, CW, CH);
+    rg.addColorStop(0, 'rgba(255,255,255,0.02)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = rg; ctx.fillRect(0, 0, CW, CH);
 
-    // Seigaiha
     drawSeigaiha(ctx, CW, CH);
 
-    // Fine grain
     for (var i = 0; i < 10000; i++) {
       ctx.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.025) + ')';
       ctx.fillRect(Math.random() * CW, Math.random() * CH, 1, 1);
     }
 
-    // Card
     var px = parseFloat(document.getElementById('sX').value);
     var py = parseFloat(document.getElementById('sY').value);
     var ps = parseFloat(document.getElementById('sScale').value);
@@ -377,31 +457,23 @@
       var cardX = CW * px, cardY = CH * py;
       cardBottom = cardY + dh;
 
-      // Glow — toned down
       var glowCX = cardX + dw * 0.5, glowCY = cardY + dh * 0.5;
       var glowR = Math.max(dw, dh) * 0.65;
 
-      // Single soft radial glow
       var g1 = ctx.createRadialGradient(glowCX, glowCY, 0, glowCX, glowCY, glowR);
       g1.addColorStop(0, 'rgba(255,255,255,0.10)');
       g1.addColorStop(0.4, 'rgba(255,255,255,0.04)');
       g1.addColorStop(0.75, 'rgba(255,255,255,0.01)');
       g1.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = g1;
-      ctx.fillRect(0, 0, CW, CH);
+      ctx.fillStyle = g1; ctx.fillRect(0, 0, CW, CH);
 
-      // Card shadow glow — single pass, moderate
       ctx.save();
-      ctx.shadowColor = 'rgba(255,255,255,0.22)';
-      ctx.shadowBlur = 80;
+      ctx.shadowColor = 'rgba(255,255,255,0.22)'; ctx.shadowBlur = 80;
       ctx.drawImage(currentImg, cardX, cardY, dw, dh);
       ctx.restore();
-
-      // Crisp card
       ctx.drawImage(currentImg, cardX, cardY, dw, dh);
     }
 
-    // Text
     ctx.fillStyle = '#FFFFFF';
     ctx.font = "800 80px 'Inter', sans-serif";
     ctx.textBaseline = 'top';
@@ -458,9 +530,6 @@
       a.click(); URL.revokeObjectURL(url);
     }, 'image/png');
   };
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
 })();
 </script>
 </body>

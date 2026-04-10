@@ -212,7 +212,15 @@
       img.className = 'card-img';
       img.alt = product.name;
       img.loading = 'lazy';
+      img.referrerPolicy = 'no-referrer';
       img.src = product.img;
+      img.onerror = function() {
+        this.style.display = 'none';
+        const ph = document.createElement('div');
+        ph.style.cssText = 'width:100%;aspect-ratio:3/4;background:#ececec;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#aaa;padding:10px;text-align:center;';
+        ph.textContent = product.name;
+        card.insertBefore(ph, card.firstChild);
+      };
 
       const name = document.createElement('div');
       name.className = 'card-name';
@@ -246,7 +254,13 @@
     function buildCarouselRow(trackEl, data, direction) {
       trackEl.innerHTML = '';
       const cards = [...data, ...data];
-      cards.forEach(p => trackEl.appendChild(makeCard(p)));
+      cards.forEach(p => {
+        const card = makeCard(p);
+        // Force eager loading for carousel — lazy loading breaks with transform animations
+        const img = card.querySelector('img');
+        if (img) img.loading = 'eager';
+        trackEl.appendChild(card);
+      });
 
       const cardW = 180;
       const totalW = data.length * cardW;

@@ -23,29 +23,14 @@
   .hero { text-align: center; padding: 10px 20px 20px; }
   .hero-sub { font-size: clamp(12px, 2vw, 15px); font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); margin-bottom: 16px; }
 
-  /* ── CATEGORY TABS ── */
   .categories { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 0 20px 16px; max-width: 900px; margin: 0 auto; }
-  .cat-btn {
-    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 11px;
-    letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 20px;
-    border: 2px solid var(--black); background: transparent; color: var(--black);
-    cursor: pointer; transition: all 0.3s;
-  }
+  .cat-btn { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 20px; border: 2px solid var(--black); background: transparent; color: var(--black); cursor: pointer; transition: all 0.3s; }
   .cat-btn:hover { background: var(--black); color: var(--white); }
   .cat-btn.active { background: var(--black); color: var(--white); }
 
-  /* ── SORT BAR ── */
   .sort-bar { display: flex; justify-content: center; align-items: center; gap: 12px; padding: 0 20px 16px; }
   .sort-bar label { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
-  .sort-select {
-    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 11px;
-    letter-spacing: 1px; text-transform: uppercase; padding: 8px 16px;
-    border: 2px solid var(--light); background: transparent; color: var(--black);
-    cursor: pointer; appearance: none; -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%230a0a0a'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 10px center;
-    padding-right: 30px;
-  }
+  .sort-select { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 8px 16px; border: 2px solid var(--light); background: transparent; color: var(--black); cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%230a0a0a'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; }
   .sort-select:focus { outline: none; border-color: var(--black); }
 
   .shop-link { display: inline-block; font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(14px, 2.5vw, 18px); letter-spacing: 2px; text-transform: uppercase; color: var(--black); text-decoration: none; border: 2px solid var(--black); padding: 16px 50px; transition: all 0.4s; }
@@ -58,10 +43,11 @@
   .carousel-section::before, .carousel-section::after { content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none; }
   .carousel-section::before { left: 0; background: linear-gradient(to right, var(--white), transparent); }
   .carousel-section::after { right: 0; background: linear-gradient(to left, var(--white), transparent); }
+
   .carousel-track {
     display: flex; gap: 20px; width: max-content;
     cursor: grab; user-select: none; -webkit-user-select: none;
-    margin-bottom: 20px;
+    margin-bottom: 20px; will-change: transform;
   }
   .carousel-track.dragging { cursor: grabbing; }
   .carousel-track .card { width: 160px; }
@@ -76,7 +62,6 @@
 
   .no-results { text-align: center; padding: 40px 20px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); grid-column: 1 / -1; }
 
-  /* ── SHARED CARD STYLES ── */
   .card { text-decoration: none; color: var(--black); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; flex-shrink: 0; }
   .card:hover { transform: translateY(-6px) scale(1.02); }
   .card-img { object-fit: cover; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); transition: box-shadow 0.3s; background: #ececec; display: block; }
@@ -84,6 +69,7 @@
   .card-name { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 8px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card-price { font-size: 11px; font-weight: 800; margin-top: 3px; }
   .card-game { font-size: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin-top: 2px; }
+  .card-placeholder { width: 100%; aspect-ratio: 3/4; background: #ececec; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; padding: 10px; text-align: center; }
 
   .cta { text-align: center; padding: 24px 20px 40px; }
   .cta-text { font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 20px; }
@@ -146,14 +132,12 @@
     </select>
   </div>
 
-  <!-- CAROUSEL VIEW (default) -->
   <section class="carousel-section" id="carouselSection">
     <p class="carousel-label">FIND THESE AND MORE ON OUR EBAY STORE</p>
     <div class="carousel-track" id="track1"></div>
     <div class="carousel-track" id="track2"></div>
   </section>
 
-  <!-- GRID VIEW (when filtered/sorted) -->
   <section class="grid-section hidden" id="gridSection">
     <p class="grid-label" id="gridLabel">ALL CARDS</p>
     <div class="product-grid" id="productGrid"></div>
@@ -171,10 +155,9 @@
 
   <script src="products.js"></script>
   <script>
-    // ── STATE ──
     let currentCat = 'ALL';
     let currentSort = 'random';
-    let viewMode = 'carousel'; // 'carousel' or 'grid'
+    let viewMode = 'carousel';
 
     const carouselSection = document.getElementById('carouselSection');
     const gridSection = document.getElementById('gridSection');
@@ -187,7 +170,6 @@
 
     ctaCount.textContent = PRODUCTS.length + ' CARDS AVAILABLE NOW';
 
-    // ── HELPERS ──
     function shuffle(arr) {
       const a = [...arr];
       for (let i = a.length - 1; i > 0; i--) {
@@ -208,19 +190,26 @@
       card.href = product.url || 'https://www.ebay.com.au/usr/keep.tcg';
       card.target = '_blank';
 
-      const img = document.createElement('img');
-      img.className = 'card-img';
-      img.alt = product.name;
-      img.loading = 'lazy';
-      img.referrerPolicy = 'no-referrer';
-      img.src = product.img;
-      img.onerror = function() {
-        this.style.display = 'none';
+      if (product.img && product.img.length > 5) {
+        const img = document.createElement('img');
+        img.className = 'card-img';
+        img.alt = product.name;
+        img.referrerPolicy = 'no-referrer';
+        img.src = product.img;
+        img.onerror = function() {
+          this.style.display = 'none';
+          const ph = document.createElement('div');
+          ph.className = 'card-placeholder';
+          ph.textContent = product.name;
+          card.insertBefore(ph, card.firstChild);
+        };
+        card.appendChild(img);
+      } else {
         const ph = document.createElement('div');
-        ph.style.cssText = 'width:100%;aspect-ratio:3/4;background:#ececec;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#aaa;padding:10px;text-align:center;';
+        ph.className = 'card-placeholder';
         ph.textContent = product.name;
-        card.insertBefore(ph, card.firstChild);
-      };
+        card.appendChild(ph);
+      }
 
       const name = document.createElement('div');
       name.className = 'card-name';
@@ -234,87 +223,136 @@
       game.className = 'card-game';
       game.textContent = product.game;
 
-      card.appendChild(img);
       card.appendChild(name);
       card.appendChild(price);
       card.appendChild(game);
       return card;
     }
 
-    // ══════════════════════════════
-    // CAROUSEL
-    // ══════════════════════════════
+    // ══════════════════════════════════════
+    // CAROUSEL — JS-driven with rAF
+    // ══════════════════════════════════════
+    const carouselInstances = [];
+
     function buildCarousel() {
+      // Clear previous instances
+      carouselInstances.forEach(c => cancelAnimationFrame(c.rafId));
+      carouselInstances.length = 0;
+
       const shuffled = shuffle(PRODUCTS);
       const half = Math.ceil(shuffled.length / 2);
-      buildCarouselRow(document.getElementById('track1'), shuffled.slice(0, half), 'left');
-      buildCarouselRow(document.getElementById('track2'), shuffled.slice(half), 'right');
+      buildCarouselRow(document.getElementById('track1'), shuffled.slice(0, half), 0.6);
+      buildCarouselRow(document.getElementById('track2'), shuffled.slice(half), -0.5);
     }
 
-    function buildCarouselRow(trackEl, data, direction) {
+    function buildCarouselRow(trackEl, data, speed) {
       trackEl.innerHTML = '';
+
+      // Double up for seamless loop
       const cards = [...data, ...data];
-      cards.forEach(p => {
-        const card = makeCard(p);
-        // Force eager loading for carousel — lazy loading breaks with transform animations
-        const img = card.querySelector('img');
-        if (img) img.loading = 'eager';
-        trackEl.appendChild(card);
+      cards.forEach(p => trackEl.appendChild(makeCard(p)));
+
+      const cardW = 180; // card + gap
+      const halfW = data.length * cardW;
+
+      let offset = speed > 0 ? 0 : -halfW;
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartOffset = 0;
+      let dragDist = 0;
+      let hovering = false;
+      let rafId = null;
+      let lastTime = null;
+
+      // Animation loop
+      function tick(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        const dt = timestamp - lastTime;
+        lastTime = timestamp;
+
+        if (!isDragging && !hovering) {
+          offset -= speed * dt * 0.06;
+
+          // Wrap around
+          if (speed > 0 && offset <= -halfW) offset += halfW;
+          if (speed > 0 && offset > 0) offset -= halfW;
+          if (speed < 0 && offset >= 0) offset -= halfW;
+          if (speed < 0 && offset < -halfW) offset += halfW;
+        }
+
+        trackEl.style.transform = `translateX(${offset}px)`;
+        rafId = requestAnimationFrame(tick);
+      }
+
+      rafId = requestAnimationFrame(tick);
+
+      // Store instance for cleanup
+      carouselInstances.push({ rafId });
+
+      // ── MOUSE DRAG ──
+      trackEl.addEventListener('mousedown', e => {
+        isDragging = true;
+        dragDist = 0;
+        dragStartX = e.clientX;
+        dragStartOffset = offset;
+        trackEl.classList.add('dragging');
+        e.preventDefault();
       });
 
-      const cardW = 180;
-      const totalW = data.length * cardW;
-      const speed = direction === 'left' ? 35 : 30;
-      const dur = totalW / speed;
+      window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        const dx = e.clientX - dragStartX;
+        dragDist = Math.abs(dx);
+        offset = dragStartOffset + dx;
 
-      const animName = 'scroll_' + direction + '_' + Math.random().toString(36).substr(2, 5);
-      const kf = direction === 'left'
-        ? `@keyframes ${animName} { 0% { transform: translateX(0); } 100% { transform: translateX(-${totalW}px); } }`
-        : `@keyframes ${animName} { 0% { transform: translateX(-${totalW}px); } 100% { transform: translateX(0); } }`;
+        // Wrap
+        if (offset > 0) offset -= halfW;
+        if (offset < -halfW) offset += halfW;
+      });
 
-      const style = document.createElement('style');
-      style.textContent = kf;
-      document.head.appendChild(style);
-      trackEl.style.animation = `${animName} ${dur}s linear infinite`;
+      window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        trackEl.classList.remove('dragging');
+      });
 
-      // Drag to scrub
-      let isDragging = false, startX = 0, scrollStart = 0, currentOffset = 0, dragDist = 0, animStopped = false;
+      // Block click if dragged
+      trackEl.addEventListener('click', e => {
+        if (dragDist > 5) { e.preventDefault(); e.stopPropagation(); }
+      }, true);
 
-      function getX() { return new DOMMatrix(getComputedStyle(trackEl).transform).m41; }
-      function stopAnim() {
-        if (!animStopped) { currentOffset = getX(); trackEl.style.animation = 'none'; trackEl.style.transform = `translateX(${currentOffset}px)`; animStopped = true; }
-      }
-      function resumeAnim() {
-        currentOffset = currentOffset % totalW;
-        if (direction === 'left') {
-          if (currentOffset > 0) currentOffset -= totalW;
-          const p = Math.abs(currentOffset) / totalW;
-          trackEl.style.transform = ''; trackEl.style.animation = `${animName} ${dur}s linear infinite`; trackEl.style.animationDelay = `-${p * dur}s`;
-        } else {
-          if (currentOffset < -totalW) currentOffset += totalW;
-          if (currentOffset > 0) currentOffset -= totalW;
-          const p = (totalW + currentOffset) / totalW;
-          trackEl.style.transform = ''; trackEl.style.animation = `${animName} ${dur}s linear infinite`; trackEl.style.animationDelay = `-${p * dur}s`;
-        }
-        animStopped = false;
-      }
+      // ── TOUCH DRAG ──
+      trackEl.addEventListener('touchstart', e => {
+        isDragging = true;
+        dragDist = 0;
+        dragStartX = e.touches[0].clientX;
+        dragStartOffset = offset;
+        trackEl.classList.add('dragging');
+      }, { passive: true });
 
-      trackEl.addEventListener('mousedown', e => { isDragging = true; dragDist = 0; startX = e.clientX; stopAnim(); scrollStart = currentOffset; trackEl.classList.add('dragging'); e.preventDefault(); });
-      window.addEventListener('mousemove', e => { if (!isDragging) return; const dx = e.clientX - startX; dragDist = Math.abs(dx); currentOffset = scrollStart + dx; if (currentOffset > 0) currentOffset -= totalW; if (currentOffset < -totalW) currentOffset += totalW; trackEl.style.transform = `translateX(${currentOffset}px)`; });
-      window.addEventListener('mouseup', () => { if (!isDragging) return; isDragging = false; trackEl.classList.remove('dragging'); resumeAnim(); });
-      trackEl.addEventListener('click', e => { if (dragDist > 5) { e.preventDefault(); e.stopPropagation(); } }, true);
+      trackEl.addEventListener('touchmove', e => {
+        if (!isDragging) return;
+        const dx = e.touches[0].clientX - dragStartX;
+        dragDist = Math.abs(dx);
+        offset = dragStartOffset + dx;
+        if (offset > 0) offset -= halfW;
+        if (offset < -halfW) offset += halfW;
+      }, { passive: true });
 
-      trackEl.addEventListener('touchstart', e => { isDragging = true; dragDist = 0; startX = e.touches[0].clientX; stopAnim(); scrollStart = currentOffset; trackEl.classList.add('dragging'); }, { passive: true });
-      trackEl.addEventListener('touchmove', e => { if (!isDragging) return; const dx = e.touches[0].clientX - startX; dragDist = Math.abs(dx); currentOffset = scrollStart + dx; if (currentOffset > 0) currentOffset -= totalW; if (currentOffset < -totalW) currentOffset += totalW; trackEl.style.transform = `translateX(${currentOffset}px)`; }, { passive: true });
-      trackEl.addEventListener('touchend', () => { if (!isDragging) return; isDragging = false; trackEl.classList.remove('dragging'); resumeAnim(); });
+      trackEl.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        trackEl.classList.remove('dragging');
+      });
 
-      trackEl.addEventListener('mouseenter', () => { if (!isDragging) stopAnim(); });
-      trackEl.addEventListener('mouseleave', () => { if (!isDragging) resumeAnim(); });
+      // ── HOVER PAUSE ──
+      trackEl.addEventListener('mouseenter', () => { hovering = true; });
+      trackEl.addEventListener('mouseleave', () => { hovering = false; });
     }
 
-    // ══════════════════════════════
+    // ══════════════════════════════════════
     // GRID
-    // ══════════════════════════════
+    // ══════════════════════════════════════
     function renderGrid() {
       let items = [...PRODUCTS];
 
@@ -361,9 +399,9 @@
       });
     }
 
-    // ══════════════════════════════
+    // ══════════════════════════════════════
     // VIEW SWITCHING
-    // ══════════════════════════════
+    // ══════════════════════════════════════
     function showCarousel() {
       viewMode = 'carousel';
       carouselSection.classList.remove('hidden');
@@ -379,11 +417,9 @@
       renderGrid();
     }
 
-    // ── CATEGORY CLICKS ──
     catTabs.addEventListener('click', e => {
       const btn = e.target.closest('.cat-btn');
       if (!btn) return;
-
       catTabs.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentCat = btn.dataset.cat;
@@ -395,7 +431,6 @@
       }
     });
 
-    // ── SORT CHANGE ──
     sortSelect.addEventListener('change', e => {
       currentSort = e.target.value;
       renderGrid();

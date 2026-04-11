@@ -17,13 +17,10 @@
   }
   html { -webkit-text-size-adjust: 100%; }
   body { background: var(--bg); color: var(--white); font-family: var(--font); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
-
-  /* ── PASSWORD GATE ── */
   #gate {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: var(--bg); z-index: 9999;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 40px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px;
   }
   #gate.hidden { display: none; }
   #gate h1 { font-size: 48px; font-weight: 800; letter-spacing: 3px; margin-bottom: 6px; }
@@ -33,8 +30,7 @@
     background: #111; border: 1px solid var(--border); border-radius: 6px;
     color: var(--white); padding: 16px 18px; font-family: var(--font);
     font-size: 18px; font-weight: 800; text-align: center; letter-spacing: 8px;
-    outline: none; width: 100%; min-height: 56px;
-    -webkit-text-security: disc;
+    outline: none; width: 100%; min-height: 56px; -webkit-text-security: disc;
   }
   #gate input:focus { border-color: var(--border-light); }
   #gate button {
@@ -45,11 +41,8 @@
   }
   #gate button:active { opacity: 0.8; }
   #gate .error { color: #f44; font-size: 12px; font-family: monospace; text-align: center; min-height: 18px; }
-
-  /* ── APP (hidden until auth) ── */
   #app { display: none; }
   #app.visible { display: block; }
-
   .header {
     padding: 14px 16px; border-bottom: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: center;
@@ -125,11 +118,14 @@
     display: flex; align-items: center;
   }
   .modal-body { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
-  .preview-wrap { width: 100%; }
+  .preview-wrap { width: 100%; display: flex; flex-direction: column; gap: 10px; }
   .preview-wrap canvas {
     width: 100%; height: auto; aspect-ratio: 1080/1350;
     border-radius: 6px; background: #000; display: block;
   }
+  .sliders { display: flex; gap: 10px; flex-wrap: wrap; }
+  .sliders label { color: var(--dim); font-size: 10px; font-family: monospace; flex: 1; min-width: 80px; }
+  .sliders input[type=range] { width: 100%; accent-color: #fff; margin-top: 6px; display: block; height: 36px; }
   .fields { width: 100%; display: flex; flex-direction: column; gap: 12px; }
   .field label {
     font-size: 10px; font-family: monospace; color: var(--dim);
@@ -143,9 +139,6 @@
   }
   .field input:focus { border-color: var(--border-light); }
   .field input.hl { border-color: #555; }
-  .sliders { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
-  .sliders label { color: var(--dim); font-size: 10px; font-family: monospace; flex: 1; min-width: 80px; }
-  .sliders input[type=range] { width: 100%; accent-color: #fff; margin-top: 6px; display: block; height: 36px; }
   .btn-export {
     margin-top: 8px; background: var(--white); border: none; color: #000;
     border-radius: 6px; padding: 18px 24px; cursor: pointer;
@@ -154,7 +147,42 @@
   }
   .btn-export:active { opacity: 0.8; }
   .btn-export.loading { opacity: 0.5; pointer-events: none; }
+  .export-overlay {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg); z-index: 200;
+    flex-direction: column; align-items: center; overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .export-overlay.active { display: flex; }
+  .export-overlay .export-bar {
+    width: 100%; padding: 14px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; background: var(--bg); z-index: 10;
+  }
+  .export-overlay .export-bar p { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+  .export-overlay .export-bar .hint { font-size: 10px; font-family: monospace; color: var(--dim); font-weight: 400; margin-top: 2px; }
+  .export-overlay img { width: 100%; max-width: 540px; height: auto; display: block; padding: 16px; }
+  .export-actions {
+    padding: 0 16px 32px; width: 100%; max-width: 540px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .export-actions a {
+    display: block; background: var(--white); color: #000; text-align: center;
+    border-radius: 6px; padding: 16px; text-decoration: none;
+    font-family: var(--font); font-size: 14px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  .export-actions a:active { opacity: 0.8; }
+  .export-actions button {
+    background: none; border: 1px solid var(--border-light); color: var(--gray);
+    border-radius: 6px; padding: 14px; cursor: pointer;
+    font-family: var(--font); font-size: 13px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
   .modal-body { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+
+  /* ── DESKTOP ── */
   @media (min-width: 700px) {
     .header { padding: 16px 24px; }
     .grid { padding: 20px 24px; }
@@ -164,12 +192,12 @@
     }
     .modal-overlay.active { display: flex; }
     .modal {
-      max-width: 900px; max-height: 95vh; overflow: auto;
+      max-width: 920px; max-height: 95vh; overflow: auto;
       background: #111; border: 1px solid var(--border); border-radius: 10px; min-height: auto;
     }
     .modal-header { position: relative; }
     .modal-body { flex-direction: row; gap: 20px; padding: 20px; }
-    .preview-wrap { flex: 0 0 auto; width: auto; }
+    .preview-wrap { flex: 0 0 auto; width: 320px; }
     .preview-wrap canvas { width: 320px; height: 400px; aspect-ratio: auto; }
     .fields { flex: 1; min-width: 280px; }
     .field input { font-size: 14px; padding: 10px 12px; min-height: auto; border-radius: 4px; }
@@ -188,7 +216,6 @@
 </head>
 <body>
 
-<!-- PASSWORD GATE -->
 <div id="gate">
   <h1>KEEP.</h1>
   <p class="sub">IMAGE GENERATOR</p>
@@ -199,7 +226,6 @@
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <div class="header">
     <div><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p></div>
@@ -209,10 +235,8 @@
       <span class="count"><span id="shownCount">0</span></span>
     </div>
   </div>
-
   <div class="grid" id="productGrid"></div>
   <p class="empty" id="emptyMsg" style="display:none;">NO PRODUCTS MATCH YOUR SEARCH</p>
-
   <div class="modal-overlay" id="modal">
     <div class="modal">
       <div class="modal-header">
@@ -220,18 +244,22 @@
         <button class="btn-close" onclick="closeModal()">✕ CLOSE</button>
       </div>
       <div class="modal-body">
-        <div class="preview-wrap"><canvas id="previewCanvas" width="1080" height="1350"></canvas></div>
+        <!-- Preview + sliders together -->
+        <div class="preview-wrap">
+          <canvas id="previewCanvas" width="1080" height="1350"></canvas>
+          <div class="sliders">
+            <label>X<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
+            <label>Y<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
+            <label>SIZE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
+          </div>
+        </div>
+        <!-- Text fields + export -->
         <div class="fields">
           <div class="field"><label>TAGLINE</label><input type="text" id="fTagline" class="hl" placeholder='THE HOOK LINE' autocomplete="off" autocorrect="off" autocapitalize="characters"></div>
           <div class="field"><label>LINE 1 — NAME</label><input type="text" id="fLine1" autocomplete="off" autocapitalize="characters"></div>
           <div class="field"><label>LINE 2 — NUMBER</label><input type="text" id="fLine2" autocomplete="off" autocapitalize="characters"></div>
           <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3" autocomplete="off" autocapitalize="characters"></div>
           <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4" autocomplete="off" autocapitalize="characters"></div>
-          <div class="sliders">
-            <label>X<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
-            <label>Y<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
-            <label>SIZE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
-          </div>
           <button class="btn-export" id="exportBtn" onclick="exportImage()">EXPORT PNG</button>
         </div>
       </div>
@@ -239,297 +267,178 @@
   </div>
 </div>
 
+<div class="export-overlay" id="exportOverlay">
+  <div class="export-bar">
+    <div>
+      <p>YOUR IMAGE</p>
+      <p class="hint">RIGHT-CLICK OR LONG-PRESS TO SAVE</p>
+    </div>
+    <button class="btn-close" onclick="closeExport()">✕ CLOSE</button>
+  </div>
+  <img id="exportImg" src="" alt="KEEP. Export">
+  <div class="export-actions">
+    <a id="downloadLink" href="" download="">DOWNLOAD PNG</a>
+    <button onclick="closeExport()">BACK TO EDITOR</button>
+  </div>
+</div>
+
 <script src="products.js"></script>
 <script>
 (function() {
-  // ── PASSWORD ──
   var PW_HASH = '9ff8476644903ba6cb3f90e79bf40b67133a95e44b39123a1d4caf800f216b6b';
   var SESSION_KEY = 'keep_gen_auth';
-
   async function sha256(str) {
     var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+    return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
   }
-
-  // Check if already authed this session
-  if (sessionStorage.getItem(SESSION_KEY) === 'true') {
-    unlock();
-  } else {
-    document.getElementById('pwInput').focus();
-  }
-
-  // Enter key on password field
-  document.getElementById('pwInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') checkPassword();
-  });
-
+  if (sessionStorage.getItem(SESSION_KEY)==='true') unlock();
+  else document.getElementById('pwInput').focus();
+  document.getElementById('pwInput').addEventListener('keydown', function(e) { if (e.key==='Enter') checkPassword(); });
   window.checkPassword = async function() {
-    var input = document.getElementById('pwInput').value;
-    var hash = await sha256(input);
-    if (hash === PW_HASH) {
-      sessionStorage.setItem(SESSION_KEY, 'true');
-      unlock();
-    } else {
-      document.getElementById('pwError').textContent = 'WRONG PASSWORD';
-      document.getElementById('pwInput').value = '';
-      document.getElementById('pwInput').focus();
-    }
+    var h = await sha256(document.getElementById('pwInput').value);
+    if (h===PW_HASH) { sessionStorage.setItem(SESSION_KEY,'true'); unlock(); }
+    else { document.getElementById('pwError').textContent='WRONG PASSWORD'; document.getElementById('pwInput').value=''; document.getElementById('pwInput').focus(); }
   };
+  function unlock() { document.getElementById('gate').classList.add('hidden'); document.getElementById('app').classList.add('visible'); initApp(); }
 
-  function unlock() {
-    document.getElementById('gate').classList.add('hidden');
-    document.getElementById('app').classList.add('visible');
-    initApp();
-  }
+  var CW=1080,CH=1350,products=[],currentProduct=null,currentImg=null,appInited=false;
+  var interFont = new FontFace('Inter',"url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)",{weight:'800'});
+  interFont.load().then(function(l){document.fonts.add(l);}).catch(function(){});
 
-  // ── APP ──
-  var CW = 1080, CH = 1350;
-  var products = [];
-  var currentProduct = null;
-  var currentImg = null;
-  var appInited = false;
-
-  var interFont = new FontFace('Inter', "url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)", { weight: '800' });
-  interFont.load().then(function(l) { document.fonts.add(l); }).catch(function(){});
-
-  function getFirstImg(f) { return f ? f.split('|')[0].trim() : ''; }
-
-  function loadImageAsBlob(url) {
-    return fetch(url).then(function(r) { return r.blob(); }).then(function(blob) {
-      return new Promise(function(resolve) {
-        var u = URL.createObjectURL(blob);
-        var img = new Image(); img.onload = function() { resolve(img); }; img.onerror = function() { resolve(null); }; img.src = u;
-      });
-    }).catch(function() {
-      return new Promise(function(resolve) {
-        var img = new Image(); img.onload = function() { resolve(img); }; img.onerror = function() { resolve(null); }; img.src = url;
-      });
+  function getFirstImg(f){return f?f.split('|')[0].trim():'';}
+  function loadImageAsBlob(url){
+    return fetch(url).then(function(r){return r.blob();}).then(function(blob){
+      return new Promise(function(resolve){var u=URL.createObjectURL(blob);var img=new Image();img.onload=function(){resolve(img);};img.onerror=function(){resolve(null);};img.src=u;});
+    }).catch(function(){
+      return new Promise(function(resolve){var img=new Image();img.onload=function(){resolve(img);};img.onerror=function(){resolve(null);};img.src=url;});
     });
   }
-
-  function drawSeigaiha(ctx, w, h) {
-    var r = 52;
-    var stepX = r * 2;
-    var stepY = r;
-    var cols = Math.ceil(w / stepX) + 2;
-    var rows = Math.ceil(h / stepY) + 2;
-    var rings = [1.0, 0.75, 0.5, 0.28];
-    var alphas = [0.025, 0.020, 0.015, 0.010];
+  function drawSeigaiha(ctx,w,h){
+    var r=52,stepX=r*2,stepY=r;
+    var cols=Math.ceil(w/stepX)+2,rows=Math.ceil(h/stepY)+2;
+    var rings=[1.0,0.78,0.56,0.34,0.16],alphas=[0.055,0.045,0.035,0.025,0.015];
     ctx.save();
-    for (var row = -1; row < rows; row++) {
-      var offset = (row % 2 === 0) ? 0 : r;
-      for (var col = -1; col < cols; col++) {
-        var cx = col * stepX + offset;
-        var cy = row * stepY;
-        for (var i = 0; i < rings.length; i++) {
-          var arcR = r * rings[i];
-          ctx.beginPath();
-          ctx.arc(cx, cy, arcR, Math.PI, 2 * Math.PI);
-          ctx.strokeStyle = 'rgba(255,255,255,' + alphas[i] + ')';
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-        }
-      }
-    }
-    ctx.restore();
+    for(var row=-1;row<rows;row++){var offset=(row%2===0)?0:r;
+      for(var col=-1;col<cols;col++){var cx=col*stepX+offset,cy=row*stepY;
+        for(var i=0;i<rings.length;i++){ctx.beginPath();ctx.arc(cx,cy,r*rings[i],Math.PI,2*Math.PI);ctx.strokeStyle='rgba(255,255,255,'+alphas[i]+')';ctx.lineWidth=0.8;ctx.stroke();}
+    }}ctx.restore();
   }
-
-  function initApp() {
-    if (appInited) return;
-    appInited = true;
-
-    if (typeof PRODUCTS !== 'undefined') products = PRODUCTS;
-    else if (typeof window.keepProducts !== 'undefined') products = window.keepProducts;
-    else { document.getElementById('emptyMsg').textContent = 'COULD NOT LOAD PRODUCTS.JS'; document.getElementById('emptyMsg').style.display = 'block'; return; }
-    document.getElementById('totalCount').textContent = products.length;
-    buildFilters(); renderGrid();
-    document.getElementById('searchInput').addEventListener('input', renderGrid);
-    document.getElementById('gameFilter').addEventListener('change', renderGrid);
-    ['fTagline','fLine1','fLine2','fLine3','fLine4','sX','sY','sScale'].forEach(function(id) {
-      document.getElementById(id).addEventListener('input', redraw);
-    });
-    document.getElementById('modal').addEventListener('click', function(e) {
-      if (e.target === document.getElementById('modal') && window.innerWidth >= 700) closeModal();
-    });
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+  function initApp(){
+    if(appInited)return;appInited=true;
+    if(typeof PRODUCTS!=='undefined')products=PRODUCTS;
+    else if(typeof window.keepProducts!=='undefined')products=window.keepProducts;
+    else{document.getElementById('emptyMsg').textContent='COULD NOT LOAD PRODUCTS.JS';document.getElementById('emptyMsg').style.display='block';return;}
+    document.getElementById('totalCount').textContent=products.length;
+    buildFilters();renderGrid();
+    document.getElementById('searchInput').addEventListener('input',renderGrid);
+    document.getElementById('gameFilter').addEventListener('change',renderGrid);
+    ['fTagline','fLine1','fLine2','fLine3','fLine4','sX','sY','sScale'].forEach(function(id){document.getElementById(id).addEventListener('input',redraw);});
+    document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal')&&window.innerWidth>=700)closeModal();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeExport();closeModal();}});
   }
-
-  function buildFilters() {
-    var gs = {};
-    products.forEach(function(p) { if (p.game) gs[p.game] = true; });
-    var sel = document.getElementById('gameFilter');
-    Object.keys(gs).sort().forEach(function(g) { var o = document.createElement('option'); o.value = g; o.textContent = g; sel.appendChild(o); });
+  function buildFilters(){
+    var gs={};products.forEach(function(p){if(p.game)gs[p.game]=true;});
+    var sel=document.getElementById('gameFilter');
+    Object.keys(gs).sort().forEach(function(g){var o=document.createElement('option');o.value=g;o.textContent=g;sel.appendChild(o);});
   }
-
-  function renderGrid() {
-    var s = document.getElementById('searchInput').value.toLowerCase();
-    var g = document.getElementById('gameFilter').value;
-    var grid = document.getElementById('productGrid'); grid.innerHTML = '';
-    var f = products.filter(function(p) { return (!s || p.name.toLowerCase().indexOf(s) !== -1) && (g === 'ALL' || p.game === g); });
-    document.getElementById('shownCount').textContent = f.length;
-    document.getElementById('emptyMsg').style.display = f.length === 0 ? 'block' : 'none';
-    f.forEach(function(p) {
-      var c = document.createElement('div'); c.className = 'product-card';
-      c.onclick = function() { openEditor(p); };
-      var src = getFirstImg(p.img);
-      c.innerHTML = '<div class="img-wrap">'+(src?'<img src="'+src+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">':'<span class="no-img">NO IMAGE</span>')+'</div><div class="info"><p class="name">'+p.name+'</p><div class="meta"><span class="game">'+(p.game||'')+'</span><span class="price">'+(p.price||'')+'</span></div></div>';
+  function renderGrid(){
+    var s=document.getElementById('searchInput').value.toLowerCase(),g=document.getElementById('gameFilter').value;
+    var grid=document.getElementById('productGrid');grid.innerHTML='';
+    var f=products.filter(function(p){return(!s||p.name.toLowerCase().indexOf(s)!==-1)&&(g==='ALL'||p.game===g);});
+    document.getElementById('shownCount').textContent=f.length;
+    document.getElementById('emptyMsg').style.display=f.length===0?'block':'none';
+    f.forEach(function(p){
+      var c=document.createElement('div');c.className='product-card';c.onclick=function(){openEditor(p);};
+      var src=getFirstImg(p.img);
+      c.innerHTML='<div class="img-wrap">'+(src?'<img src="'+src+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">':'<span class="no-img">NO IMAGE</span>')+'</div><div class="info"><p class="name">'+p.name+'</p><div class="meta"><span class="game">'+(p.game||'')+'</span><span class="price">'+(p.price||'')+'</span></div></div>';
       grid.appendChild(c);
     });
   }
-
-  function parseName(name) {
-    var parts = name.split(/\s+/);
-    var cardName = '', number = '', extra = '';
-    for (var i = 0; i < parts.length; i++) {
-      if (parts[i].toUpperCase() === 'NO.' && parts[i+1] && /^\d+$/.test(parts[i+1])) {
-        cardName = parts.slice(0,i).join(' '); number = parts[i]+' '+parts[i+1]; extra = parts.slice(i+2).join(' '); break;
-      }
-      if (/^\d+\/\d+$|^[A-Z]*\d+-\d+$/i.test(parts[i])) {
-        cardName = parts.slice(0,i).join(' '); number = parts[i]; extra = parts.slice(i+1).join(' '); break;
-      }
+  function parseName(name){
+    var parts=name.split(/\s+/),cardName='',number='',extra='';
+    for(var i=0;i<parts.length;i++){
+      if(parts[i].toUpperCase()==='NO.'&&parts[i+1]&&/^\d+$/.test(parts[i+1])){cardName=parts.slice(0,i).join(' ');number=parts[i]+' '+parts[i+1];extra=parts.slice(i+2).join(' ');break;}
+      if(/^\d+\/\d+$|^[A-Z]*\d+-\d+$/i.test(parts[i])){cardName=parts.slice(0,i).join(' ');number=parts[i];extra=parts.slice(i+1).join(' ');break;}
     }
-    if (!cardName) cardName = name;
-    return { line1: cardName?cardName.toUpperCase()+'.':'', line2: number?number.toUpperCase()+'.':'', line3: '', line4: extra?extra.toUpperCase()+'.':'' };
+    if(!cardName)cardName=name;
+    return{line1:cardName?cardName.toUpperCase()+'.':'',line2:number?number.toUpperCase()+'.':'',line3:'',line4:extra?extra.toUpperCase()+'.':''};
   }
-
-  function openEditor(product) {
-    currentProduct = product; currentImg = null;
-    document.getElementById('modalTitle').textContent = product.name;
+  function openEditor(product){
+    currentProduct=product;currentImg=null;
+    document.getElementById('modalTitle').textContent=product.name;
     document.getElementById('modal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-    var p = parseName(product.name);
-    document.getElementById('fTagline').value = '';
-    document.getElementById('fLine1').value = p.line1;
-    document.getElementById('fLine2').value = p.line2;
-    document.getElementById('fLine3').value = p.line3;
-    document.getElementById('fLine4').value = p.line4;
-    document.getElementById('sX').value = 0.33;
-    document.getElementById('sY').value = 0.04;
-    document.getElementById('sScale').value = 0.58;
-    var btn = document.getElementById('exportBtn');
-    btn.textContent = 'LOADING IMAGE...'; btn.classList.add('loading');
-    document.getElementById('modal').scrollTop = 0;
+    document.body.style.overflow='hidden';
+    var p=parseName(product.name);
+    document.getElementById('fTagline').value='';
+    document.getElementById('fLine1').value=p.line1;
+    document.getElementById('fLine2').value=p.line2;
+    document.getElementById('fLine3').value=p.line3;
+    document.getElementById('fLine4').value=p.line4;
+    document.getElementById('sX').value=0.33;
+    document.getElementById('sY').value=0.04;
+    document.getElementById('sScale').value=0.58;
+    var btn=document.getElementById('exportBtn');
+    btn.textContent='LOADING IMAGE...';btn.classList.add('loading');
+    document.getElementById('modal').scrollTop=0;
     redraw();
-    var src = getFirstImg(product.img);
-    if (src) {
-      loadImageAsBlob(src).then(function(img) {
-        currentImg = img; btn.textContent = 'EXPORT PNG'; btn.classList.remove('loading'); redraw();
-      });
-    } else { btn.textContent = 'EXPORT PNG'; btn.classList.remove('loading'); }
+    var src=getFirstImg(product.img);
+    if(src){loadImageAsBlob(src).then(function(img){currentImg=img;btn.textContent='EXPORT PNG';btn.classList.remove('loading');redraw();});}
+    else{btn.textContent='EXPORT PNG';btn.classList.remove('loading');}
+  }
+  window.closeModal=function(){document.getElementById('modal').classList.remove('active');document.body.style.overflow='';currentProduct=null;currentImg=null;};
+  window.closeExport=function(){document.getElementById('exportOverlay').classList.remove('active');};
+
+  function redraw(){
+    var canvas=document.getElementById('previewCanvas'),ctx=canvas.getContext('2d');
+    canvas.width=CW;canvas.height=CH;
+    ctx.fillStyle='#0c0c0c';ctx.fillRect(0,0,CW,CH);
+    var rg=ctx.createRadialGradient(CW*0.45,CH*0.35,80,CW*0.45,CH*0.35,CW*0.85);
+    rg.addColorStop(0,'rgba(255,255,255,0.02)');rg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=rg;ctx.fillRect(0,0,CW,CH);
+    drawSeigaiha(ctx,CW,CH);
+    for(var i=0;i<10000;i++){ctx.fillStyle='rgba(255,255,255,'+(Math.random()*0.025)+')';ctx.fillRect(Math.random()*CW,Math.random()*CH,1,1);}
+
+    var px=parseFloat(document.getElementById('sX').value),py=parseFloat(document.getElementById('sY').value),ps=parseFloat(document.getElementById('sScale').value);
+    var cardBottom=CH*0.55;
+    if(currentImg){
+      var iw=currentImg.naturalWidth||currentImg.width,ih=currentImg.naturalHeight||currentImg.height,ratio=iw/ih;
+      var maxH=CH*ps,maxW=CW*0.58,dh=maxH,dw=maxH*ratio;
+      if(dw>maxW){dw=maxW;dh=maxW/ratio;}
+      var cardX=CW*px,cardY=CH*py;cardBottom=cardY+dh;
+      var glowCX=cardX+dw*0.5,glowCY=cardY+dh*0.5,glowR=Math.max(dw,dh)*0.65;
+      var g1=ctx.createRadialGradient(glowCX,glowCY,0,glowCX,glowCY,glowR);
+      g1.addColorStop(0,'rgba(255,255,255,0.10)');g1.addColorStop(0.4,'rgba(255,255,255,0.04)');
+      g1.addColorStop(0.75,'rgba(255,255,255,0.01)');g1.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle=g1;ctx.fillRect(0,0,CW,CH);
+      ctx.save();ctx.shadowColor='rgba(255,255,255,0.22)';ctx.shadowBlur=80;
+      ctx.drawImage(currentImg,cardX,cardY,dw,dh);ctx.restore();
+      ctx.drawImage(currentImg,cardX,cardY,dw,dh);
+    }
+    ctx.fillStyle='#FFFFFF';ctx.font="800 80px 'Inter', sans-serif";ctx.textBaseline='top';
+    ctx.fillText('KEEP.',55,55);
+    var textPad=30,textTop=cardBottom+textPad,footerY=CH-55,footerH=70,availH=footerY-footerH-textTop;
+    var tagline=document.getElementById('fTagline').value,tagH=tagline?36:0;
+    var lines=['fLine1','fLine2','fLine3','fLine4'].map(function(id){return document.getElementById(id).value;}).filter(function(l){return l;});
+    var lineH=68,mFS=56,tFS=24,totH=tagH+lines.length*lineH;
+    if(totH>availH&&availH>0){var sc=availH/totH;mFS=Math.max(28,Math.floor(56*sc));tFS=Math.max(14,Math.floor(24*sc));lineH=Math.max(34,Math.floor(68*sc));tagH=tagline?Math.max(20,Math.floor(36*sc)):0;}
+    var curY=textTop;
+    if(tagline){ctx.font="800 italic "+tFS+"px 'Inter', sans-serif";ctx.textBaseline='top';ctx.fillText(tagline.toUpperCase(),55,curY);curY+=tagH;}
+    ctx.font="800 "+mFS+"px 'Inter', sans-serif";ctx.textBaseline='top';
+    lines.forEach(function(line){ctx.fillText(line.toUpperCase(),55,curY);curY+=lineH;});
+    ctx.font="800 56px 'Inter', sans-serif";ctx.textBaseline='bottom';ctx.fillText('NOW AVAILABLE.',55,footerY);
   }
 
-  window.closeModal = function() {
-    document.getElementById('modal').classList.remove('active');
-    document.body.style.overflow = '';
-    currentProduct = null; currentImg = null;
+  window.exportImage=function(){
+    var canvas=document.getElementById('previewCanvas');
+    var dataUrl=canvas.toDataURL('image/png');
+    var safeName='KEEP_'+(currentProduct?currentProduct.name:'card').replace(/[^a-zA-Z0-9]/g,'_').slice(0,50)+'.png';
+    document.getElementById('exportImg').src=dataUrl;
+    document.getElementById('downloadLink').href=dataUrl;
+    document.getElementById('downloadLink').download=safeName;
+    document.getElementById('exportOverlay').classList.add('active');
   };
 
-  function redraw() {
-    var canvas = document.getElementById('previewCanvas');
-    var ctx = canvas.getContext('2d');
-    canvas.width = CW; canvas.height = CH;
-
-    ctx.fillStyle = '#0c0c0c';
-    ctx.fillRect(0, 0, CW, CH);
-    var rg = ctx.createRadialGradient(CW * 0.45, CH * 0.35, 80, CW * 0.45, CH * 0.35, CW * 0.85);
-    rg.addColorStop(0, 'rgba(255,255,255,0.02)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = rg; ctx.fillRect(0, 0, CW, CH);
-
-    drawSeigaiha(ctx, CW, CH);
-
-    for (var i = 0; i < 10000; i++) {
-      ctx.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.025) + ')';
-      ctx.fillRect(Math.random() * CW, Math.random() * CH, 1, 1);
-    }
-
-    var px = parseFloat(document.getElementById('sX').value);
-    var py = parseFloat(document.getElementById('sY').value);
-    var ps = parseFloat(document.getElementById('sScale').value);
-    var cardBottom = CH * 0.55;
-
-    if (currentImg) {
-      var iw = currentImg.naturalWidth || currentImg.width;
-      var ih = currentImg.naturalHeight || currentImg.height;
-      var ratio = iw / ih;
-      var maxH = CH * ps, maxW = CW * 0.58;
-      var dh = maxH, dw = maxH * ratio;
-      if (dw > maxW) { dw = maxW; dh = maxW / ratio; }
-      var cardX = CW * px, cardY = CH * py;
-      cardBottom = cardY + dh;
-
-      var glowCX = cardX + dw * 0.5, glowCY = cardY + dh * 0.5;
-      var glowR = Math.max(dw, dh) * 0.65;
-
-      var g1 = ctx.createRadialGradient(glowCX, glowCY, 0, glowCX, glowCY, glowR);
-      g1.addColorStop(0, 'rgba(255,255,255,0.10)');
-      g1.addColorStop(0.4, 'rgba(255,255,255,0.04)');
-      g1.addColorStop(0.75, 'rgba(255,255,255,0.01)');
-      g1.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = g1; ctx.fillRect(0, 0, CW, CH);
-
-      ctx.save();
-      ctx.shadowColor = 'rgba(255,255,255,0.22)'; ctx.shadowBlur = 80;
-      ctx.drawImage(currentImg, cardX, cardY, dw, dh);
-      ctx.restore();
-      ctx.drawImage(currentImg, cardX, cardY, dw, dh);
-    }
-
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = "800 80px 'Inter', sans-serif";
-    ctx.textBaseline = 'top';
-    ctx.fillText('KEEP.', 55, 55);
-
-    var textPad = 30;
-    var textTop = cardBottom + textPad;
-    var footerY = CH - 55;
-    var footerHeight = 70;
-    var availableH = footerY - footerHeight - textTop;
-
-    var tagline = document.getElementById('fTagline').value;
-    var taglineH = tagline ? 36 : 0;
-    var lines = [
-      document.getElementById('fLine1').value,
-      document.getElementById('fLine2').value,
-      document.getElementById('fLine3').value,
-      document.getElementById('fLine4').value
-    ].filter(function(l) { return l; });
-
-    var lineH = 68, mainFontSize = 56, tagFontSize = 24;
-    var totalTextH = taglineH + (lines.length * lineH);
-    if (totalTextH > availableH && availableH > 0) {
-      var scale = availableH / totalTextH;
-      mainFontSize = Math.max(28, Math.floor(56 * scale));
-      tagFontSize = Math.max(14, Math.floor(24 * scale));
-      lineH = Math.max(34, Math.floor(68 * scale));
-      taglineH = tagline ? Math.max(20, Math.floor(36 * scale)) : 0;
-    }
-
-    var curY = textTop;
-    if (tagline) {
-      ctx.font = "800 italic " + tagFontSize + "px 'Inter', sans-serif";
-      ctx.textBaseline = 'top';
-      ctx.fillText(tagline.toUpperCase(), 55, curY);
-      curY += taglineH;
-    }
-    ctx.font = "800 " + mainFontSize + "px 'Inter', sans-serif";
-    ctx.textBaseline = 'top';
-    lines.forEach(function(line) { ctx.fillText(line.toUpperCase(), 55, curY); curY += lineH; });
-
-    ctx.font = "800 56px 'Inter', sans-serif";
-    ctx.textBaseline = 'bottom';
-    ctx.fillText('NOW AVAILABLE.', 55, footerY);
-  }
-
-  window.exportImage = function() {
-    var canvas = document.getElementById('previewCanvas');
-    canvas.toBlob(function(blob) {
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = 'KEEP_' + (currentProduct?currentProduct.name:'card').replace(/[^a-zA-Z0-9]/g,'_').slice(0,50) + '.png';
-      a.click(); URL.revokeObjectURL(url);
-    }, 'image/png');
-  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){});
 })();
 </script>
 </body>

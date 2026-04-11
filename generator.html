@@ -17,169 +17,78 @@
   }
   html { -webkit-text-size-adjust: 100%; }
   body { background: var(--bg); color: var(--white); font-family: var(--font); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
-  #gate {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--bg); z-index: 9999;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px;
-  }
+  #gate { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
   #gate.hidden { display: none; }
   #gate h1 { font-size: 48px; font-weight: 800; letter-spacing: 3px; margin-bottom: 6px; }
   #gate .sub { color: var(--dim); font-size: 11px; font-family: monospace; font-weight: 400; margin-bottom: 40px; }
   #gate .pw-wrap { width: 100%; max-width: 280px; display: flex; flex-direction: column; gap: 12px; }
-  #gate input {
-    background: #111; border: 1px solid var(--border); border-radius: 6px;
-    color: var(--white); padding: 16px 18px; font-family: var(--font);
-    font-size: 18px; font-weight: 800; text-align: center; letter-spacing: 8px;
-    outline: none; width: 100%; min-height: 56px; -webkit-text-security: disc;
-  }
+  #gate input { background: #111; border: 1px solid var(--border); border-radius: 6px; color: var(--white); padding: 16px 18px; font-family: var(--font); font-size: 18px; font-weight: 800; text-align: center; letter-spacing: 8px; outline: none; width: 100%; min-height: 56px; -webkit-text-security: disc; }
   #gate input:focus { border-color: var(--border-light); }
-  #gate button {
-    background: var(--white); border: none; color: #000; border-radius: 6px; padding: 16px; cursor: pointer;
-    font-family: var(--font); font-size: 14px; font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase; width: 100%; min-height: 52px;
-  }
+  #gate button { background: var(--white); border: none; color: #000; border-radius: 6px; padding: 16px; cursor: pointer; font-family: var(--font); font-size: 14px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; width: 100%; min-height: 52px; }
   #gate button:active { opacity: 0.8; }
   #gate .error { color: #f44; font-size: 12px; font-family: monospace; text-align: center; min-height: 18px; }
   #app { display: none; }
   #app.visible { display: block; }
-  .header {
-    padding: 14px 16px; border-bottom: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 10px; position: sticky; top: 0; background: var(--bg); z-index: 50;
-  }
+  .header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; position: sticky; top: 0; background: var(--bg); z-index: 50; }
   .header h1 { font-size: 22px; letter-spacing: 2px; font-weight: 800; }
   .header .sub { color: var(--dim); font-size: 10px; font-family: monospace; font-weight: 400; margin-top: 2px; }
   .header-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1; justify-content: flex-end; }
-  .search-input {
-    background: #111; border: 1px solid var(--border); border-radius: 4px;
-    color: var(--white); padding: 10px 14px; font-family: monospace;
-    font-size: 14px; outline: none; flex: 1; min-width: 100px; max-width: 240px;
-  }
+  .search-input { background: #111; border: 1px solid var(--border); border-radius: 4px; color: var(--white); padding: 10px 14px; font-family: monospace; font-size: 14px; outline: none; flex: 1; min-width: 100px; max-width: 240px; }
   .search-input:focus { border-color: var(--border-light); }
-  .filter-select {
-    background: #111; border: 1px solid var(--border); border-radius: 4px;
-    color: var(--white); padding: 10px 12px; font-family: monospace;
-    font-size: 14px; outline: none; cursor: pointer;
-    -webkit-appearance: none; appearance: none; padding-right: 28px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 8px center;
-  }
+  .filter-select { background: #111; border: 1px solid var(--border); border-radius: 4px; color: var(--white); padding: 10px 12px; font-family: monospace; font-size: 14px; outline: none; cursor: pointer; -webkit-appearance: none; appearance: none; padding-right: 28px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
   .filter-select option { background: #111; }
   .count { color: var(--dim); font-size: 11px; font-family: monospace; white-space: nowrap; }
   .grid { padding: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
-  .product-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
-    cursor: pointer; transition: all 0.15s; overflow: hidden;
-    -webkit-touch-callout: none; user-select: none;
-  }
+  .product-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s; overflow: hidden; -webkit-touch-callout: none; user-select: none; }
   .product-card:active { transform: scale(0.97); }
   .product-card:hover { background: var(--card-hover); border-color: var(--border-light); }
-  .product-card .img-wrap {
-    width: 100%; aspect-ratio: 3/4; background: #0a0a0a;
-    display: flex; align-items: center; justify-content: center; overflow: hidden;
-  }
+  .product-card .img-wrap { width: 100%; aspect-ratio: 3/4; background: #0a0a0a; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   .product-card .img-wrap img { width: 100%; height: 100%; object-fit: contain; }
   .product-card .img-wrap .no-img { color: #333; font-size: 11px; font-family: monospace; }
   .product-card .info { padding: 8px 10px; }
-  .product-card .name {
-    font-size: 10px; font-family: monospace; color: #ccc; text-transform: uppercase; letter-spacing: 0.5px;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
+  .product-card .name { font-size: 10px; font-family: monospace; color: #ccc; text-transform: uppercase; letter-spacing: 0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .product-card .meta { display: flex; justify-content: space-between; margin-top: 4px; }
   .product-card .game { font-size: 10px; font-family: monospace; color: var(--dim); }
   .product-card .price { font-size: 10px; font-family: monospace; color: var(--gray); }
   .empty { text-align: center; color: var(--dim); font-family: monospace; font-size: 12px; padding: 60px 20px; }
-  .modal-overlay {
-    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--bg); z-index: 100; overflow-y: auto; -webkit-overflow-scrolling: touch;
-  }
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 100; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .modal-overlay.active { display: block; }
   .modal { width: 100%; min-height: 100%; }
-  .modal-header {
-    padding: 14px 16px; border-bottom: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-    position: sticky; top: 0; background: var(--bg); z-index: 10;
-  }
+  .modal-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); z-index: 10; }
   .modal-header .label { font-size: 10px; font-family: monospace; color: var(--dim); }
-  .modal-header .title {
-    font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
-    max-width: 70vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .btn-close {
-    background: none; border: 1px solid var(--border-light); color: var(--gray);
-    border-radius: 4px; padding: 8px 16px; cursor: pointer; font-size: 13px;
-    font-family: var(--font); font-weight: 800; min-height: 44px; display: flex; align-items: center;
-  }
+  .modal-header .title { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; max-width: 70vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn-close { background: none; border: 1px solid var(--border-light); color: var(--gray); border-radius: 4px; padding: 8px 16px; cursor: pointer; font-size: 13px; font-family: var(--font); font-weight: 800; min-height: 44px; display: flex; align-items: center; }
   .modal-body { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
   .preview-wrap { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-  .preview-wrap canvas {
-    width: 100%; height: auto; aspect-ratio: 1080/1350;
-    border-radius: 6px; background: #000; display: block;
-  }
+  .preview-wrap canvas { width: 100%; height: auto; aspect-ratio: 1080/1350; border-radius: 6px; background: #000; display: block; }
+  /* Hidden export canvas — full res, not displayed */
+  #exportCanvas { display: none; }
   .sliders { display: flex; gap: 10px; flex-wrap: wrap; }
   .sliders label { color: var(--dim); font-size: 10px; font-family: monospace; flex: 1; min-width: 80px; }
   .sliders input[type=range] { width: 100%; accent-color: #fff; margin-top: 6px; display: block; height: 36px; }
   .fields { width: 100%; display: flex; flex-direction: column; gap: 12px; }
-  .field label {
-    font-size: 10px; font-family: monospace; color: var(--dim);
-    margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 1px;
-  }
-  .field input {
-    background: #0a0a0a; border: 1px solid var(--border); border-radius: 6px;
-    color: var(--white); padding: 14px 14px; font-family: var(--font);
-    font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-    outline: none; width: 100%; min-height: 48px;
-  }
+  .field label { font-size: 10px; font-family: monospace; color: var(--dim); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+  .field input { background: #0a0a0a; border: 1px solid var(--border); border-radius: 6px; color: var(--white); padding: 14px 14px; font-family: var(--font); font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; outline: none; width: 100%; min-height: 48px; }
   .field input:focus { border-color: var(--border-light); }
   .field input.hl { border-color: #555; }
-  .btn-export {
-    margin-top: 8px; background: var(--white); border: none; color: #000;
-    border-radius: 6px; padding: 18px 24px; cursor: pointer;
-    font-family: var(--font); font-size: 16px; font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase; width: 100%; min-height: 56px;
-  }
+  .btn-export { margin-top: 8px; background: var(--white); border: none; color: #000; border-radius: 6px; padding: 18px 24px; cursor: pointer; font-family: var(--font); font-size: 16px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; width: 100%; min-height: 56px; }
   .btn-export:active { opacity: 0.8; }
   .btn-export.loading { opacity: 0.5; pointer-events: none; }
   .export-status { font-size: 11px; font-family: monospace; text-align: center; min-height: 16px; margin-top: 4px; }
   .export-status.err { color: #f44; }
-  .export-status.ok { color: #4f4; }
-
-  .export-overlay {
-    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--bg); z-index: 200;
-    flex-direction: column; align-items: center; overflow-y: auto; -webkit-overflow-scrolling: touch;
-  }
+  .export-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 200; flex-direction: column; align-items: center; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .export-overlay.active { display: flex; }
-  .export-overlay .export-bar {
-    width: 100%; padding: 14px 16px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 10;
-  }
+  .export-overlay .export-bar { width: 100%; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 10; }
   .export-overlay .export-bar p { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
   .export-overlay .export-bar .hint { font-size: 10px; font-family: monospace; color: var(--dim); font-weight: 400; margin-top: 2px; }
   .export-overlay img { width: 100%; max-width: 540px; height: auto; display: block; padding: 16px; }
-  .export-actions {
-    padding: 0 16px 32px; width: 100%; max-width: 540px;
-    display: flex; flex-direction: column; gap: 10px;
-  }
-  .export-actions a {
-    display: block; background: var(--white); color: #000; text-align: center;
-    border-radius: 6px; padding: 16px; text-decoration: none;
-    font-family: var(--font); font-size: 14px; font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase;
-  }
+  .export-actions { padding: 0 16px 32px; width: 100%; max-width: 540px; display: flex; flex-direction: column; gap: 10px; }
+  .export-actions a { display: block; background: var(--white); color: #000; text-align: center; border-radius: 6px; padding: 16px; text-decoration: none; font-family: var(--font); font-size: 14px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
   .export-actions a:active { opacity: 0.8; }
-  .export-actions button {
-    background: none; border: 1px solid var(--border-light); color: var(--gray);
-    border-radius: 6px; padding: 14px; cursor: pointer;
-    font-family: var(--font); font-size: 13px; font-weight: 800;
-    letter-spacing: 1px; text-transform: uppercase;
-  }
-
+  .export-actions button { background: none; border: 1px solid var(--border-light); color: var(--gray); border-radius: 6px; padding: 14px; cursor: pointer; font-family: var(--font); font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
   .modal-body { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
   @media (min-width: 700px) {
-    .header { padding: 16px 24px; }
-    .grid { padding: 20px 24px; }
+    .header { padding: 16px 24px; } .grid { padding: 20px 24px; }
     .modal-overlay { background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.active { display: flex; }
     .modal { max-width: 920px; max-height: 95vh; overflow: auto; background: #111; border: 1px solid var(--border); border-radius: 10px; min-height: auto; }
@@ -195,74 +104,48 @@
     .search-input { font-size: 12px; padding: 8px 14px; }
     .filter-select { font-size: 12px; padding: 8px 12px; }
   }
-  @media (max-width: 380px) {
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; }
-    .header h1 { font-size: 20px; }
-    .search-input { min-width: 80px; }
-  }
+  @media (max-width: 380px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; } .header h1 { font-size: 20px; } .search-input { min-width: 80px; } }
 </style>
 </head>
 <body>
 
-<div id="gate">
-  <h1>KEEP.</h1><p class="sub">IMAGE GENERATOR</p>
-  <div class="pw-wrap">
-    <input type="password" id="pwInput" placeholder="••••" inputmode="numeric" autocomplete="off">
-    <button onclick="checkPassword()">ENTER</button>
-    <p class="error" id="pwError"></p>
-  </div>
-</div>
+<div id="gate"><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR</p><div class="pw-wrap"><input type="password" id="pwInput" placeholder="••••" inputmode="numeric" autocomplete="off"><button onclick="checkPassword()">ENTER</button><p class="error" id="pwError"></p></div></div>
 
 <div id="app">
-  <div class="header">
-    <div><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p></div>
-    <div class="header-controls">
-      <input type="text" class="search-input" id="searchInput" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-      <select class="filter-select" id="gameFilter"><option value="ALL">ALL</option></select>
-      <span class="count"><span id="shownCount">0</span></span>
-    </div>
-  </div>
+  <div class="header"><div><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p></div><div class="header-controls"><input type="text" class="search-input" id="searchInput" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><select class="filter-select" id="gameFilter"><option value="ALL">ALL</option></select><span class="count"><span id="shownCount">0</span></span></div></div>
   <div class="grid" id="productGrid"></div>
   <p class="empty" id="emptyMsg" style="display:none;">NO PRODUCTS MATCH YOUR SEARCH</p>
-  <div class="modal-overlay" id="modal">
-    <div class="modal">
-      <div class="modal-header">
-        <div><p class="label">EDITING</p><p class="title" id="modalTitle"></p></div>
-        <button class="btn-close" onclick="closeModal()">✕ CLOSE</button>
+  <div class="modal-overlay" id="modal"><div class="modal">
+    <div class="modal-header"><div><p class="label">EDITING</p><p class="title" id="modalTitle"></p></div><button class="btn-close" onclick="closeModal()">✕ CLOSE</button></div>
+    <div class="modal-body">
+      <div class="preview-wrap">
+        <canvas id="previewCanvas" width="1080" height="1350"></canvas>
+        <div class="sliders">
+          <label>X<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
+          <label>Y<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
+          <label>SIZE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
+        </div>
       </div>
-      <div class="modal-body">
-        <div class="preview-wrap">
-          <canvas id="previewCanvas" width="1080" height="1350"></canvas>
-          <div class="sliders">
-            <label>X<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
-            <label>Y<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
-            <label>SIZE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
-          </div>
-        </div>
-        <div class="fields">
-          <div class="field"><label>TAGLINE</label><input type="text" id="fTagline" class="hl" placeholder='THE HOOK LINE' autocomplete="off" autocorrect="off" autocapitalize="characters"></div>
-          <div class="field"><label>LINE 1 — NAME</label><input type="text" id="fLine1" autocomplete="off" autocapitalize="characters"></div>
-          <div class="field"><label>LINE 2 — NUMBER</label><input type="text" id="fLine2" autocomplete="off" autocapitalize="characters"></div>
-          <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3" autocomplete="off" autocapitalize="characters"></div>
-          <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4" autocomplete="off" autocapitalize="characters"></div>
-          <button class="btn-export" id="exportBtn" onclick="exportImage()">EXPORT PNG</button>
-          <p class="export-status" id="exportStatus"></p>
-        </div>
+      <div class="fields">
+        <div class="field"><label>TAGLINE</label><input type="text" id="fTagline" class="hl" placeholder='THE HOOK LINE' autocomplete="off" autocorrect="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 1 — NAME</label><input type="text" id="fLine1" autocomplete="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 2 — NUMBER</label><input type="text" id="fLine2" autocomplete="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3" autocomplete="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4" autocomplete="off" autocapitalize="characters"></div>
+        <button class="btn-export" id="exportBtn" onclick="exportImage()">EXPORT PNG</button>
+        <p class="export-status" id="exportStatus"></p>
       </div>
     </div>
-  </div>
+  </div></div>
 </div>
 
+<!-- Hidden full-res export canvas — draws with blob image for clean export -->
+<canvas id="exportCanvas" width="1080" height="1350"></canvas>
+
 <div class="export-overlay" id="exportOverlay">
-  <div class="export-bar">
-    <div><p>YOUR IMAGE</p><p class="hint">RIGHT-CLICK OR LONG-PRESS TO SAVE</p></div>
-    <button class="btn-close" onclick="closeExport()">✕ CLOSE</button>
-  </div>
+  <div class="export-bar"><div><p>YOUR IMAGE</p><p class="hint">RIGHT-CLICK OR LONG-PRESS TO SAVE</p></div><button class="btn-close" onclick="closeExport()">✕ CLOSE</button></div>
   <img id="exportImg" src="" alt="KEEP. Export">
-  <div class="export-actions">
-    <a id="downloadLink" href="" download="">DOWNLOAD PNG</a>
-    <button onclick="closeExport()">BACK TO EDITOR</button>
-  </div>
+  <div class="export-actions"><a id="downloadLink" href="" download="">DOWNLOAD PNG</a><button onclick="closeExport()">BACK TO EDITOR</button></div>
 </div>
 
 <script src="products.js"></script>
@@ -277,41 +160,45 @@
   window.checkPassword=async function(){var h=await sha256(document.getElementById('pwInput').value);if(h===PW_HASH){sessionStorage.setItem(SESSION_KEY,'true');unlock();}else{document.getElementById('pwError').textContent='WRONG PASSWORD';document.getElementById('pwInput').value='';document.getElementById('pwInput').focus();}};
   function unlock(){document.getElementById('gate').classList.add('hidden');document.getElementById('app').classList.add('visible');initApp();}
 
-  var CW=1080,CH=1350,products=[],currentProduct=null,currentImg=null,currentImgClean=false,appInited=false;
+  var CW=1080,CH=1350,products=[],currentProduct=null,appInited=false;
+
+  // Store TWO versions of the image:
+  // displayImg — for preview canvas (may be tainted, that's fine)
+  // exportImg — loaded as blob URL, guaranteed clean for toDataURL
+  var displayImg=null, exportImgEl=null;
 
   var interFont=new FontFace('Inter',"url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)",{weight:'800'});
   interFont.load().then(function(l){document.fonts.add(l);}).catch(function(){});
 
   function getFirstImg(f){return f?f.split('|')[0].trim():'';}
 
-  // Load image as blob (CORS-safe for canvas export)
-  function loadImageAsBlob(url){
-    return fetch(url).then(function(r){
-      if(!r.ok)throw new Error('fetch failed');
+  // Load image twice: once for display, once as blob for export
+  function loadImages(url, callback){
+    displayImg=null; exportImgEl=null;
+
+    // 1) Display image — just load it directly, don't care about CORS
+    var dImg=new Image();
+    dImg.onload=function(){ displayImg=dImg; redraw(); };
+    dImg.onerror=function(){ displayImg=null; redraw(); };
+    dImg.src=url;
+
+    // 2) Export image — fetch as blob to avoid canvas tainting
+    fetch(url).then(function(r){
+      if(!r.ok)throw new Error('fail');
       return r.blob();
     }).then(function(blob){
-      return new Promise(function(resolve){
-        var u=URL.createObjectURL(blob);
-        var img=new Image();
-        img.onload=function(){resolve({img:img,clean:true});};
-        img.onerror=function(){resolve(null);};
-        img.src=u;
-      });
+      var blobUrl=URL.createObjectURL(blob);
+      var eImg=new Image();
+      eImg.onload=function(){ exportImgEl=eImg; callback(); };
+      eImg.onerror=function(){ exportImgEl=null; callback(); };
+      eImg.src=blobUrl;
     }).catch(function(){
-      // Fallback: load directly — preview works but canvas is tainted
-      return new Promise(function(resolve){
-        var img=new Image();
-        img.crossOrigin='anonymous';
-        img.onload=function(){resolve({img:img,clean:true});};
-        img.onerror=function(){
-          // Last resort: no CORS at all
-          var img2=new Image();
-          img2.onload=function(){resolve({img:img2,clean:false});};
-          img2.onerror=function(){resolve(null);};
-          img2.src=url;
-        };
-        img.src=url;
-      });
+      // Blob fetch failed — try crossOrigin
+      var eImg=new Image();
+      eImg.crossOrigin='anonymous';
+      eImg.onload=function(){ exportImgEl=eImg; callback(); };
+      eImg.onerror=function(){ exportImgEl=null; callback(); };
+      eImg.src=url;
     });
   }
 
@@ -339,39 +226,19 @@
     document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal')&&window.innerWidth>=700)closeModal();});
     document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeExport();closeModal();}});
   }
-
-  function buildFilters(){
-    var gs={};products.forEach(function(p){if(p.game)gs[p.game]=true;});
-    var sel=document.getElementById('gameFilter');
-    Object.keys(gs).sort().forEach(function(g){var o=document.createElement('option');o.value=g;o.textContent=g;sel.appendChild(o);});
-  }
-
+  function buildFilters(){var gs={};products.forEach(function(p){if(p.game)gs[p.game]=true;});var sel=document.getElementById('gameFilter');Object.keys(gs).sort().forEach(function(g){var o=document.createElement('option');o.value=g;o.textContent=g;sel.appendChild(o);});}
   function renderGrid(){
     var s=document.getElementById('searchInput').value.toLowerCase(),g=document.getElementById('gameFilter').value;
     var grid=document.getElementById('productGrid');grid.innerHTML='';
     var f=products.filter(function(p){return(!s||p.name.toLowerCase().indexOf(s)!==-1)&&(g==='ALL'||p.game===g);});
     document.getElementById('shownCount').textContent=f.length;
     document.getElementById('emptyMsg').style.display=f.length===0?'block':'none';
-    f.forEach(function(p){
-      var c=document.createElement('div');c.className='product-card';c.onclick=function(){openEditor(p);};
-      var src=getFirstImg(p.img);
-      c.innerHTML='<div class="img-wrap">'+(src?'<img src="'+src+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">':'<span class="no-img">NO IMAGE</span>')+'</div><div class="info"><p class="name">'+p.name+'</p><div class="meta"><span class="game">'+(p.game||'')+'</span><span class="price">'+(p.price||'')+'</span></div></div>';
-      grid.appendChild(c);
-    });
+    f.forEach(function(p){var c=document.createElement('div');c.className='product-card';c.onclick=function(){openEditor(p);};var src=getFirstImg(p.img);c.innerHTML='<div class="img-wrap">'+(src?'<img src="'+src+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">':'<span class="no-img">NO IMAGE</span>')+'</div><div class="info"><p class="name">'+p.name+'</p><div class="meta"><span class="game">'+(p.game||'')+'</span><span class="price">'+(p.price||'')+'</span></div></div>';grid.appendChild(c);});
   }
-
-  function parseName(name){
-    var parts=name.split(/\s+/),cn='',num='',ext='';
-    for(var i=0;i<parts.length;i++){
-      if(parts[i].toUpperCase()==='NO.'&&parts[i+1]&&/^\d+$/.test(parts[i+1])){cn=parts.slice(0,i).join(' ');num=parts[i]+' '+parts[i+1];ext=parts.slice(i+2).join(' ');break;}
-      if(/^\d+\/\d+$|^[A-Z]*\d+-\d+$/i.test(parts[i])){cn=parts.slice(0,i).join(' ');num=parts[i];ext=parts.slice(i+1).join(' ');break;}
-    }
-    if(!cn)cn=name;
-    return{line1:cn?cn.toUpperCase()+'.':'',line2:num?num.toUpperCase()+'.':'',line3:'',line4:ext?ext.toUpperCase()+'.':''};
-  }
+  function parseName(name){var parts=name.split(/\s+/),cn='',num='',ext='';for(var i=0;i<parts.length;i++){if(parts[i].toUpperCase()==='NO.'&&parts[i+1]&&/^\d+$/.test(parts[i+1])){cn=parts.slice(0,i).join(' ');num=parts[i]+' '+parts[i+1];ext=parts.slice(i+2).join(' ');break;}if(/^\d+\/\d+$|^[A-Z]*\d+-\d+$/i.test(parts[i])){cn=parts.slice(0,i).join(' ');num=parts[i];ext=parts.slice(i+1).join(' ');break;}}if(!cn)cn=name;return{line1:cn?cn.toUpperCase()+'.':'',line2:num?num.toUpperCase()+'.':'',line3:'',line4:ext?ext.toUpperCase()+'.':''};}
 
   function openEditor(product){
-    currentProduct=product;currentImg=null;currentImgClean=false;
+    currentProduct=product;displayImg=null;exportImgEl=null;
     document.getElementById('modalTitle').textContent=product.name;
     document.getElementById('modal').classList.add('active');
     document.body.style.overflow='hidden';
@@ -392,22 +259,19 @@
     redraw();
     var src=getFirstImg(product.img);
     if(src){
-      loadImageAsBlob(src).then(function(result){
-        if(result){currentImg=result.img;currentImgClean=result.clean;}
+      loadImages(src, function(){
         btn.textContent='EXPORT PNG';btn.classList.remove('loading');
-        redraw();
       });
     }else{btn.textContent='EXPORT PNG';btn.classList.remove('loading');}
   }
 
-  window.closeModal=function(){document.getElementById('modal').classList.remove('active');document.body.style.overflow='';currentProduct=null;currentImg=null;};
+  window.closeModal=function(){document.getElementById('modal').classList.remove('active');document.body.style.overflow='';currentProduct=null;displayImg=null;exportImgEl=null;};
   window.closeExport=function(){document.getElementById('exportOverlay').classList.remove('active');};
 
-  // Render to any canvas
-  function renderToCanvas(canvas, img){
+  // Render to a canvas with a specific image
+  function renderTo(canvas,img){
     var ctx=canvas.getContext('2d');
     canvas.width=CW;canvas.height=CH;
-
     ctx.fillStyle='#0c0c0c';ctx.fillRect(0,0,CW,CH);
     var rg=ctx.createRadialGradient(CW*0.45,CH*0.35,80,CW*0.45,CH*0.35,CW*0.85);
     rg.addColorStop(0,'rgba(255,255,255,0.02)');rg.addColorStop(1,'rgba(0,0,0,0)');
@@ -417,24 +281,21 @@
 
     var px=parseFloat(document.getElementById('sX').value),py=parseFloat(document.getElementById('sY').value),ps=parseFloat(document.getElementById('sScale').value);
     var cardBottom=CH*0.55;
-
     if(img){
       var iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height,ratio=iw/ih;
       var maxH=CH*ps,maxW=CW*0.58,dh=maxH,dw=maxH*ratio;
       if(dw>maxW){dw=maxW;dh=maxW/ratio;}
-      var cardX=CW*px,cardY=CH*py;cardBottom=cardY+dh;
-      var glowCX=cardX+dw*0.5,glowCY=cardY+dh*0.5,glowR=Math.max(dw,dh)*0.65;
-      var g1=ctx.createRadialGradient(glowCX,glowCY,0,glowCX,glowCY,glowR);
+      var cX=CW*px,cY=CH*py;cardBottom=cY+dh;
+      var gCX=cX+dw*0.5,gCY=cY+dh*0.5,gR=Math.max(dw,dh)*0.65;
+      var g1=ctx.createRadialGradient(gCX,gCY,0,gCX,gCY,gR);
       g1.addColorStop(0,'rgba(255,255,255,0.10)');g1.addColorStop(0.4,'rgba(255,255,255,0.04)');
       g1.addColorStop(0.75,'rgba(255,255,255,0.01)');g1.addColorStop(1,'rgba(255,255,255,0)');
       ctx.fillStyle=g1;ctx.fillRect(0,0,CW,CH);
       ctx.save();ctx.shadowColor='rgba(255,255,255,0.22)';ctx.shadowBlur=80;
-      ctx.drawImage(img,cardX,cardY,dw,dh);ctx.restore();
-      ctx.drawImage(img,cardX,cardY,dw,dh);
+      ctx.drawImage(img,cX,cY,dw,dh);ctx.restore();
+      ctx.drawImage(img,cX,cY,dw,dh);
     }
-
-    ctx.fillStyle='#FFFFFF';ctx.font="800 80px 'Inter', sans-serif";ctx.textBaseline='top';
-    ctx.fillText('KEEP.',55,55);
+    ctx.fillStyle='#FFFFFF';ctx.font="800 80px 'Inter', sans-serif";ctx.textBaseline='top';ctx.fillText('KEEP.',55,55);
     var tPad=30,tTop=cardBottom+tPad,fY=CH-55,fH=70,avH=fY-fH-tTop;
     var tag=document.getElementById('fTagline').value,tagH=tag?36:0;
     var lines=['fLine1','fLine2','fLine3','fLine4'].map(function(id){return document.getElementById(id).value;}).filter(function(l){return l;});
@@ -447,59 +308,43 @@
     ctx.font="800 56px 'Inter', sans-serif";ctx.textBaseline='bottom';ctx.fillText('NOW AVAILABLE.',55,fY);
   }
 
-  function redraw(){renderToCanvas(document.getElementById('previewCanvas'),currentImg);}
+  // Preview uses displayImg (may be tainted — doesn't matter, we never export this canvas)
+  function redraw(){renderTo(document.getElementById('previewCanvas'),displayImg);}
 
+  // Export uses exportImgEl (loaded as blob — clean canvas)
   window.exportImage=function(){
     var status=document.getElementById('exportStatus');
     status.textContent='GENERATING...';status.className='export-status';
 
     try{
-      // Create a fresh offscreen canvas for export
-      var exportCanvas=document.createElement('canvas');
-
-      if(currentImgClean&&currentImg){
-        // Image was loaded as blob — canvas should be clean
-        renderToCanvas(exportCanvas,currentImg);
-      }else if(currentImg){
-        // Image might taint — try anyway
-        renderToCanvas(exportCanvas,currentImg);
-      }else{
-        // No image — render without
-        renderToCanvas(exportCanvas,null);
-      }
+      var ec=document.getElementById('exportCanvas');
+      renderTo(ec, exportImgEl); // uses blob-loaded image
 
       var dataUrl;
       try{
-        dataUrl=exportCanvas.toDataURL('image/png');
+        dataUrl=ec.toDataURL('image/png');
       }catch(e){
-        // Canvas tainted — re-render without card image
-        console.warn('Canvas tainted, exporting without card image');
-        renderToCanvas(exportCanvas,null);
-        dataUrl=exportCanvas.toDataURL('image/png');
-        status.textContent='EXPORTED WITHOUT CARD IMAGE (CORS BLOCKED)';
+        // Even the blob image failed — export without card
+        renderTo(ec, null);
+        dataUrl=ec.toDataURL('image/png');
+        status.textContent='EXPORTED WITHOUT CARD (IMAGE SOURCE BLOCKED)';
         status.className='export-status err';
       }
 
-      if(!dataUrl||dataUrl==='data:,'){
-        status.textContent='EXPORT FAILED — TRY AGAIN';
+      if(!dataUrl||dataUrl==='data:,'||dataUrl.length<100){
+        status.textContent='EXPORT FAILED — TRY REFRESHING';
         status.className='export-status err';
         return;
       }
 
       var safeName='KEEP_'+(currentProduct?currentProduct.name:'card').replace(/[^a-zA-Z0-9]/g,'_').slice(0,50)+'.png';
-
-      // Show export overlay
       document.getElementById('exportImg').src=dataUrl;
       document.getElementById('downloadLink').href=dataUrl;
       document.getElementById('downloadLink').download=safeName;
       document.getElementById('exportOverlay').classList.add('active');
-
-      status.textContent='';
-      status.className='export-status';
-
+      status.textContent='';status.className='export-status';
     }catch(err){
-      console.error('Export error:',err);
-      status.textContent='EXPORT FAILED: '+err.message;
+      status.textContent='ERROR: '+err.message;
       status.className='export-status err';
     }
   };

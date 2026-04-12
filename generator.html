@@ -7,335 +7,769 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-  :root{--bg:#0a0a0a;--card:#141414;--card-hover:#1c1c1c;--border:#282828;--border-light:#444;--white:#fff;--gray:#888;--dim:#555;--font:'Inter',sans-serif}
-  html{-webkit-text-size-adjust:100%}
-  body{background:var(--bg);color:var(--white);font-family:var(--font);min-height:100vh;-webkit-tap-highlight-color:transparent}
-  #gate{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
-  #gate.hidden{display:none}
-  #gate h1{font-size:48px;font-weight:800;letter-spacing:3px;margin-bottom:6px}
-  #gate .sub{color:var(--dim);font-size:11px;font-family:monospace;font-weight:400;margin-bottom:40px}
-  #gate .pw-wrap{width:100%;max-width:280px;display:flex;flex-direction:column;gap:12px}
-  #gate input{background:#111;border:1px solid var(--border);border-radius:6px;color:var(--white);padding:16px 18px;font-family:var(--font);font-size:18px;font-weight:800;text-align:center;letter-spacing:8px;outline:none;width:100%;min-height:56px;-webkit-text-security:disc}
-  #gate input:focus{border-color:var(--border-light)}
-  #gate button{background:var(--white);border:none;color:#000;border-radius:6px;padding:16px;cursor:pointer;font-family:var(--font);font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;width:100%;min-height:52px}
-  #gate button:active{opacity:.8}
-  #gate .error{color:#f44;font-size:12px;font-family:monospace;text-align:center;min-height:18px}
-  #app{display:none}#app.visible{display:block}
-  .header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;background:var(--bg);z-index:50}
-  .header h1{font-size:22px;letter-spacing:2px;font-weight:800}
-  .header .sub{color:var(--dim);font-size:10px;font-family:monospace;font-weight:400;margin-top:2px}
-  .header-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:1;justify-content:flex-end}
-  .search-input{background:#111;border:1px solid var(--border);border-radius:4px;color:var(--white);padding:10px 14px;font-family:monospace;font-size:14px;outline:none;flex:1;min-width:100px;max-width:240px}
-  .search-input:focus{border-color:var(--border-light)}
-  .filter-select{background:#111;border:1px solid var(--border);border-radius:4px;color:var(--white);padding:10px 12px;font-family:monospace;font-size:14px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
-  .filter-select option{background:#111}
-  .count{color:var(--dim);font-size:11px;font-family:monospace;white-space:nowrap}
-  .grid{padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}
-  .product-card{background:var(--card);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;overflow:hidden;-webkit-touch-callout:none;user-select:none}
-  .product-card:active{transform:scale(.97)}
-  .product-card:hover{background:var(--card-hover);border-color:var(--border-light)}
-  .product-card .img-wrap{width:100%;aspect-ratio:3/4;background:#0a0a0a;display:flex;align-items:center;justify-content:center;overflow:hidden}
-  .product-card .img-wrap img{width:100%;height:100%;object-fit:contain}
-  .product-card .img-wrap .no-img{color:#333;font-size:11px;font-family:monospace}
-  .product-card .info{padding:8px 10px}
-  .product-card .name{font-size:10px;font-family:monospace;color:#ccc;text-transform:uppercase;letter-spacing:.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .product-card .meta{display:flex;justify-content:space-between;margin-top:4px}
-  .product-card .game{font-size:10px;font-family:monospace;color:var(--dim)}
-  .product-card .price{font-size:10px;font-family:monospace;color:var(--gray)}
-  .empty{text-align:center;color:var(--dim);font-family:monospace;font-size:12px;padding:60px 20px}
-  .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:100;overflow-y:auto;-webkit-overflow-scrolling:touch}
-  .modal-overlay.active{display:block}
-  .modal{width:100%;min-height:100%}
-  .modal-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg);z-index:10}
-  .modal-header .label{font-size:10px;font-family:monospace;color:var(--dim)}
-  .modal-header .title{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-top:2px;max-width:70vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .btn-close{background:none;border:1px solid var(--border-light);color:var(--gray);border-radius:4px;padding:8px 16px;cursor:pointer;font-size:13px;font-family:var(--font);font-weight:800;min-height:44px;display:flex;align-items:center}
-  .modal-body{padding:16px;display:flex;flex-direction:column;gap:16px}
-  .preview-wrap{width:100%;display:flex;flex-direction:column;gap:10px}
-  .preview-wrap canvas{width:100%;height:auto;aspect-ratio:1080/1350;border-radius:6px;background:#000;display:block}
-  .sliders{display:flex;gap:10px;flex-wrap:wrap}
-  .sliders label{color:var(--dim);font-size:10px;font-family:monospace;flex:1;min-width:80px}
-  .sliders input[type=range]{width:100%;accent-color:#fff;margin-top:6px;display:block;height:36px}
-  .fields{width:100%;display:flex;flex-direction:column;gap:12px}
-  .field label{font-size:10px;font-family:monospace;color:var(--dim);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:1px}
-  .field input{background:#0a0a0a;border:1px solid var(--border);border-radius:6px;color:var(--white);padding:14px;font-family:var(--font);font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:1px;outline:none;width:100%;min-height:48px}
-  .field input:focus{border-color:var(--border-light)}
-  .field input.hl{border-color:#555}
-  .btn-export{margin-top:8px;background:var(--white);border:none;color:#000;border-radius:6px;padding:18px 24px;cursor:pointer;font-family:var(--font);font-size:16px;font-weight:800;letter-spacing:2px;text-transform:uppercase;width:100%;min-height:56px}
-  .btn-export:active{opacity:.8}
-  .btn-export.loading{opacity:.5;pointer-events:none}
-  .export-status{font-size:11px;font-family:monospace;text-align:center;min-height:16px;margin-top:4px}
-  .export-status.err{color:#f44}
-  .export-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:200;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch}
-  .export-overlay.active{display:flex}
-  .export-overlay .export-bar{width:100%;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
-  .export-overlay .export-bar p{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
-  .export-overlay .export-bar .hint{font-size:10px;font-family:monospace;color:var(--dim);font-weight:400;margin-top:2px}
-  .export-overlay img{width:100%;max-width:540px;height:auto;display:block;padding:16px}
-  .export-actions{padding:0 16px 32px;width:100%;max-width:540px;display:flex;flex-direction:column;gap:10px}
-  .export-actions a{display:block;background:var(--white);color:#000;text-align:center;border-radius:6px;padding:16px;text-decoration:none;font-family:var(--font);font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
-  .export-actions a:active{opacity:.8}
-  .export-actions button{background:none;border:1px solid var(--border-light);color:var(--gray);border-radius:6px;padding:14px;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
-  .modal-body{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
-  @media(min-width:700px){
-    .header{padding:16px 24px}.grid{padding:20px 24px}
-    .modal-overlay{background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:20px}
-    .modal-overlay.active{display:flex}
-    .modal{max-width:920px;max-height:95vh;overflow:auto;background:#111;border:1px solid var(--border);border-radius:10px;min-height:auto}
-    .modal-header{position:relative}.modal-body{flex-direction:row;gap:20px;padding:20px}
-    .preview-wrap{flex:0 0 auto;width:320px}.preview-wrap canvas{width:320px;height:400px;aspect-ratio:auto}
-    .fields{flex:1;min-width:280px}.field input{font-size:14px;padding:10px 12px;min-height:auto;border-radius:4px}
-    .btn-export{padding:14px 24px;font-size:14px;min-height:auto;border-radius:4px}
-    .btn-close{padding:4px 14px;font-size:12px;min-height:auto}.sliders input[type=range]{height:auto}
-    .search-input{font-size:12px;padding:8px 14px}.filter-select{font-size:12px;padding:8px 12px}
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0a0a0a;
+    --card-bg: #141414;
+    --card-hover: #1c1c1c;
+    --border: #282828;
+    --border-light: #444;
+    --white: #fff;
+    --gray: #888;
+    --dim: #555;
+    --font: 'Inter', sans-serif;
   }
-  @media(max-width:380px){.grid{grid-template-columns:repeat(2,1fr);gap:8px;padding:10px}.header h1{font-size:20px}.search-input{min-width:80px}}
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--font);
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ════════════════════════════════════
+     PASSWORD GATE
+     ════════════════════════════════════ */
+  #gate {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    z-index: 9999;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px;
+  }
+  #gate.hidden { display: none; }
+  #gate h1 { font-size: 48px; font-weight: 800; letter-spacing: 3px; margin-bottom: 6px; }
+  #gate .sub { color: var(--dim); font-size: 11px; font-family: monospace; margin-bottom: 40px; }
+  .pw-wrap { width: 100%; max-width: 280px; display: flex; flex-direction: column; gap: 12px; }
+  .pw-wrap input {
+    background: #111; border: 1px solid var(--border); border-radius: 6px;
+    color: var(--white); padding: 16px; font-family: var(--font);
+    font-size: 18px; font-weight: 800; text-align: center;
+    letter-spacing: 8px; outline: none; min-height: 56px;
+    -webkit-text-security: disc;
+  }
+  .pw-wrap input:focus { border-color: var(--border-light); }
+  .pw-wrap button {
+    background: var(--white); border: none; color: #000;
+    border-radius: 6px; padding: 16px; cursor: pointer;
+    font-family: var(--font); font-size: 14px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase; min-height: 52px;
+  }
+  .pw-wrap button:active { opacity: 0.8; }
+  .pw-error { color: #f44; font-size: 12px; font-family: monospace; text-align: center; min-height: 18px; }
+
+  /* ════════════════════════════════════
+     APP SHELL
+     ════════════════════════════════════ */
+  #app { display: none; }
+  #app.visible { display: block; }
+
+  .header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+    position: sticky; top: 0;
+    background: var(--bg); z-index: 50;
+  }
+  .header h1 { font-size: 22px; letter-spacing: 2px; font-weight: 800; }
+  .header .sub { color: var(--dim); font-size: 10px; font-family: monospace; margin-top: 2px; }
+  .controls {
+    display: flex; gap: 8px; align-items: center;
+    flex-wrap: wrap; flex: 1; justify-content: flex-end;
+  }
+  .controls input[type=text] {
+    background: #111; border: 1px solid var(--border); border-radius: 4px;
+    color: var(--white); padding: 10px 14px; font-family: monospace;
+    font-size: 14px; outline: none; flex: 1; min-width: 100px; max-width: 240px;
+  }
+  .controls input[type=text]:focus { border-color: var(--border-light); }
+  .controls select {
+    background: #111; border: 1px solid var(--border); border-radius: 4px;
+    color: var(--white); padding: 10px 12px; font-family: monospace;
+    font-size: 14px; outline: none; cursor: pointer;
+    -webkit-appearance: none; appearance: none; padding-right: 28px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+  }
+  .controls select option { background: #111; }
+  .shown-count { color: var(--dim); font-size: 11px; font-family: monospace; white-space: nowrap; }
+
+  /* ════════════════════════════════════
+     PRODUCT GRID
+     ════════════════════════════════════ */
+  .grid {
+    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 6px; cursor: pointer; overflow: hidden;
+    transition: all 0.15s; user-select: none;
+  }
+  .card:active { transform: scale(0.97); }
+  .card:hover { background: var(--card-hover); border-color: var(--border-light); }
+  .card-img {
+    width: 100%; aspect-ratio: 3/4; background: #0a0a0a;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .card-img img { width: 100%; height: 100%; object-fit: contain; }
+  .card-img .fallback { color: #333; font-size: 11px; font-family: monospace; }
+  .card-info { padding: 8px 10px; }
+  .card-name {
+    font-size: 10px; font-family: monospace; color: #ccc;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .card-meta { display: flex; justify-content: space-between; margin-top: 4px; }
+  .card-game { font-size: 10px; font-family: monospace; color: var(--dim); }
+  .card-price { font-size: 10px; font-family: monospace; color: var(--gray); }
+  .empty-msg {
+    text-align: center; color: var(--dim);
+    font-family: monospace; font-size: 12px; padding: 60px 20px;
+    display: none;
+  }
+
+  /* ════════════════════════════════════
+     EDITOR (full-screen on mobile, modal on desktop)
+     ════════════════════════════════════ */
+  .editor-overlay {
+    display: none; position: fixed; inset: 0;
+    background: var(--bg); z-index: 100;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+  }
+  .editor-overlay.open { display: block; }
+  .editor {
+    width: 100%; min-height: 100%;
+    display: flex; flex-direction: column;
+  }
+  .editor-header {
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; background: var(--bg); z-index: 10;
+  }
+  .editor-header .ed-label { font-size: 10px; font-family: monospace; color: var(--dim); }
+  .editor-header .ed-title {
+    font-size: 12px; font-weight: 800; letter-spacing: 1px;
+    text-transform: uppercase; margin-top: 2px;
+    max-width: 70vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .btn-close {
+    background: none; border: 1px solid var(--border-light); color: var(--gray);
+    border-radius: 4px; padding: 8px 16px; cursor: pointer;
+    font-size: 13px; font-family: var(--font); font-weight: 800;
+    min-height: 44px; display: flex; align-items: center;
+  }
+  .editor-body {
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ── Composite preview (HTML/CSS, not canvas) ── */
+  .composite-wrap {
+    width: 100%;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .composite {
+    width: 100%;
+    aspect-ratio: 1080 / 1350;
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #0c0c0c;
+  }
+  /* Seigaiha pattern via SVG background */
+  .composite::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='52'%3E%3Ccircle cx='52' cy='0' r='52' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='0.8'/%3E%3Ccircle cx='52' cy='0' r='40' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='0.8'/%3E%3Ccircle cx='52' cy='0' r='29' fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='0.8'/%3E%3Ccircle cx='52' cy='0' r='18' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='0.8'/%3E%3Ccircle cx='0' cy='52' r='52' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='0.8'/%3E%3Ccircle cx='0' cy='52' r='40' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='0.8'/%3E%3Ccircle cx='0' cy='52' r='29' fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='0.8'/%3E%3Ccircle cx='0' cy='52' r='18' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='0.8'/%3E%3Ccircle cx='104' cy='52' r='52' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='0.8'/%3E%3Ccircle cx='104' cy='52' r='40' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='0.8'/%3E%3Ccircle cx='104' cy='52' r='29' fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='0.8'/%3E%3Ccircle cx='104' cy='52' r='18' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='0.8'/%3E%3C/svg%3E");
+    background-size: 104px 52px;
+    z-index: 1;
+    pointer-events: none;
+  }
+  /* Noise grain */
+  .composite::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.6;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .comp-glow {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 40%, transparent 70%);
+    z-index: 3;
+    pointer-events: none;
+  }
+  .comp-card-img {
+    position: absolute;
+    z-index: 4;
+    filter: drop-shadow(0 0 60px rgba(255,255,255,0.18));
+  }
+  .comp-card-img img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .comp-logo {
+    position: absolute;
+    top: 4.1%; left: 5.1%;
+    font-size: min(7.4vw, 80px); font-weight: 800;
+    letter-spacing: 2px; color: var(--white);
+    z-index: 5;
+  }
+  .comp-tagline {
+    position: absolute;
+    left: 5.1%;
+    font-size: min(2.2vw, 24px); font-weight: 800;
+    font-style: italic; color: var(--white);
+    text-transform: uppercase; z-index: 5;
+    max-width: 90%;
+  }
+  .comp-lines {
+    position: absolute;
+    left: 5.1%;
+    z-index: 5; color: var(--white);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .comp-lines div {
+    font-size: min(5.2vw, 56px);
+    line-height: 1.22;
+  }
+  .comp-footer {
+    position: absolute;
+    bottom: 4.1%; left: 5.1%;
+    font-size: min(5.2vw, 56px); font-weight: 800;
+    color: var(--white); text-transform: uppercase;
+    z-index: 5;
+  }
+
+  .sliders { display: flex; gap: 10px; flex-wrap: wrap; }
+  .sliders label { color: var(--dim); font-size: 10px; font-family: monospace; flex: 1; min-width: 80px; }
+  .sliders input[type=range] { width: 100%; accent-color: #fff; margin-top: 6px; display: block; height: 36px; }
+
+  .fields { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+  .fields label {
+    font-size: 10px; font-family: monospace; color: var(--dim);
+    margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .fields input[type=text] {
+    background: #0a0a0a; border: 1px solid var(--border); border-radius: 6px;
+    color: var(--white); padding: 14px; font-family: var(--font);
+    font-size: 16px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; outline: none; width: 100%; min-height: 48px;
+  }
+  .fields input[type=text]:focus { border-color: var(--border-light); }
+  .fields input[type=text].hl { border-color: #555; }
+
+  .btn-export {
+    margin-top: 8px; background: var(--white); border: none; color: #000;
+    border-radius: 6px; padding: 18px 24px; cursor: pointer;
+    font-family: var(--font); font-size: 16px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase; width: 100%; min-height: 56px;
+  }
+  .btn-export:active { opacity: 0.8; }
+  .btn-export.busy { opacity: 0.5; pointer-events: none; }
+  .export-msg {
+    font-size: 11px; font-family: monospace; text-align: center;
+    min-height: 16px; margin-top: 4px;
+  }
+  .export-msg.err { color: #f44; }
+
+  /* ── Export overlay ── */
+  .save-overlay {
+    display: none; position: fixed; inset: 0;
+    background: var(--bg); z-index: 200;
+    flex-direction: column; align-items: center;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+  }
+  .save-overlay.open { display: flex; }
+  .save-bar {
+    width: 100%; padding: 14px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; background: var(--bg); z-index: 10;
+  }
+  .save-bar p { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+  .save-bar .save-hint { font-size: 10px; font-family: monospace; color: var(--dim); margin-top: 2px; }
+  .save-overlay img { width: 100%; max-width: 540px; height: auto; display: block; padding: 16px; }
+  .save-actions {
+    padding: 0 16px 32px; width: 100%; max-width: 540px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .save-actions a {
+    display: block; background: var(--white); color: #000; text-align: center;
+    border-radius: 6px; padding: 16px; text-decoration: none;
+    font-family: var(--font); font-size: 14px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  .save-actions a:active { opacity: 0.8; }
+  .save-actions button {
+    background: none; border: 1px solid var(--border-light); color: var(--gray);
+    border-radius: 6px; padding: 14px; cursor: pointer;
+    font-family: var(--font); font-size: 13px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ════════════════════════════════════
+     DESKTOP
+     ════════════════════════════════════ */
+  @media (min-width: 700px) {
+    .header { padding: 16px 24px; }
+    .grid { padding: 20px 24px; }
+    .editor-overlay { background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; padding: 20px; }
+    .editor-overlay.open { display: flex; }
+    .editor { max-width: 920px; max-height: 95vh; overflow: auto; background: #111; border: 1px solid var(--border); border-radius: 10px; min-height: auto; }
+    .editor-header { position: relative; }
+    .editor-body { flex-direction: row; gap: 20px; padding: 20px; }
+    .composite-wrap { flex: 0 0 auto; width: 340px; }
+    .composite { border-radius: 6px; }
+    .comp-logo { font-size: 28px; }
+    .comp-tagline { font-size: 9px; }
+    .comp-lines div { font-size: 19px; }
+    .comp-footer { font-size: 19px; }
+    .fields { flex: 1; min-width: 280px; }
+    .fields input[type=text] { font-size: 14px; padding: 10px 12px; min-height: auto; border-radius: 4px; }
+    .btn-export { padding: 14px 24px; font-size: 14px; min-height: auto; border-radius: 4px; }
+    .btn-close { padding: 4px 14px; font-size: 12px; min-height: auto; }
+    .sliders input[type=range] { height: auto; }
+    .controls input[type=text] { font-size: 12px; padding: 8px 14px; }
+    .controls select { font-size: 12px; padding: 8px 12px; }
+  }
+  @media (max-width: 380px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; }
+    .header h1 { font-size: 20px; }
+  }
 </style>
 </head>
 <body>
-<div id="gate"><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR</p><div class="pw-wrap"><input type="password" id="pwInput" placeholder="••••" inputmode="numeric" autocomplete="off"><button onclick="checkPassword()">ENTER</button><p class="error" id="pwError"></p></div></div>
+
+<!-- ═══ PASSWORD ═══ -->
+<div id="gate">
+  <h1>KEEP.</h1>
+  <p class="sub">IMAGE GENERATOR</p>
+  <div class="pw-wrap">
+    <input type="password" id="pwInput" placeholder="••••" inputmode="numeric" autocomplete="off">
+    <button id="pwBtn">ENTER</button>
+    <p class="pw-error" id="pwError"></p>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
 <div id="app">
-  <div class="header"><div><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p></div><div class="header-controls"><input type="text" class="search-input" id="searchInput" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><select class="filter-select" id="gameFilter"><option value="ALL">ALL</option></select><span class="count"><span id="shownCount">0</span></span></div></div>
-  <div class="grid" id="productGrid"></div>
-  <p class="empty" id="emptyMsg" style="display:none;">NO PRODUCTS MATCH YOUR SEARCH</p>
-  <div class="modal-overlay" id="modal"><div class="modal">
-    <div class="modal-header"><div><p class="label">EDITING</p><p class="title" id="modalTitle"></p></div><button class="btn-close" onclick="closeModal()">✕ CLOSE</button></div>
-    <div class="modal-body">
-      <div class="preview-wrap">
-        <canvas id="previewCanvas" width="1080" height="1350"></canvas>
-        <div class="sliders">
-          <label>X<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
-          <label>Y<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
-          <label>SIZE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
+  <div class="header">
+    <div>
+      <h1>KEEP.</h1>
+      <p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p>
+    </div>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <select id="gameFilter"><option value="">ALL</option></select>
+      <span class="shown-count"><span id="shownCount">0</span></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="empty-msg" id="emptyMsg">NO PRODUCTS FOUND</p>
+
+  <!-- ═══ EDITOR ═══ -->
+  <div class="editor-overlay" id="editorOverlay">
+    <div class="editor">
+      <div class="editor-header">
+        <div>
+          <p class="ed-label">EDITING</p>
+          <p class="ed-title" id="edTitle"></p>
+        </div>
+        <button class="btn-close" id="edClose">✕ CLOSE</button>
+      </div>
+      <div class="editor-body">
+        <div class="composite-wrap">
+          <!-- The actual composited image — pure HTML/CSS -->
+          <div class="composite" id="composite">
+            <div class="comp-glow" id="compGlow"></div>
+            <div class="comp-card-img" id="compCardImg">
+              <img id="compImg" src="" alt="">
+            </div>
+            <div class="comp-logo">KEEP.</div>
+            <div class="comp-tagline" id="compTagline"></div>
+            <div class="comp-lines" id="compLines"></div>
+            <div class="comp-footer">NOW AVAILABLE.</div>
+          </div>
+          <div class="sliders">
+            <label>X<input type="range" id="sX" min="0" max="80" value="33"></label>
+            <label>Y<input type="range" id="sY" min="0" max="40" value="4"></label>
+            <label>SIZE<input type="range" id="sSize" min="30" max="90" value="55"></label>
+          </div>
+        </div>
+        <div class="fields">
+          <div><label>TAGLINE</label><input type="text" id="fTag" class="hl" placeholder="THE HOOK LINE" autocomplete="off" autocapitalize="characters"></div>
+          <div><label>LINE 1 — NAME</label><input type="text" id="fL1" autocomplete="off" autocapitalize="characters"></div>
+          <div><label>LINE 2 — NUMBER</label><input type="text" id="fL2" autocomplete="off" autocapitalize="characters"></div>
+          <div><label>LINE 3 — RARITY</label><input type="text" id="fL3" autocomplete="off" autocapitalize="characters"></div>
+          <div><label>LINE 4 — SET</label><input type="text" id="fL4" autocomplete="off" autocapitalize="characters"></div>
+          <button class="btn-export" id="exportBtn">EXPORT PNG</button>
+          <p class="export-msg" id="exportMsg"></p>
         </div>
       </div>
-      <div class="fields">
-        <div class="field"><label>TAGLINE</label><input type="text" id="fTagline" class="hl" placeholder="THE HOOK LINE" autocomplete="off" autocorrect="off" autocapitalize="characters"></div>
-        <div class="field"><label>LINE 1 — NAME</label><input type="text" id="fLine1" autocomplete="off" autocapitalize="characters"></div>
-        <div class="field"><label>LINE 2 — NUMBER</label><input type="text" id="fLine2" autocomplete="off" autocapitalize="characters"></div>
-        <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3" autocomplete="off" autocapitalize="characters"></div>
-        <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4" autocomplete="off" autocapitalize="characters"></div>
-        <button class="btn-export" id="exportBtn" onclick="exportImage()">EXPORT PNG</button>
-        <p class="export-status" id="exportStatus"></p>
-      </div>
     </div>
-  </div></div>
+  </div>
 </div>
-<div class="export-overlay" id="exportOverlay">
-  <div class="export-bar"><div><p>YOUR IMAGE</p><p class="hint">RIGHT-CLICK OR LONG-PRESS TO SAVE</p></div><button class="btn-close" onclick="closeExport()">✕ CLOSE</button></div>
-  <img id="exportImg" src="" alt="KEEP. Export">
-  <div class="export-actions"><a id="downloadLink" href="" download="">DOWNLOAD PNG</a><button onclick="closeExport()">BACK TO EDITOR</button></div>
+
+<!-- ═══ SAVE OVERLAY ═══ -->
+<div class="save-overlay" id="saveOverlay">
+  <div class="save-bar">
+    <div>
+      <p>YOUR IMAGE</p>
+      <p class="save-hint">RIGHT-CLICK OR LONG-PRESS TO SAVE</p>
+    </div>
+    <button class="btn-close" id="saveClose">✕ CLOSE</button>
+  </div>
+  <img id="saveImg" src="" alt="KEEP. Export">
+  <div class="save-actions">
+    <a id="saveLink" href="" download="">DOWNLOAD PNG</a>
+    <button id="saveBack">BACK TO EDITOR</button>
+  </div>
 </div>
+
 <script src="products.js"></script>
 <script>
-(function(){
-  var PW_HASH='9ff8476644903ba6cb3f90e79bf40b67133a95e44b39123a1d4caf800f216b6b',SESSION_KEY='keep_gen_auth';
-  async function sha256(s){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')}
-  if(sessionStorage.getItem(SESSION_KEY)==='true')unlock();else document.getElementById('pwInput').focus();
-  document.getElementById('pwInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkPassword()});
-  window.checkPassword=async function(){var h=await sha256(document.getElementById('pwInput').value);if(h===PW_HASH){sessionStorage.setItem(SESSION_KEY,'true');unlock()}else{document.getElementById('pwError').textContent='WRONG PASSWORD';document.getElementById('pwInput').value='';document.getElementById('pwInput').focus()}};
-  function unlock(){document.getElementById('gate').classList.add('hidden');document.getElementById('app').classList.add('visible');initApp()}
+(function() {
+  'use strict';
 
-  var CW=1080,CH=1350,products=[],currentProduct=null,currentImg=null,currentDataUrl=null,appInited=false;
+  /* ═══════════════════════════════════
+     PASSWORD
+     ═══════════════════════════════════ */
+  var PW_HASH = '9ff8476644903ba6cb3f90e79bf40b67133a95e44b39123a1d4caf800f216b6b';
 
-  // CORS proxies to try in order
-  var PROXIES=[
-    function(u){return 'https://corsproxy.io/?'+encodeURIComponent(u)},
-    function(u){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u)},
-  ];
-
-  new FontFace('Inter',"url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)",{weight:'800'}).load().then(function(l){document.fonts.add(l)}).catch(function(){});
-
-  function getFirstImg(f){return f?f.split('|')[0].trim():''}
-
-  // Try to fetch image as blob — direct first, then through CORS proxies
-  function fetchAsBlob(url, proxyIndex){
-    proxyIndex = proxyIndex || 0;
-    var fetchUrl = proxyIndex === 0 ? url : PROXIES[proxyIndex-1](url);
-
-    return fetch(fetchUrl).then(function(r){
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      return r.blob();
-    }).then(function(blob){
-      if(blob.size < 100) throw new Error('empty');
-      return blob;
-    }).catch(function(){
-      // Try next proxy
-      if(proxyIndex <= PROXIES.length){
-        return fetchAsBlob(url, proxyIndex+1);
-      }
-      return null; // all failed
-    });
+  async function sha256(s) {
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
   }
 
-  // Load image: fetch blob → FileReader → dataURL → Image
-  function loadAndConvert(url, cb){
-    currentImg=null; currentDataUrl=null;
-    var btn=document.getElementById('exportBtn');
+  var pwInput = document.getElementById('pwInput');
+  var pwBtn = document.getElementById('pwBtn');
+  var pwError = document.getElementById('pwError');
 
-    fetchAsBlob(url).then(function(blob){
-      if(!blob){
-        // All fetches failed — load image directly for preview only
-        var img=new Image();
-        img.onload=function(){currentImg=img;redraw();cb(false)};
-        img.onerror=function(){cb(false)};
-        img.src=url;
-        return;
-      }
-      // Convert blob to data URL via FileReader
-      var reader=new FileReader();
-      reader.onload=function(){
-        currentDataUrl=reader.result;
-        var img=new Image();
-        img.onload=function(){currentImg=img;redraw();cb(true)};
-        img.onerror=function(){cb(false)};
-        img.src=currentDataUrl;
-      };
-      reader.onerror=function(){cb(false)};
-      reader.readAsDataURL(blob);
-    });
+  if (sessionStorage.getItem('keep_auth') === '1') {
+    unlock();
+  } else {
+    pwInput.focus();
   }
 
-  function drawSeigaiha(ctx,w,h){
-    var r=52,stepX=r*2,stepY=r,cols=Math.ceil(w/stepX)+2,rows=Math.ceil(h/stepY)+2;
-    var rings=[1,.78,.56,.34,.16],alphas=[.055,.045,.035,.025,.015];
-    ctx.save();
-    for(var row=-1;row<rows;row++){var off=(row%2===0)?0:r;for(var col=-1;col<cols;col++){var cx=col*stepX+off,cy=row*stepY;for(var i=0;i<rings.length;i++){ctx.beginPath();ctx.arc(cx,cy,r*rings[i],Math.PI,2*Math.PI);ctx.strokeStyle='rgba(255,255,255,'+alphas[i]+')';ctx.lineWidth=.8;ctx.stroke()}}}
-    ctx.restore();
-  }
+  pwBtn.addEventListener('click', tryLogin);
+  pwInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryLogin(); });
 
-  function initApp(){
-    if(appInited)return;appInited=true;
-    if(typeof PRODUCTS!=='undefined')products=PRODUCTS;
-    else if(typeof window.keepProducts!=='undefined')products=window.keepProducts;
-    else{document.getElementById('emptyMsg').textContent='COULD NOT LOAD PRODUCTS.JS';document.getElementById('emptyMsg').style.display='block';return}
-    document.getElementById('totalCount').textContent=products.length;buildFilters();renderGrid();
-    document.getElementById('searchInput').addEventListener('input',renderGrid);
-    document.getElementById('gameFilter').addEventListener('change',renderGrid);
-    ['fTagline','fLine1','fLine2','fLine3','fLine4','sX','sY','sScale'].forEach(function(id){document.getElementById(id).addEventListener('input',redraw)});
-    document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal')&&window.innerWidth>=700)closeModal()});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeExport();closeModal()}});
-  }
-  function buildFilters(){var gs={};products.forEach(function(p){if(p.game)gs[p.game]=true});var sel=document.getElementById('gameFilter');Object.keys(gs).sort().forEach(function(g){var o=document.createElement('option');o.value=g;o.textContent=g;sel.appendChild(o)})}
-  function renderGrid(){
-    var s=document.getElementById('searchInput').value.toLowerCase(),g=document.getElementById('gameFilter').value,grid=document.getElementById('productGrid');grid.innerHTML='';
-    var f=products.filter(function(p){return(!s||p.name.toLowerCase().indexOf(s)!==-1)&&(g==='ALL'||p.game===g)});
-    document.getElementById('shownCount').textContent=f.length;document.getElementById('emptyMsg').style.display=f.length===0?'block':'none';
-    f.forEach(function(p){var c=document.createElement('div');c.className='product-card';c.onclick=function(){openEditor(p)};var src=getFirstImg(p.img);c.innerHTML='<div class="img-wrap">'+(src?'<img src="'+src+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">':'<span class="no-img">NO IMAGE</span>')+'</div><div class="info"><p class="name">'+p.name+'</p><div class="meta"><span class="game">'+(p.game||'')+'</span><span class="price">'+(p.price||'')+'</span></div></div>';grid.appendChild(c)})
-  }
-  function parseName(n){var p=n.split(/\s+/),cn='',num='',ext='';for(var i=0;i<p.length;i++){if(p[i].toUpperCase()==='NO.'&&p[i+1]&&/^\d+$/.test(p[i+1])){cn=p.slice(0,i).join(' ');num=p[i]+' '+p[i+1];ext=p.slice(i+2).join(' ');break}if(/^\d+\/\d+$|^[A-Z]*\d+-\d+$/i.test(p[i])){cn=p.slice(0,i).join(' ');num=p[i];ext=p.slice(i+1).join(' ');break}}if(!cn)cn=n;return{line1:cn?cn.toUpperCase()+'.':'',line2:num?num.toUpperCase()+'.':'',line3:'',line4:ext?ext.toUpperCase()+'.':''}}
-
-  var canExport=false;
-
-  function openEditor(product){
-    currentProduct=product;currentImg=null;currentDataUrl=null;canExport=false;
-    document.getElementById('modalTitle').textContent=product.name;
-    document.getElementById('modal').classList.add('active');
-    document.body.style.overflow='hidden';
-    document.getElementById('exportStatus').textContent='';document.getElementById('exportStatus').className='export-status';
-    var p=parseName(product.name);
-    document.getElementById('fTagline').value='';
-    document.getElementById('fLine1').value=p.line1;document.getElementById('fLine2').value=p.line2;
-    document.getElementById('fLine3').value=p.line3;document.getElementById('fLine4').value=p.line4;
-    document.getElementById('sX').value=0.33;document.getElementById('sY').value=0.04;document.getElementById('sScale').value=0.58;
-    var btn=document.getElementById('exportBtn');btn.textContent='LOADING IMAGE...';btn.classList.add('loading');
-    document.getElementById('modal').scrollTop=0;redraw();
-    var src=getFirstImg(product.img);
-    if(src){
-      loadAndConvert(src,function(success){
-        canExport=success;
-        btn.textContent='EXPORT PNG';btn.classList.remove('loading');
-        if(!success&&currentImg){
-          document.getElementById('exportStatus').textContent='PREVIEW ONLY — IMAGE SOURCE BLOCKS EXPORT';
-          document.getElementById('exportStatus').className='export-status err';
-        }
-      });
-    }else{btn.textContent='EXPORT PNG';btn.classList.remove('loading')}
-  }
-
-  window.closeModal=function(){document.getElementById('modal').classList.remove('active');document.body.style.overflow='';currentProduct=null;currentImg=null;currentDataUrl=null};
-  window.closeExport=function(){document.getElementById('exportOverlay').classList.remove('active')};
-
-  function renderTo(canvas,img){
-    var ctx=canvas.getContext('2d');canvas.width=CW;canvas.height=CH;
-    ctx.fillStyle='#0c0c0c';ctx.fillRect(0,0,CW,CH);
-    var rg=ctx.createRadialGradient(CW*.45,CH*.35,80,CW*.45,CH*.35,CW*.85);
-    rg.addColorStop(0,'rgba(255,255,255,0.02)');rg.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=rg;ctx.fillRect(0,0,CW,CH);
-    drawSeigaiha(ctx,CW,CH);
-    for(var i=0;i<10000;i++){ctx.fillStyle='rgba(255,255,255,'+(Math.random()*.025)+')';ctx.fillRect(Math.random()*CW,Math.random()*CH,1,1)}
-    var px=parseFloat(document.getElementById('sX').value),py=parseFloat(document.getElementById('sY').value),ps=parseFloat(document.getElementById('sScale').value),cb=CH*.55;
-    if(img){
-      var iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height,ratio=iw/ih;
-      var mH=CH*ps,mW=CW*.58,dh=mH,dw=mH*ratio;if(dw>mW){dw=mW;dh=mW/ratio}
-      var cX=CW*px,cY=CH*py;cb=cY+dh;
-      var gCX=cX+dw*.5,gCY=cY+dh*.5,gR=Math.max(dw,dh)*.65;
-      var g1=ctx.createRadialGradient(gCX,gCY,0,gCX,gCY,gR);
-      g1.addColorStop(0,'rgba(255,255,255,0.10)');g1.addColorStop(.4,'rgba(255,255,255,0.04)');g1.addColorStop(.75,'rgba(255,255,255,0.01)');g1.addColorStop(1,'rgba(255,255,255,0)');
-      ctx.fillStyle=g1;ctx.fillRect(0,0,CW,CH);
-      ctx.save();ctx.shadowColor='rgba(255,255,255,0.22)';ctx.shadowBlur=80;ctx.drawImage(img,cX,cY,dw,dh);ctx.restore();
-      ctx.drawImage(img,cX,cY,dw,dh);
+  async function tryLogin() {
+    var h = await sha256(pwInput.value);
+    if (h === PW_HASH) {
+      sessionStorage.setItem('keep_auth', '1');
+      unlock();
+    } else {
+      pwError.textContent = 'WRONG PASSWORD';
+      pwInput.value = '';
+      pwInput.focus();
     }
-    ctx.fillStyle='#FFFFFF';ctx.font="800 80px 'Inter', sans-serif";ctx.textBaseline='top';ctx.fillText('KEEP.',55,55);
-    var tP=30,tT=cb+tP,fY=CH-55,fH=70,avH=fY-fH-tT;
-    var tag=document.getElementById('fTagline').value,tagH=tag?36:0;
-    var lines=['fLine1','fLine2','fLine3','fLine4'].map(function(id){return document.getElementById(id).value}).filter(function(l){return l});
-    var lH=68,mFS=56,tFS=24,totH=tagH+lines.length*lH;
-    if(totH>avH&&avH>0){var sc=avH/totH;mFS=Math.max(28,Math.floor(56*sc));tFS=Math.max(14,Math.floor(24*sc));lH=Math.max(34,Math.floor(68*sc));tagH=tag?Math.max(20,Math.floor(36*sc)):0}
-    var curY=tT;
-    if(tag){ctx.font="800 italic "+tFS+"px 'Inter', sans-serif";ctx.textBaseline='top';ctx.fillText(tag.toUpperCase(),55,curY);curY+=tagH}
-    ctx.font="800 "+mFS+"px 'Inter', sans-serif";ctx.textBaseline='top';lines.forEach(function(l){ctx.fillText(l.toUpperCase(),55,curY);curY+=lH});
-    ctx.font="800 56px 'Inter', sans-serif";ctx.textBaseline='bottom';ctx.fillText('NOW AVAILABLE.',55,fY);
   }
 
-  function redraw(){renderTo(document.getElementById('previewCanvas'),currentImg)}
+  function unlock() {
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('app').classList.add('visible');
+    boot();
+  }
 
-  window.exportImage=function(){
-    var status=document.getElementById('exportStatus');
-    status.textContent='GENERATING...';status.className='export-status';
+  /* ═══════════════════════════════════
+     APP
+     ═══════════════════════════════════ */
+  var products = [];
+  var current = null;
+  var booted = false;
 
-    // Use the dataURL to create a guaranteed-clean image
-    var imgSrc=currentDataUrl;
-    if(!imgSrc){
-      // No dataURL — render without card
-      var ec=document.createElement('canvas');
-      renderTo(ec,null);
-      finishExport(ec);
-      if(currentImg)status.textContent='CARD IMAGE COULD NOT BE EXPORTED (CORS)';status.className='export-status err';
+  function boot() {
+    if (booted) return;
+    booted = true;
+
+    // Load products
+    if (typeof PRODUCTS !== 'undefined') products = PRODUCTS;
+    else if (typeof window.keepProducts !== 'undefined') products = window.keepProducts;
+    else {
+      document.getElementById('emptyMsg').textContent = 'COULD NOT LOAD PRODUCTS.JS';
+      document.getElementById('emptyMsg').style.display = 'block';
       return;
     }
 
-    var cleanImg=new Image();
-    cleanImg.onload=function(){
-      var ec=document.createElement('canvas');
-      renderTo(ec,cleanImg);
-      finishExport(ec);
-    };
-    cleanImg.onerror=function(){
-      var ec=document.createElement('canvas');
-      renderTo(ec,null);
-      finishExport(ec);
-      status.textContent='IMAGE LOAD FAILED';status.className='export-status err';
-    };
-    cleanImg.src=imgSrc;
-  };
+    document.getElementById('totalCount').textContent = products.length;
+    buildFilters();
+    renderGrid();
 
-  function finishExport(canvas){
-    var status=document.getElementById('exportStatus');
-    try{
-      var dataUrl=canvas.toDataURL('image/png');
-      if(!dataUrl||dataUrl.length<200){status.textContent='EXPORT FAILED';status.className='export-status err';return}
-      var safeName='KEEP_'+(currentProduct?currentProduct.name:'card').replace(/[^a-zA-Z0-9]/g,'_').slice(0,50)+'.png';
-      document.getElementById('exportImg').src=dataUrl;
-      document.getElementById('downloadLink').href=dataUrl;
-      document.getElementById('downloadLink').download=safeName;
-      document.getElementById('exportOverlay').classList.add('active');
-      status.textContent='';status.className='export-status';
-    }catch(e){status.textContent='ERROR: '+e.message;status.className='export-status err'}
+    // Search — debounced
+    var searchTimer;
+    document.getElementById('searchBox').addEventListener('input', function() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(renderGrid, 150);
+    });
+
+    // Filter
+    document.getElementById('gameFilter').addEventListener('change', renderGrid);
+
+    // Editor inputs
+    ['fTag', 'fL1', 'fL2', 'fL3', 'fL4', 'sX', 'sY', 'sSize'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', updateComposite);
+    });
+
+    // Close buttons
+    document.getElementById('edClose').addEventListener('click', closeEditor);
+    document.getElementById('saveClose').addEventListener('click', closeSave);
+    document.getElementById('saveBack').addEventListener('click', closeSave);
+    document.getElementById('exportBtn').addEventListener('click', doExport);
+
+    // Desktop: click overlay to close
+    document.getElementById('editorOverlay').addEventListener('click', function(e) {
+      if (e.target === this && window.innerWidth >= 700) closeEditor();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { closeSave(); closeEditor(); }
+    });
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){});
+  /* ═══ FILTERS ═══ */
+  function buildFilters() {
+    var games = {};
+    products.forEach(function(p) { if (p.game) games[p.game] = true; });
+    var sel = document.getElementById('gameFilter');
+    Object.keys(games).sort().forEach(function(g) {
+      var o = document.createElement('option');
+      o.value = g;
+      o.textContent = g;
+      sel.appendChild(o);
+    });
+  }
+
+  /* ═══ GRID ═══ */
+  function getImg(p) {
+    return p.img ? p.img.split('|')[0].trim() : '';
+  }
+
+  function renderGrid() {
+    var query = document.getElementById('searchBox').value.trim().toLowerCase();
+    var game = document.getElementById('gameFilter').value;
+    var grid = document.getElementById('grid');
+    grid.innerHTML = '';
+
+    var filtered = products.filter(function(p) {
+      if (query && p.name.toLowerCase().indexOf(query) === -1) return false;
+      if (game && p.game !== game) return false;
+      return true;
+    });
+
+    document.getElementById('shownCount').textContent = filtered.length;
+    document.getElementById('emptyMsg').style.display = filtered.length === 0 ? 'block' : 'none';
+
+    filtered.forEach(function(p) {
+      var el = document.createElement('div');
+      el.className = 'card';
+      var src = getImg(p);
+      el.innerHTML =
+        '<div class="card-img">' +
+          (src
+            ? '<img src="' + src + '" alt="" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"><span class="fallback" style="display:none">NO IMAGE</span>'
+            : '<span class="fallback">NO IMAGE</span>') +
+        '</div>' +
+        '<div class="card-info">' +
+          '<p class="card-name">' + escHtml(p.name) + '</p>' +
+          '<div class="card-meta">' +
+            '<span class="card-game">' + escHtml(p.game || '') + '</span>' +
+            '<span class="card-price">' + escHtml(p.price || '') + '</span>' +
+          '</div>' +
+        '</div>';
+      el.addEventListener('click', function() { openEditor(p); });
+      grid.appendChild(el);
+    });
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ═══ NAME PARSER ═══ */
+  function parseName(name) {
+    var parts = name.split(/\s+/);
+    var cn = '', num = '', ext = '';
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].toUpperCase() === 'NO.' && parts[i+1] && /^\d+$/.test(parts[i+1])) {
+        cn = parts.slice(0, i).join(' ');
+        num = parts[i] + ' ' + parts[i+1];
+        ext = parts.slice(i + 2).join(' ');
+        break;
+      }
+      if (/^\d+\/\d+$|^[A-Z]*\d+-\d+$/i.test(parts[i])) {
+        cn = parts.slice(0, i).join(' ');
+        num = parts[i];
+        ext = parts.slice(i + 1).join(' ');
+        break;
+      }
+    }
+    if (!cn) cn = name;
+    return {
+      l1: cn ? cn.toUpperCase() + '.' : '',
+      l2: num ? num.toUpperCase() + '.' : '',
+      l3: '',
+      l4: ext ? ext.toUpperCase() + '.' : ''
+    };
+  }
+
+  /* ═══ EDITOR ═══ */
+  function openEditor(product) {
+    current = product;
+    document.getElementById('edTitle').textContent = product.name;
+    document.getElementById('editorOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    var p = parseName(product.name);
+    document.getElementById('fTag').value = '';
+    document.getElementById('fL1').value = p.l1;
+    document.getElementById('fL2').value = p.l2;
+    document.getElementById('fL3').value = p.l3;
+    document.getElementById('fL4').value = p.l4;
+    document.getElementById('sX').value = 33;
+    document.getElementById('sY').value = 4;
+    document.getElementById('sSize').value = 55;
+    document.getElementById('exportMsg').textContent = '';
+    document.getElementById('exportMsg').className = 'export-msg';
+
+    // Set card image
+    var src = getImg(product);
+    var img = document.getElementById('compImg');
+    img.src = src || '';
+    img.style.display = src ? 'block' : 'none';
+
+    updateComposite();
+    document.getElementById('editorOverlay').scrollTop = 0;
+  }
+
+  function closeEditor() {
+    document.getElementById('editorOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    current = null;
+  }
+
+  function closeSave() {
+    document.getElementById('saveOverlay').classList.remove('open');
+  }
+
+  /* ═══ UPDATE COMPOSITE ═══ */
+  function updateComposite() {
+    var x = parseInt(document.getElementById('sX').value);
+    var y = parseInt(document.getElementById('sY').value);
+    var size = parseInt(document.getElementById('sSize').value);
+
+    // Card image position (percentage-based)
+    var cardEl = document.getElementById('compCardImg');
+    cardEl.style.left = x + '%';
+    cardEl.style.top = y + '%';
+    cardEl.style.width = size + '%';
+    cardEl.style.height = 'auto';
+
+    // Glow
+    var glow = document.getElementById('compGlow');
+    var glowSize = size * 1.4;
+    glow.style.width = glowSize + '%';
+    glow.style.height = glowSize + '%';
+    glow.style.left = (x + size/2 - glowSize/2) + '%';
+    glow.style.top = (y + size*0.6 - glowSize/2) + '%';
+
+    // Tagline
+    var tag = document.getElementById('fTag').value.toUpperCase();
+    var tagEl = document.getElementById('compTagline');
+    tagEl.textContent = tag;
+
+    // Lines
+    var lines = [
+      document.getElementById('fL1').value,
+      document.getElementById('fL2').value,
+      document.getElementById('fL3').value,
+      document.getElementById('fL4').value
+    ].filter(function(l) { return l.trim(); });
+
+    var linesEl = document.getElementById('compLines');
+    linesEl.innerHTML = lines.map(function(l) {
+      return '<div>' + escHtml(l.toUpperCase()) + '</div>';
+    }).join('');
+
+    // Position text below card
+    // Card bottom = y% + estimated card height
+    // For a typical card ratio (~1.4:1 h:w), height ≈ size * 1.4 in terms of width-relative
+    // But since aspect ratio varies, use a simpler estimate
+    var cardBottom = y + size * 0.85; // approximate
+    var textY = Math.min(cardBottom + 2, 75); // cap so it doesn't go below footer
+
+    if (tag) {
+      tagEl.style.top = textY + '%';
+      tagEl.style.display = 'block';
+      linesEl.style.top = (textY + 3.5) + '%';
+    } else {
+      tagEl.style.display = 'none';
+      linesEl.style.top = textY + '%';
+    }
+  }
+
+  /* ═══ EXPORT ═══ */
+  function doExport() {
+    var btn = document.getElementById('exportBtn');
+    var msg = document.getElementById('exportMsg');
+    btn.textContent = 'GENERATING...';
+    btn.classList.add('busy');
+    msg.textContent = '';
+    msg.className = 'export-msg';
+
+    var composite = document.getElementById('composite');
+
+    // html2canvas with useCORS and allowTaint so external images render
+    html2canvas(composite, {
+      useCORS: true,
+      allowTaint: true,
+      scale: 3, // high res output
+      backgroundColor: '#0c0c0c',
+      width: composite.offsetWidth,
+      height: composite.offsetHeight,
+      logging: false
+    }).then(function(canvas) {
+      var dataUrl = canvas.toDataURL('image/png');
+      if (!dataUrl || dataUrl.length < 200) {
+        msg.textContent = 'EXPORT FAILED — TRY AGAIN';
+        msg.className = 'export-msg err';
+        btn.textContent = 'EXPORT PNG';
+        btn.classList.remove('busy');
+        return;
+      }
+
+      var safeName = 'KEEP_' + (current ? current.name : 'card').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 50) + '.png';
+      document.getElementById('saveImg').src = dataUrl;
+      document.getElementById('saveLink').href = dataUrl;
+      document.getElementById('saveLink').download = safeName;
+      document.getElementById('saveOverlay').classList.add('open');
+
+      btn.textContent = 'EXPORT PNG';
+      btn.classList.remove('busy');
+    }).catch(function(err) {
+      msg.textContent = 'ERROR: ' + err.message;
+      msg.className = 'export-msg err';
+      btn.textContent = 'EXPORT PNG';
+      btn.classList.remove('busy');
+    });
+  }
+
 })();
 </script>
 </body>

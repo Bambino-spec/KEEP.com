@@ -12,8 +12,6 @@
   :root{--bg:#0a0a0a;--card:#141414;--card-hover:#1c1c1c;--border:#282828;--border-light:#444;--white:#fff;--gray:#888;--dim:#555;--font:'Inter',sans-serif}
   html{-webkit-text-size-adjust:100%}
   body{background:var(--bg);color:var(--white);font-family:var(--font);min-height:100vh;-webkit-tap-highlight-color:transparent}
-
-  /* PASSWORD */
   #gate{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
   #gate.hidden{display:none}
   #gate h1{font-size:48px;font-weight:800;letter-spacing:3px;margin-bottom:6px}
@@ -23,8 +21,6 @@
   .pw-wrap input:focus{border-color:var(--border-light)}
   .pw-wrap button{background:var(--white);border:none;color:#000;border-radius:6px;padding:16px;cursor:pointer;font-family:var(--font);font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-height:52px}
   .pw-error{color:#f44;font-size:12px;font-family:monospace;text-align:center;min-height:18px}
-
-  /* APP */
   #app{display:none}#app.visible{display:block}
   .header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;background:var(--bg);z-index:50}
   .header h1{font-size:22px;letter-spacing:2px;font-weight:800}
@@ -35,8 +31,6 @@
   .ctrls select{background:#111;border:1px solid var(--border);border-radius:4px;color:var(--white);padding:10px 12px;font-family:monospace;font-size:14px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
   .ctrls select option{background:#111}
   .cnt{color:var(--dim);font-size:11px;font-family:monospace;white-space:nowrap}
-
-  /* GRID */
   .grid{padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
   .pcard{background:var(--card);border:1px solid var(--border);border-radius:6px;cursor:pointer;overflow:hidden;transition:all .15s;user-select:none}
   .pcard:active{transform:scale(.97)}.pcard:hover{background:var(--card-hover);border-color:var(--border-light)}
@@ -49,8 +43,6 @@
   .pcard-game,.pcard-price{font-size:10px;font-family:monospace}
   .pcard-game{color:var(--dim)}.pcard-price{color:var(--gray)}
   .empty{text-align:center;color:var(--dim);font-family:monospace;font-size:12px;padding:60px 20px;display:none}
-
-  /* EDITOR */
   .ed-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:100;overflow-y:auto;-webkit-overflow-scrolling:touch}
   .ed-overlay.open{display:block}
   .ed-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg);z-index:10}
@@ -72,8 +64,6 @@
   .expbtn:active{opacity:.8}.expbtn.busy{opacity:.5;pointer-events:none}
   .msg{font-size:11px;font-family:monospace;text-align:center;min-height:16px;margin-top:4px}
   .msg.err{color:#f44}
-
-  /* SAVE */
   .sv-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch}
   .sv-overlay.open{display:flex}
   .sv-bar{width:100%;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
@@ -83,7 +73,6 @@
   .sv-actions{padding:0 16px 32px;width:100%;max-width:540px;display:flex;flex-direction:column;gap:10px}
   .sv-actions a{display:block;background:var(--white);color:#000;text-align:center;border-radius:6px;padding:16px;text-decoration:none;font-family:var(--font);font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
   .sv-actions button{background:none;border:1px solid var(--border-light);color:var(--gray);border-radius:6px;padding:14px;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
-
   @media(min-width:700px){
     .header{padding:16px 24px}.grid{padding:20px 24px}
     .ed-overlay{background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:20px}
@@ -111,8 +100,7 @@
 <div id="app">
   <div class="header"><div><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR — <span id="tot">0</span> PRODUCTS</p></div><div class="ctrls"><input type="text" id="q" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><select id="gf"><option value="">ALL</option></select><span class="cnt"><span id="sc">0</span></span></div></div>
   <div class="grid" id="grid"></div>
-  <p class="empty" id="noResults">NO PRODUCTS FOUND</p>
-
+  <p class="empty" id="noR">NO PRODUCTS FOUND</p>
   <div class="ed-overlay" id="edOv"><div class="ed-inner">
     <div class="ed-head"><div><p class="lbl">EDITING</p><p class="ttl" id="edTtl"></p></div><button class="xbtn" id="edX">✕ CLOSE</button></div>
     <div class="ed-body">
@@ -148,6 +136,14 @@
 (function(){
   'use strict';
 
+  /*
+    ╔══════════════════════════════════════════════════════════╗
+    ║  IMPORTANT: Set this to YOUR Cloudflare Worker URL      ║
+    ║  After deploying the worker, paste the URL here.        ║
+    ╚══════════════════════════════════════════════════════════╝
+  */
+  var WORKER_URL = https://keep-img-proxy.keeptcg-store.workers.dev/';
+
   // ── PASSWORD ──
   var HASH='9ff8476644903ba6cb3f90e79bf40b67133a95e44b39123a1d4caf800f216b6b';
   async function sha(s){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')}
@@ -160,14 +156,24 @@
   // ── STATE ──
   var CW=1080,CH=1350,products=[],cur=null,cImg=null,ready=false;
 
-  // Load Inter 800 for canvas
   new FontFace('Inter',"url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)",{weight:'800'}).load().then(function(f){document.fonts.add(f)}).catch(function(){});
 
-  // ── PROXY ──
-  // Route ALL card images through weserv.nl — solves CORS for every CDN
-  function proxyUrl(url){
-    if(!url)return '';
-    return 'https://images.weserv.nl/?url='+encodeURIComponent(url)+'&w=800&q=90';
+  // ── IMAGE PROXY ──
+  // Fetches image through YOUR Cloudflare Worker → returns as blob URL
+  // Blob URLs are always same-origin, so canvas never gets tainted
+  function proxyLoad(originalUrl){
+    var proxyUrl=WORKER_URL+'/?url='+encodeURIComponent(originalUrl);
+    return fetch(proxyUrl)
+      .then(function(r){if(!r.ok)throw new Error(r.status);return r.blob()})
+      .then(function(blob){
+        var burl=URL.createObjectURL(blob);
+        return new Promise(function(resolve,reject){
+          var img=new Image();
+          img.onload=function(){resolve(img)};
+          img.onerror=function(){reject(new Error('img load fail'))};
+          img.src=burl;
+        });
+      });
   }
 
   function rawImg(p){return p.img?p.img.split('|')[0].trim():'';}
@@ -177,12 +183,9 @@
     if(ready)return;ready=true;
     if(typeof PRODUCTS!=='undefined')products=PRODUCTS;
     else if(typeof window.keepProducts!=='undefined')products=window.keepProducts;
-    else{document.getElementById('noResults').textContent='COULD NOT LOAD PRODUCTS.JS';document.getElementById('noResults').style.display='block';return}
-
+    else{document.getElementById('noR').textContent='COULD NOT LOAD PRODUCTS.JS';document.getElementById('noR').style.display='block';return}
     document.getElementById('tot').textContent=products.length;
-    buildFilters();
-    render();
-
+    buildFilters();render();
     var timer;
     document.getElementById('q').addEventListener('input',function(){clearTimeout(timer);timer=setTimeout(render,200)});
     document.getElementById('gf').addEventListener('change',render);
@@ -195,7 +198,6 @@
     document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeSv();closeEd()}});
   }
 
-  // ── FILTERS ──
   function buildFilters(){
     var gs={};products.forEach(function(p){if(p.game)gs[p.game]=true});
     var sel=document.getElementById('gf');
@@ -213,7 +215,7 @@
       return true;
     });
     document.getElementById('sc').textContent=list.length;
-    document.getElementById('noResults').style.display=list.length?'none':'block';
+    document.getElementById('noR').style.display=list.length?'none':'block';
     list.forEach(function(p){
       var d=document.createElement('div');d.className='pcard';
       var src=rawImg(p);
@@ -224,7 +226,6 @@
   }
   function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-  // ── PARSE NAME ──
   function parseName(n){
     var p=n.split(/\s+/),cn='',num='',ext='';
     for(var i=0;i<p.length;i++){
@@ -259,20 +260,19 @@
 
     draw(); // Draw without image first
 
-    // Load image through proxy — this gives us a CORS-safe image
+    // Load image via Cloudflare Worker proxy → blob URL (always same-origin)
     var src=rawImg(p);
     if(src){
-      var img=new Image();
-      img.crossOrigin='anonymous';
-      img.onload=function(){cImg=img;btn.textContent='EXPORT PNG';btn.classList.remove('busy');draw()};
-      img.onerror=function(){
-        // Proxy failed — try direct load (preview only, export may fail)
-        var img2=new Image();
-        img2.onload=function(){cImg=img2;btn.textContent='EXPORT PNG';btn.classList.remove('busy');draw()};
-        img2.onerror=function(){btn.textContent='EXPORT PNG';btn.classList.remove('busy')};
-        img2.src=src;
-      };
-      img.src=proxyUrl(src);
+      proxyLoad(src).then(function(img){
+        cImg=img;
+        btn.textContent='EXPORT PNG';btn.classList.remove('busy');
+        draw();
+      }).catch(function(){
+        // Worker proxy failed — show preview without card image
+        btn.textContent='EXPORT PNG';btn.classList.remove('busy');
+        document.getElementById('expMsg').textContent='IMAGE PROXY FAILED — CHECK WORKER URL';
+        document.getElementById('expMsg').className='msg err';
+      });
     }else{
       btn.textContent='EXPORT PNG';btn.classList.remove('busy');
     }
@@ -295,20 +295,13 @@
   function draw(){
     var cv=document.getElementById('cv'),ctx=cv.getContext('2d');
     cv.width=CW;cv.height=CH;
-
-    // Background
     ctx.fillStyle='#0c0c0c';ctx.fillRect(0,0,CW,CH);
     var rg=ctx.createRadialGradient(CW*.45,CH*.35,80,CW*.45,CH*.35,CW*.85);
     rg.addColorStop(0,'rgba(255,255,255,0.02)');rg.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=rg;ctx.fillRect(0,0,CW,CH);
-
-    // Seigaiha
     seigaiha(ctx,CW,CH);
-
-    // Grain
     for(var i=0;i<10000;i++){ctx.fillStyle='rgba(255,255,255,'+(Math.random()*.025)+')';ctx.fillRect(Math.random()*CW,Math.random()*CH,1,1)}
 
-    // Card
     var px=parseInt(document.getElementById('sX').value)/100;
     var py=parseInt(document.getElementById('sY').value)/100;
     var ps=parseInt(document.getElementById('sZ').value)/100;
@@ -326,7 +319,6 @@
       ctx.drawImage(cImg,cX,cY,dw,dh);
     }
 
-    // Text
     ctx.fillStyle='#FFFFFF';
     ctx.font="800 80px 'Inter',sans-serif";ctx.textBaseline='top';ctx.fillText('KEEP.',55,55);
 
@@ -343,31 +335,50 @@
   }
 
   // ── EXPORT ──
+  // Since images are loaded as blob URLs (same-origin), toBlob/toDataURL always works
   function exp(){
     var btn=document.getElementById('expBtn'),msg=document.getElementById('expMsg');
     msg.textContent='GENERATING...';msg.className='msg';
     btn.classList.add('busy');
 
-    // Small delay so UI updates
     setTimeout(function(){
       var cv=document.getElementById('cv');
+      var name='KEEP_'+(cur?cur.name:'card').replace(/[^a-zA-Z0-9]/g,'_').slice(0,50)+'.png';
+
       try{
-        var url=cv.toDataURL('image/png');
-        if(!url||url.length<500){
-          msg.textContent='EXPORT FAILED — CANVAS MAY BE TAINTED';msg.className='msg err';
-          btn.classList.remove('busy');return;
-        }
-        var name='KEEP_'+(cur?cur.name:'card').replace(/[^a-zA-Z0-9]/g,'_').slice(0,50)+'.png';
-        document.getElementById('svImg').src=url;
-        document.getElementById('svDl').href=url;
-        document.getElementById('svDl').download=name;
-        document.getElementById('svOv').classList.add('open');
-        msg.textContent='';msg.className='msg';
+        // Try toBlob first (works everywhere including iOS)
+        cv.toBlob(function(blob){
+          if(blob){
+            var burl=URL.createObjectURL(blob);
+            showSave(burl,name,msg,btn);
+          }else{
+            // toBlob returned null — fallback to toDataURL
+            fallbackExport(cv,name,msg,btn);
+          }
+        },'image/png');
       }catch(e){
-        msg.textContent='ERROR: '+e.message;msg.className='msg err';
+        fallbackExport(cv,name,msg,btn);
       }
-      btn.classList.remove('busy');
     },100);
+  }
+
+  function fallbackExport(cv,name,msg,btn){
+    try{
+      var url=cv.toDataURL('image/png');
+      if(url&&url.length>500){showSave(url,name,msg,btn)}
+      else{msg.textContent='EXPORT FAILED';msg.className='msg err';btn.classList.remove('busy')}
+    }catch(e){
+      msg.textContent='EXPORT FAILED: '+e.message;msg.className='msg err';btn.classList.remove('busy');
+    }
+  }
+
+  function showSave(src,name,msg,btn){
+    document.getElementById('svImg').src=src;
+    document.getElementById('svDl').href=src;
+    document.getElementById('svDl').download=name;
+    document.getElementById('svOv').classList.add('open');
+    msg.textContent='';msg.className='msg';
+    btn.classList.remove('busy');
   }
 
 })();

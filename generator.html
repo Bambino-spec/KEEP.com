@@ -20,7 +20,7 @@
   #gate input{background:#111;border:1px solid var(--border);border-radius:6px;color:var(--white);padding:16px 18px;font-family:var(--font);font-size:18px;font-weight:800;text-align:center;letter-spacing:8px;outline:none;width:100%;min-height:56px;-webkit-text-security:disc}
   #gate input:focus{border-color:var(--border-light)}
   #gate button{background:var(--white);border:none;color:#000;border-radius:6px;padding:16px;cursor:pointer;font-family:var(--font);font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;width:100%;min-height:52px}
-  #gate button:active{opacity:0.8}
+  #gate button:active{opacity:.8}
   #gate .error{color:#f44;font-size:12px;font-family:monospace;text-align:center;min-height:18px}
   #app{display:none}#app.visible{display:block}
   .header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;background:var(--bg);z-index:50}
@@ -84,25 +84,18 @@
     .modal-overlay{background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:20px}
     .modal-overlay.active{display:flex}
     .modal{max-width:920px;max-height:95vh;overflow:auto;background:#111;border:1px solid var(--border);border-radius:10px;min-height:auto}
-    .modal-header{position:relative}
-    .modal-body{flex-direction:row;gap:20px;padding:20px}
-    .preview-wrap{flex:0 0 auto;width:320px}
-    .preview-wrap canvas{width:320px;height:400px;aspect-ratio:auto}
-    .fields{flex:1;min-width:280px}
-    .field input{font-size:14px;padding:10px 12px;min-height:auto;border-radius:4px}
+    .modal-header{position:relative}.modal-body{flex-direction:row;gap:20px;padding:20px}
+    .preview-wrap{flex:0 0 auto;width:320px}.preview-wrap canvas{width:320px;height:400px;aspect-ratio:auto}
+    .fields{flex:1;min-width:280px}.field input{font-size:14px;padding:10px 12px;min-height:auto;border-radius:4px}
     .btn-export{padding:14px 24px;font-size:14px;min-height:auto;border-radius:4px}
-    .btn-close{padding:4px 14px;font-size:12px;min-height:auto}
-    .sliders input[type=range]{height:auto}
-    .search-input{font-size:12px;padding:8px 14px}
-    .filter-select{font-size:12px;padding:8px 12px}
+    .btn-close{padding:4px 14px;font-size:12px;min-height:auto}.sliders input[type=range]{height:auto}
+    .search-input{font-size:12px;padding:8px 14px}.filter-select{font-size:12px;padding:8px 12px}
   }
   @media(max-width:380px){.grid{grid-template-columns:repeat(2,1fr);gap:8px;padding:10px}.header h1{font-size:20px}.search-input{min-width:80px}}
 </style>
 </head>
 <body>
-
 <div id="gate"><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR</p><div class="pw-wrap"><input type="password" id="pwInput" placeholder="••••" inputmode="numeric" autocomplete="off"><button onclick="checkPassword()">ENTER</button><p class="error" id="pwError"></p></div></div>
-
 <div id="app">
   <div class="header"><div><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p></div><div class="header-controls"><input type="text" class="search-input" id="searchInput" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><select class="filter-select" id="gameFilter"><option value="ALL">ALL</option></select><span class="count"><span id="shownCount">0</span></span></div></div>
   <div class="grid" id="productGrid"></div>
@@ -130,13 +123,11 @@
     </div>
   </div></div>
 </div>
-
 <div class="export-overlay" id="exportOverlay">
   <div class="export-bar"><div><p>YOUR IMAGE</p><p class="hint">RIGHT-CLICK OR LONG-PRESS TO SAVE</p></div><button class="btn-close" onclick="closeExport()">✕ CLOSE</button></div>
   <img id="exportImg" src="" alt="KEEP. Export">
   <div class="export-actions"><a id="downloadLink" href="" download="">DOWNLOAD PNG</a><button onclick="closeExport()">BACK TO EDITOR</button></div>
 </div>
-
 <script src="products.js"></script>
 <script>
 (function(){
@@ -147,57 +138,64 @@
   window.checkPassword=async function(){var h=await sha256(document.getElementById('pwInput').value);if(h===PW_HASH){sessionStorage.setItem(SESSION_KEY,'true');unlock()}else{document.getElementById('pwError').textContent='WRONG PASSWORD';document.getElementById('pwInput').value='';document.getElementById('pwInput').focus()}};
   function unlock(){document.getElementById('gate').classList.add('hidden');document.getElementById('app').classList.add('visible');initApp()}
 
-  var CW=1080,CH=1350,products=[],currentProduct=null,currentImg=null,currentImgDataUrl=null,appInited=false;
+  var CW=1080,CH=1350,products=[],currentProduct=null,currentImg=null,currentDataUrl=null,appInited=false;
+
+  // CORS proxies to try in order
+  var PROXIES=[
+    function(u){return 'https://corsproxy.io/?'+encodeURIComponent(u)},
+    function(u){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u)},
+  ];
 
   new FontFace('Inter',"url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)",{weight:'800'}).load().then(function(l){document.fonts.add(l)}).catch(function(){});
 
   function getFirstImg(f){return f?f.split('|')[0].trim():''}
 
-  // Load image and convert to data URL immediately — this is the key
-  // By converting to dataURL at load time via a temp canvas, we get a clean
-  // base64 string that can be used to create images that never taint any canvas
-  function loadAndConvert(url,cb){
-    currentImg=null;currentImgDataUrl=null;
+  // Try to fetch image as blob — direct first, then through CORS proxies
+  function fetchAsBlob(url, proxyIndex){
+    proxyIndex = proxyIndex || 0;
+    var fetchUrl = proxyIndex === 0 ? url : PROXIES[proxyIndex-1](url);
 
-    // Step 1: fetch as blob
-    fetch(url).then(function(r){
-      if(!r.ok)throw new Error('fetch failed');
-      return r.blob()
+    return fetch(fetchUrl).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.blob();
     }).then(function(blob){
-      // Convert blob to dataURL via FileReader
-      var reader=new FileReader();
-      reader.onload=function(){
-        currentImgDataUrl=reader.result; // base64 data URL
-        // Create image from this data URL — guaranteed clean
-        var img=new Image();
-        img.onload=function(){currentImg=img;redraw();cb()};
-        img.onerror=function(){cb()};
-        img.src=currentImgDataUrl;
-      };
-      reader.onerror=function(){fallbackLoad(url,cb)};
-      reader.readAsDataURL(blob);
+      if(blob.size < 100) throw new Error('empty');
+      return blob;
     }).catch(function(){
-      fallbackLoad(url,cb);
+      // Try next proxy
+      if(proxyIndex <= PROXIES.length){
+        return fetchAsBlob(url, proxyIndex+1);
+      }
+      return null; // all failed
     });
   }
 
-  function fallbackLoad(url,cb){
-    // Can't fetch — load directly for preview, but export will use screenshot method
-    var img=new Image();
-    img.onload=function(){
-      currentImg=img;
-      // Try to convert to dataURL via temp canvas
-      try{
-        var tc=document.createElement('canvas');
-        tc.width=img.naturalWidth;tc.height=img.naturalHeight;
-        tc.getContext('2d').drawImage(img,0,0);
-        currentImgDataUrl=tc.toDataURL('image/png');
-      }catch(e){currentImgDataUrl=null}
-      redraw();cb();
-    };
-    img.onerror=function(){currentImg=null;redraw();cb()};
-    img.crossOrigin='anonymous';
-    img.src=url;
+  // Load image: fetch blob → FileReader → dataURL → Image
+  function loadAndConvert(url, cb){
+    currentImg=null; currentDataUrl=null;
+    var btn=document.getElementById('exportBtn');
+
+    fetchAsBlob(url).then(function(blob){
+      if(!blob){
+        // All fetches failed — load image directly for preview only
+        var img=new Image();
+        img.onload=function(){currentImg=img;redraw();cb(false)};
+        img.onerror=function(){cb(false)};
+        img.src=url;
+        return;
+      }
+      // Convert blob to data URL via FileReader
+      var reader=new FileReader();
+      reader.onload=function(){
+        currentDataUrl=reader.result;
+        var img=new Image();
+        img.onload=function(){currentImg=img;redraw();cb(true)};
+        img.onerror=function(){cb(false)};
+        img.src=currentDataUrl;
+      };
+      reader.onerror=function(){cb(false)};
+      reader.readAsDataURL(blob);
+    });
   }
 
   function drawSeigaiha(ctx,w,h){
@@ -213,8 +211,7 @@
     if(typeof PRODUCTS!=='undefined')products=PRODUCTS;
     else if(typeof window.keepProducts!=='undefined')products=window.keepProducts;
     else{document.getElementById('emptyMsg').textContent='COULD NOT LOAD PRODUCTS.JS';document.getElementById('emptyMsg').style.display='block';return}
-    document.getElementById('totalCount').textContent=products.length;
-    buildFilters();renderGrid();
+    document.getElementById('totalCount').textContent=products.length;buildFilters();renderGrid();
     document.getElementById('searchInput').addEventListener('input',renderGrid);
     document.getElementById('gameFilter').addEventListener('change',renderGrid);
     ['fTagline','fLine1','fLine2','fLine3','fLine4','sX','sY','sScale'].forEach(function(id){document.getElementById(id).addEventListener('input',redraw)});
@@ -230,8 +227,10 @@
   }
   function parseName(n){var p=n.split(/\s+/),cn='',num='',ext='';for(var i=0;i<p.length;i++){if(p[i].toUpperCase()==='NO.'&&p[i+1]&&/^\d+$/.test(p[i+1])){cn=p.slice(0,i).join(' ');num=p[i]+' '+p[i+1];ext=p.slice(i+2).join(' ');break}if(/^\d+\/\d+$|^[A-Z]*\d+-\d+$/i.test(p[i])){cn=p.slice(0,i).join(' ');num=p[i];ext=p.slice(i+1).join(' ');break}}if(!cn)cn=n;return{line1:cn?cn.toUpperCase()+'.':'',line2:num?num.toUpperCase()+'.':'',line3:'',line4:ext?ext.toUpperCase()+'.':''}}
 
+  var canExport=false;
+
   function openEditor(product){
-    currentProduct=product;currentImg=null;currentImgDataUrl=null;
+    currentProduct=product;currentImg=null;currentDataUrl=null;canExport=false;
     document.getElementById('modalTitle').textContent=product.name;
     document.getElementById('modal').classList.add('active');
     document.body.style.overflow='hidden';
@@ -244,22 +243,28 @@
     var btn=document.getElementById('exportBtn');btn.textContent='LOADING IMAGE...';btn.classList.add('loading');
     document.getElementById('modal').scrollTop=0;redraw();
     var src=getFirstImg(product.img);
-    if(src){loadAndConvert(src,function(){btn.textContent='EXPORT PNG';btn.classList.remove('loading')})}
-    else{btn.textContent='EXPORT PNG';btn.classList.remove('loading')}
+    if(src){
+      loadAndConvert(src,function(success){
+        canExport=success;
+        btn.textContent='EXPORT PNG';btn.classList.remove('loading');
+        if(!success&&currentImg){
+          document.getElementById('exportStatus').textContent='PREVIEW ONLY — IMAGE SOURCE BLOCKS EXPORT';
+          document.getElementById('exportStatus').className='export-status err';
+        }
+      });
+    }else{btn.textContent='EXPORT PNG';btn.classList.remove('loading')}
   }
 
-  window.closeModal=function(){document.getElementById('modal').classList.remove('active');document.body.style.overflow='';currentProduct=null;currentImg=null;currentImgDataUrl=null};
+  window.closeModal=function(){document.getElementById('modal').classList.remove('active');document.body.style.overflow='';currentProduct=null;currentImg=null;currentDataUrl=null};
   window.closeExport=function(){document.getElementById('exportOverlay').classList.remove('active')};
 
   function renderTo(canvas,img){
     var ctx=canvas.getContext('2d');canvas.width=CW;canvas.height=CH;
     ctx.fillStyle='#0c0c0c';ctx.fillRect(0,0,CW,CH);
     var rg=ctx.createRadialGradient(CW*.45,CH*.35,80,CW*.45,CH*.35,CW*.85);
-    rg.addColorStop(0,'rgba(255,255,255,0.02)');rg.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=rg;ctx.fillRect(0,0,CW,CH);
+    rg.addColorStop(0,'rgba(255,255,255,0.02)');rg.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=rg;ctx.fillRect(0,0,CW,CH);
     drawSeigaiha(ctx,CW,CH);
     for(var i=0;i<10000;i++){ctx.fillStyle='rgba(255,255,255,'+(Math.random()*.025)+')';ctx.fillRect(Math.random()*CW,Math.random()*CH,1,1)}
-
     var px=parseFloat(document.getElementById('sX').value),py=parseFloat(document.getElementById('sY').value),ps=parseFloat(document.getElementById('sScale').value),cb=CH*.55;
     if(img){
       var iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height,ratio=iw/ih;
@@ -290,53 +295,44 @@
     var status=document.getElementById('exportStatus');
     status.textContent='GENERATING...';status.className='export-status';
 
-    try{
-      // If we have a dataURL version of the card image, create a fresh Image from it
-      // and render to a fresh canvas — guaranteed untainted
-      if(currentImgDataUrl){
-        var cleanImg=new Image();
-        cleanImg.onload=function(){
-          var ec=document.createElement('canvas');
-          renderTo(ec,cleanImg);
-          finishExport(ec,status);
-        };
-        cleanImg.onerror=function(){
-          // DataURL image failed somehow — export without card
-          var ec=document.createElement('canvas');
-          renderTo(ec,null);
-          finishExport(ec,status);
-          status.textContent='EXPORTED WITHOUT CARD IMAGE';status.className='export-status err';
-        };
-        cleanImg.src=currentImgDataUrl;
-      }else{
-        // No dataURL available — export without card image
-        var ec=document.createElement('canvas');
-        renderTo(ec,null);
-        finishExport(ec,status);
-        if(currentImg){
-          status.textContent='EXPORTED WITHOUT CARD (SOURCE BLOCKED CORS)';status.className='export-status err';
-        }
-      }
-    }catch(err){
-      status.textContent='ERROR: '+err.message;status.className='export-status err';
+    // Use the dataURL to create a guaranteed-clean image
+    var imgSrc=currentDataUrl;
+    if(!imgSrc){
+      // No dataURL — render without card
+      var ec=document.createElement('canvas');
+      renderTo(ec,null);
+      finishExport(ec);
+      if(currentImg)status.textContent='CARD IMAGE COULD NOT BE EXPORTED (CORS)';status.className='export-status err';
+      return;
     }
+
+    var cleanImg=new Image();
+    cleanImg.onload=function(){
+      var ec=document.createElement('canvas');
+      renderTo(ec,cleanImg);
+      finishExport(ec);
+    };
+    cleanImg.onerror=function(){
+      var ec=document.createElement('canvas');
+      renderTo(ec,null);
+      finishExport(ec);
+      status.textContent='IMAGE LOAD FAILED';status.className='export-status err';
+    };
+    cleanImg.src=imgSrc;
   };
 
-  function finishExport(canvas,status){
+  function finishExport(canvas){
+    var status=document.getElementById('exportStatus');
     try{
       var dataUrl=canvas.toDataURL('image/png');
-      if(!dataUrl||dataUrl==='data:,'||dataUrl.length<200){
-        status.textContent='EXPORT FAILED';status.className='export-status err';return;
-      }
+      if(!dataUrl||dataUrl.length<200){status.textContent='EXPORT FAILED';status.className='export-status err';return}
       var safeName='KEEP_'+(currentProduct?currentProduct.name:'card').replace(/[^a-zA-Z0-9]/g,'_').slice(0,50)+'.png';
       document.getElementById('exportImg').src=dataUrl;
       document.getElementById('downloadLink').href=dataUrl;
       document.getElementById('downloadLink').download=safeName;
       document.getElementById('exportOverlay').classList.add('active');
       status.textContent='';status.className='export-status';
-    }catch(e){
-      status.textContent='EXPORT ERROR: '+e.message;status.className='export-status err';
-    }
+    }catch(e){status.textContent='ERROR: '+e.message;status.className='export-status err'}
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){});

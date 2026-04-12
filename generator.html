@@ -8,738 +8,338 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --bg: #0a0a0a; --card: #141414; --card-hover: #1c1c1c;
-    --border: #282828; --border-light: #444;
-    --white: #fff; --gray: #888; --dim: #555;
-    --font: 'Inter', sans-serif;
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#0a0a0a;--card:#141414;--card-hover:#1c1c1c;--border:#282828;--border-light:#444;--white:#fff;--gray:#888;--dim:#555;--font:'Inter',sans-serif}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--white);font-family:var(--font);min-height:100vh;-webkit-tap-highlight-color:transparent}
+  #gate{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
+  #gate.hidden{display:none}
+  #gate h1{font-size:48px;font-weight:800;letter-spacing:3px;margin-bottom:6px}
+  #gate .sub{color:var(--dim);font-size:11px;font-family:monospace;font-weight:400;margin-bottom:40px}
+  #gate .pw-wrap{width:100%;max-width:280px;display:flex;flex-direction:column;gap:12px}
+  #gate input{background:#111;border:1px solid var(--border);border-radius:6px;color:var(--white);padding:16px 18px;font-family:var(--font);font-size:18px;font-weight:800;text-align:center;letter-spacing:8px;outline:none;width:100%;min-height:56px;-webkit-text-security:disc}
+  #gate input:focus{border-color:var(--border-light)}
+  #gate button{background:var(--white);border:none;color:#000;border-radius:6px;padding:16px;cursor:pointer;font-family:var(--font);font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;width:100%;min-height:52px}
+  #gate button:active{opacity:0.8}
+  #gate .error{color:#f44;font-size:12px;font-family:monospace;text-align:center;min-height:18px}
+  #app{display:none}#app.visible{display:block}
+  .header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;background:var(--bg);z-index:50}
+  .header h1{font-size:22px;letter-spacing:2px;font-weight:800}
+  .header .sub{color:var(--dim);font-size:10px;font-family:monospace;font-weight:400;margin-top:2px}
+  .header-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:1;justify-content:flex-end}
+  .search-input{background:#111;border:1px solid var(--border);border-radius:4px;color:var(--white);padding:10px 14px;font-family:monospace;font-size:14px;outline:none;flex:1;min-width:100px;max-width:240px}
+  .search-input:focus{border-color:var(--border-light)}
+  .filter-select{background:#111;border:1px solid var(--border);border-radius:4px;color:var(--white);padding:10px 12px;font-family:monospace;font-size:14px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+  .filter-select option{background:#111}
+  .count{color:var(--dim);font-size:11px;font-family:monospace;white-space:nowrap}
+  .grid{padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}
+  .product-card{background:var(--card);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;overflow:hidden;-webkit-touch-callout:none;user-select:none}
+  .product-card:active{transform:scale(.97)}
+  .product-card:hover{background:var(--card-hover);border-color:var(--border-light)}
+  .product-card .img-wrap{width:100%;aspect-ratio:3/4;background:#0a0a0a;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .product-card .img-wrap img{width:100%;height:100%;object-fit:contain}
+  .product-card .img-wrap .no-img{color:#333;font-size:11px;font-family:monospace}
+  .product-card .info{padding:8px 10px}
+  .product-card .name{font-size:10px;font-family:monospace;color:#ccc;text-transform:uppercase;letter-spacing:.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .product-card .meta{display:flex;justify-content:space-between;margin-top:4px}
+  .product-card .game{font-size:10px;font-family:monospace;color:var(--dim)}
+  .product-card .price{font-size:10px;font-family:monospace;color:var(--gray)}
+  .empty{text-align:center;color:var(--dim);font-family:monospace;font-size:12px;padding:60px 20px}
+  .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:100;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .modal-overlay.active{display:block}
+  .modal{width:100%;min-height:100%}
+  .modal-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg);z-index:10}
+  .modal-header .label{font-size:10px;font-family:monospace;color:var(--dim)}
+  .modal-header .title{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-top:2px;max-width:70vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .btn-close{background:none;border:1px solid var(--border-light);color:var(--gray);border-radius:4px;padding:8px 16px;cursor:pointer;font-size:13px;font-family:var(--font);font-weight:800;min-height:44px;display:flex;align-items:center}
+  .modal-body{padding:16px;display:flex;flex-direction:column;gap:16px}
+  .preview-wrap{width:100%;display:flex;flex-direction:column;gap:10px}
+  .preview-wrap canvas{width:100%;height:auto;aspect-ratio:1080/1350;border-radius:6px;background:#000;display:block}
+  .sliders{display:flex;gap:10px;flex-wrap:wrap}
+  .sliders label{color:var(--dim);font-size:10px;font-family:monospace;flex:1;min-width:80px}
+  .sliders input[type=range]{width:100%;accent-color:#fff;margin-top:6px;display:block;height:36px}
+  .fields{width:100%;display:flex;flex-direction:column;gap:12px}
+  .field label{font-size:10px;font-family:monospace;color:var(--dim);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:1px}
+  .field input{background:#0a0a0a;border:1px solid var(--border);border-radius:6px;color:var(--white);padding:14px;font-family:var(--font);font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:1px;outline:none;width:100%;min-height:48px}
+  .field input:focus{border-color:var(--border-light)}
+  .field input.hl{border-color:#555}
+  .btn-export{margin-top:8px;background:var(--white);border:none;color:#000;border-radius:6px;padding:18px 24px;cursor:pointer;font-family:var(--font);font-size:16px;font-weight:800;letter-spacing:2px;text-transform:uppercase;width:100%;min-height:56px}
+  .btn-export:active{opacity:.8}
+  .btn-export.loading{opacity:.5;pointer-events:none}
+  .export-status{font-size:11px;font-family:monospace;text-align:center;min-height:16px;margin-top:4px}
+  .export-status.err{color:#f44}
+  .export-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:200;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .export-overlay.active{display:flex}
+  .export-overlay .export-bar{width:100%;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+  .export-overlay .export-bar p{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+  .export-overlay .export-bar .hint{font-size:10px;font-family:monospace;color:var(--dim);font-weight:400;margin-top:2px}
+  .export-overlay img{width:100%;max-width:540px;height:auto;display:block;padding:16px}
+  .export-actions{padding:0 16px 32px;width:100%;max-width:540px;display:flex;flex-direction:column;gap:10px}
+  .export-actions a{display:block;background:var(--white);color:#000;text-align:center;border-radius:6px;padding:16px;text-decoration:none;font-family:var(--font);font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+  .export-actions a:active{opacity:.8}
+  .export-actions button{background:none;border:1px solid var(--border-light);color:var(--gray);border-radius:6px;padding:14px;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+  .modal-body{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  @media(min-width:700px){
+    .header{padding:16px 24px}.grid{padding:20px 24px}
+    .modal-overlay{background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.active{display:flex}
+    .modal{max-width:920px;max-height:95vh;overflow:auto;background:#111;border:1px solid var(--border);border-radius:10px;min-height:auto}
+    .modal-header{position:relative}
+    .modal-body{flex-direction:row;gap:20px;padding:20px}
+    .preview-wrap{flex:0 0 auto;width:320px}
+    .preview-wrap canvas{width:320px;height:400px;aspect-ratio:auto}
+    .fields{flex:1;min-width:280px}
+    .field input{font-size:14px;padding:10px 12px;min-height:auto;border-radius:4px}
+    .btn-export{padding:14px 24px;font-size:14px;min-height:auto;border-radius:4px}
+    .btn-close{padding:4px 14px;font-size:12px;min-height:auto}
+    .sliders input[type=range]{height:auto}
+    .search-input{font-size:12px;padding:8px 14px}
+    .filter-select{font-size:12px;padding:8px 12px}
   }
-  html { -webkit-text-size-adjust: 100%; }
-  body { background: var(--bg); color: var(--white); font-family: var(--font); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
-  #gate { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
-  #gate.hidden { display: none; }
-  #gate h1 { font-size: 48px; font-weight: 800; letter-spacing: 3px; margin-bottom: 6px; }
-  #gate .sub { color: var(--dim); font-size: 11px; font-family: monospace; font-weight: 400; margin-bottom: 40px; }
-  #gate .pw-wrap { width: 100%; max-width: 280px; display: flex; flex-direction: column; gap: 12px; }
-  #gate input { background: #111; border: 1px solid var(--border); border-radius: 6px; color: var(--white); padding: 16px 18px; font-family: var(--font); font-size: 18px; font-weight: 800; text-align: center; letter-spacing: 8px; outline: none; width: 100%; min-height: 56px; -webkit-text-security: disc; }
-  #gate input:focus { border-color: var(--border-light); }
-  #gate button { background: var(--white); border: none; color: #000; border-radius: 6px; padding: 16px; cursor: pointer; font-family: var(--font); font-size: 14px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; width: 100%; min-height: 52px; }
-  #gate button:active { opacity: 0.8; }
-  #gate .error { color: #f44; font-size: 12px; font-family: monospace; text-align: center; min-height: 18px; }
-
-  #app { display: none; }
-  #app.visible { display: block; }
-
-  .header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; position: sticky; top: 0; background: var(--bg); z-index: 50; }
-  .header h1 { font-size: 22px; letter-spacing: 2px; font-weight: 800; }
-  .header .sub { color: var(--dim); font-size: 10px; font-family: monospace; font-weight: 400; margin-top: 2px; }
-  .header-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1; justify-content: flex-end; }
-  .search-input { background: #111; border: 1px solid var(--border); border-radius: 4px; color: var(--white); padding: 10px 14px; font-family: monospace; font-size: 14px; outline: none; flex: 1; min-width: 100px; max-width: 240px; }
-  .search-input:focus { border-color: var(--border-light); }
-  .filter-select {
-    background: #111; border: 1px solid var(--border); border-radius: 4px; color: var(--white);
-    padding: 10px 12px; font-family: monospace; font-size: 14px; outline: none; cursor: pointer;
-    -webkit-appearance: none; appearance: none; padding-right: 28px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 8px center;
-  }
-  .filter-select option { background: #111; }
-  .count { color: var(--dim); font-size: 11px; font-family: monospace; white-space: nowrap; }
-
-  .grid { padding: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
-  .product-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s; overflow: hidden; -webkit-touch-callout: none; user-select: none; }
-  .product-card:active { transform: scale(0.97); }
-  .product-card:hover { background: var(--card-hover); border-color: var(--border-light); }
-  .product-card .img-wrap { width: 100%; aspect-ratio: 3/4; background: #0a0a0a; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .product-card .img-wrap img { width: 100%; height: 100%; object-fit: contain; }
-  .product-card .img-wrap .no-img { color: #333; font-size: 11px; font-family: monospace; }
-  .product-card .info { padding: 8px 10px; }
-  .product-card .name { font-size: 10px; font-family: monospace; color: #ccc; text-transform: uppercase; letter-spacing: 0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .product-card .meta { display: flex; justify-content: space-between; margin-top: 4px; }
-  .product-card .game { font-size: 10px; font-family: monospace; color: var(--dim); }
-  .product-card .price { font-size: 10px; font-family: monospace; color: var(--gray); }
-  .empty { text-align: center; color: var(--dim); font-family: monospace; font-size: 12px; padding: 60px 20px; }
-
-  .modal-overlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-  .modal-overlay.active { display: block; }
-  .modal { width: 100%; min-height: 100%; }
-  .modal-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); z-index: 10; }
-  .modal-header .label { font-size: 10px; font-family: monospace; color: var(--dim); }
-  .modal-header .title { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; max-width: 70vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .btn-close { background: none; border: 1px solid var(--border-light); color: var(--gray); border-radius: 4px; padding: 8px 16px; cursor: pointer; font-size: 13px; font-family: var(--font); font-weight: 800; min-height: 44px; display: flex; align-items: center; }
-
-  .modal-body { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
-  .preview-wrap { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-  .preview-wrap canvas { width: 100%; height: auto; aspect-ratio: 1080/1350; border-radius: 6px; background: #000; display: block; }
-  #exportCanvas { display: none; }
-
-  .sliders { display: flex; gap: 10px; flex-wrap: wrap; }
-  .sliders label { color: var(--dim); font-size: 10px; font-family: monospace; flex: 1; min-width: 80px; }
-  .sliders input[type=range] { width: 100%; accent-color: #fff; margin-top: 6px; display: block; height: 36px; }
-
-  .fields { width: 100%; display: flex; flex-direction: column; gap: 12px; }
-  .field label { font-size: 10px; font-family: monospace; color: var(--dim); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 1px; }
-  .field input { background: #0a0a0a; border: 1px solid var(--border); border-radius: 6px; color: var(--white); padding: 14px 14px; font-family: var(--font); font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; outline: none; width: 100%; min-height: 48px; }
-  .field input:focus { border-color: var(--border-light); }
-  .field input.hl { border-color: #555; }
-
-  .btn-export {
-    margin-top: 8px; background: var(--white); border: none; color: #000; border-radius: 6px;
-    padding: 18px 24px; cursor: pointer; font-family: var(--font); font-size: 16px; font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase; width: 100%; min-height: 56px;
-    transition: opacity 0.15s ease;
-  }
-  .btn-export:active { opacity: 0.8; }
-  .btn-export.loading { opacity: 0.5; cursor: not-allowed; }
-  .btn-export:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .export-status { font-size: 11px; font-family: monospace; text-align: center; min-height: 16px; margin-top: 4px; color: var(--dim); }
-  .export-status.err { color: #f44; }
-  .export-status.ok { color: #8f8; }
-
-  .export-overlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; flex-direction: column; align-items: center; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-  .export-overlay.active { display: flex; }
-  .export-overlay .export-bar { width: 100%; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 10; }
-  .export-overlay .export-bar p { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
-  .export-overlay .export-bar .hint { font-size: 10px; font-family: monospace; color: var(--dim); font-weight: 400; margin-top: 2px; }
-  .export-overlay img { width: 100%; max-width: 540px; height: auto; display: block; padding: 16px; }
-  .export-actions { padding: 0 16px 32px; width: 100%; max-width: 540px; display: flex; flex-direction: column; gap: 10px; }
-  .export-actions a { display: block; background: var(--white); color: #000; text-align: center; border-radius: 6px; padding: 16px; text-decoration: none; font-family: var(--font); font-size: 14px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-  .export-actions a:active { opacity: 0.8; }
-  .export-actions button { background: none; border: 1px solid var(--border-light); color: var(--gray); border-radius: 6px; padding: 14px; cursor: pointer; font-family: var(--font); font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
-
-  .modal-body { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
-
-  @media (min-width: 700px) {
-    .header { padding: 16px 24px; }
-    .grid { padding: 20px 24px; }
-    .modal-overlay { background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; padding: 20px; }
-    .modal-overlay.active { display: flex; }
-    .modal { max-width: 920px; max-height: 95vh; overflow: auto; background: #111; border: 1px solid var(--border); border-radius: 10px; min-height: auto; }
-    .modal-header { position: relative; }
-    .modal-body { flex-direction: row; gap: 20px; padding: 20px; }
-    .preview-wrap { flex: 0 0 auto; width: 320px; }
-    .preview-wrap canvas { width: 320px; height: 400px; aspect-ratio: auto; }
-    .fields { flex: 1; min-width: 280px; }
-    .field input { font-size: 14px; padding: 10px 12px; min-height: auto; border-radius: 4px; }
-    .btn-export { padding: 14px 24px; font-size: 14px; min-height: auto; border-radius: 4px; }
-    .btn-close { padding: 4px 14px; font-size: 12px; min-height: auto; }
-    .sliders input[type=range] { height: auto; }
-    .search-input { font-size: 12px; padding: 8px 14px; }
-    .filter-select { font-size: 12px; padding: 8px 12px; }
-  }
-
-  @media (max-width: 380px) {
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; }
-    .header h1 { font-size: 20px; }
-    .search-input { min-width: 80px; }
-  }
+  @media(max-width:380px){.grid{grid-template-columns:repeat(2,1fr);gap:8px;padding:10px}.header h1{font-size:20px}.search-input{min-width:80px}}
 </style>
 </head>
 <body>
 
-<div id="gate">
-  <h1>KEEP.</h1>
-  <p class="sub">IMAGE GENERATOR</p>
-  <div class="pw-wrap">
-    <input type="password" id="pwInput" placeholder="••••" inputmode="numeric" autocomplete="off">
-    <button onclick="checkPassword()">ENTER</button>
-    <p class="error" id="pwError"></p>
-  </div>
-</div>
+<div id="gate"><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR</p><div class="pw-wrap"><input type="password" id="pwInput" placeholder="••••" inputmode="numeric" autocomplete="off"><button onclick="checkPassword()">ENTER</button><p class="error" id="pwError"></p></div></div>
 
 <div id="app">
-  <div class="header">
-    <div>
-      <h1>KEEP.</h1>
-      <p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p>
-    </div>
-    <div class="header-controls">
-      <input type="text" class="search-input" id="searchInput" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-      <select class="filter-select" id="gameFilter">
-        <option value="ALL">ALL</option>
-      </select>
-      <span class="count"><span id="shownCount">0</span></span>
-    </div>
-  </div>
-
+  <div class="header"><div><h1>KEEP.</h1><p class="sub">IMAGE GENERATOR — <span id="totalCount">0</span> PRODUCTS</p></div><div class="header-controls"><input type="text" class="search-input" id="searchInput" placeholder="SEARCH..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><select class="filter-select" id="gameFilter"><option value="ALL">ALL</option></select><span class="count"><span id="shownCount">0</span></span></div></div>
   <div class="grid" id="productGrid"></div>
   <p class="empty" id="emptyMsg" style="display:none;">NO PRODUCTS MATCH YOUR SEARCH</p>
-
-  <div class="modal-overlay" id="modal">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <p class="label">EDITING</p>
-          <p class="title" id="modalTitle"></p>
+  <div class="modal-overlay" id="modal"><div class="modal">
+    <div class="modal-header"><div><p class="label">EDITING</p><p class="title" id="modalTitle"></p></div><button class="btn-close" onclick="closeModal()">✕ CLOSE</button></div>
+    <div class="modal-body">
+      <div class="preview-wrap">
+        <canvas id="previewCanvas" width="1080" height="1350"></canvas>
+        <div class="sliders">
+          <label>X<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
+          <label>Y<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
+          <label>SIZE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
         </div>
-        <button class="btn-close" onclick="closeModal()">✕ CLOSE</button>
       </div>
-
-      <div class="modal-body">
-        <div class="preview-wrap">
-          <canvas id="previewCanvas" width="1080" height="1350"></canvas>
-          <div class="sliders">
-            <label>X<input type="range" id="sX" min="0" max="0.8" step="0.01" value="0.33"></label>
-            <label>Y<input type="range" id="sY" min="0" max="0.4" step="0.01" value="0.04"></label>
-            <label>SIZE<input type="range" id="sScale" min="0.3" max="0.95" step="0.01" value="0.58"></label>
-          </div>
-        </div>
-
-        <div class="fields">
-          <div class="field"><label>TAGLINE</label><input type="text" id="fTagline" class="hl" placeholder="THE HOOK LINE" autocomplete="off" autocorrect="off" autocapitalize="characters"></div>
-          <div class="field"><label>LINE 1 — NAME</label><input type="text" id="fLine1" autocomplete="off" autocapitalize="characters"></div>
-          <div class="field"><label>LINE 2 — NUMBER</label><input type="text" id="fLine2" autocomplete="off" autocapitalize="characters"></div>
-          <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3" autocomplete="off" autocapitalize="characters"></div>
-          <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4" autocomplete="off" autocapitalize="characters"></div>
-          <button class="btn-export" id="exportBtn" onclick="exportImage()" disabled>LOADING IMAGE...</button>
-          <p class="export-status" id="exportStatus"></p>
-        </div>
+      <div class="fields">
+        <div class="field"><label>TAGLINE</label><input type="text" id="fTagline" class="hl" placeholder="THE HOOK LINE" autocomplete="off" autocorrect="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 1 — NAME</label><input type="text" id="fLine1" autocomplete="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 2 — NUMBER</label><input type="text" id="fLine2" autocomplete="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 3 — RARITY</label><input type="text" id="fLine3" autocomplete="off" autocapitalize="characters"></div>
+        <div class="field"><label>LINE 4 — SET</label><input type="text" id="fLine4" autocomplete="off" autocapitalize="characters"></div>
+        <button class="btn-export" id="exportBtn" onclick="exportImage()">EXPORT PNG</button>
+        <p class="export-status" id="exportStatus"></p>
       </div>
     </div>
-  </div>
+  </div></div>
 </div>
 
-<canvas id="exportCanvas" width="1080" height="1350"></canvas>
-
 <div class="export-overlay" id="exportOverlay">
-  <div class="export-bar">
-    <div>
-      <p>YOUR IMAGE</p>
-      <p class="hint">RIGHT-CLICK OR LONG-PRESS TO SAVE</p>
-    </div>
-    <button class="btn-close" onclick="closeExport()">✕ CLOSE</button>
-  </div>
+  <div class="export-bar"><div><p>YOUR IMAGE</p><p class="hint">RIGHT-CLICK OR LONG-PRESS TO SAVE</p></div><button class="btn-close" onclick="closeExport()">✕ CLOSE</button></div>
   <img id="exportImg" src="" alt="KEEP. Export">
-  <div class="export-actions">
-    <a id="downloadLink" href="" download="">DOWNLOAD PNG</a>
-    <button onclick="closeExport()">BACK TO EDITOR</button>
-  </div>
+  <div class="export-actions"><a id="downloadLink" href="" download="">DOWNLOAD PNG</a><button onclick="closeExport()">BACK TO EDITOR</button></div>
 </div>
 
 <script src="products.js"></script>
 <script>
-(function () {
-  const PW_HASH = '9ff8476644903ba6cb3f90e79bf40b67133a95e44b39123a1d4caf800f216b6b';
-  const SESSION_KEY = 'keep_gen_auth';
+(function(){
+  var PW_HASH='9ff8476644903ba6cb3f90e79bf40b67133a95e44b39123a1d4caf800f216b6b',SESSION_KEY='keep_gen_auth';
+  async function sha256(s){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')}
+  if(sessionStorage.getItem(SESSION_KEY)==='true')unlock();else document.getElementById('pwInput').focus();
+  document.getElementById('pwInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkPassword()});
+  window.checkPassword=async function(){var h=await sha256(document.getElementById('pwInput').value);if(h===PW_HASH){sessionStorage.setItem(SESSION_KEY,'true');unlock()}else{document.getElementById('pwError').textContent='WRONG PASSWORD';document.getElementById('pwInput').value='';document.getElementById('pwInput').focus()}};
+  function unlock(){document.getElementById('gate').classList.add('hidden');document.getElementById('app').classList.add('visible');initApp()}
 
-  const CW = 1080;
-  const CH = 1350;
+  var CW=1080,CH=1350,products=[],currentProduct=null,currentImg=null,currentImgDataUrl=null,appInited=false;
 
-  let products = [];
-  let currentProduct = null;
-  let appInited = false;
+  new FontFace('Inter',"url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)",{weight:'800'}).load().then(function(l){document.fonts.add(l)}).catch(function(){});
 
-  let displayImg = null;
-  let exportImgEl = null;
-  let currentObjectUrl = null;
-  let currentLoadToken = 0;
-  let exportReady = false;
+  function getFirstImg(f){return f?f.split('|')[0].trim():''}
 
-  const modalEl = document.getElementById('modal');
-  const exportOverlayEl = document.getElementById('exportOverlay');
-  const previewCanvas = document.getElementById('previewCanvas');
-  const exportCanvas = document.getElementById('exportCanvas');
-  const exportBtn = document.getElementById('exportBtn');
-  const exportStatus = document.getElementById('exportStatus');
+  // Load image and convert to data URL immediately — this is the key
+  // By converting to dataURL at load time via a temp canvas, we get a clean
+  // base64 string that can be used to create images that never taint any canvas
+  function loadAndConvert(url,cb){
+    currentImg=null;currentImgDataUrl=null;
 
-  const interFont = new FontFace(
-    'Inter',
-    "url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyfAZ9hjQ.woff2)",
-    { weight: '800' }
-  );
-
-  interFont.load().then(font => {
-    document.fonts.add(font);
-    redraw();
-  }).catch(() => {});
-
-  async function sha256(str) {
-    const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buffer)).map(x => x.toString(16).padStart(2, '0')).join('');
-  }
-
-  function getFirstImg(field) {
-    return field ? field.split('|')[0].trim() : '';
-  }
-
-  function setStatus(message = '', type = '') {
-    exportStatus.textContent = message;
-    exportStatus.className = 'export-status' + (type ? ' ' + type : '');
-  }
-
-  function setExportButtonState({ enabled, label }) {
-    exportReady = !!enabled;
-    exportBtn.disabled = !enabled;
-    exportBtn.classList.toggle('loading', !enabled);
-    exportBtn.textContent = label || (enabled ? 'EXPORT PNG' : 'LOADING IMAGE...');
-  }
-
-  function cleanupImageResources() {
-    displayImg = null;
-    exportImgEl = null;
-
-    if (currentObjectUrl) {
-      URL.revokeObjectURL(currentObjectUrl);
-      currentObjectUrl = null;
-    }
-  }
-
-  function loadImageElement(src, crossOrigin) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      if (crossOrigin) img.crossOrigin = crossOrigin;
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error('Image load failed'));
-      img.src = src;
+    // Step 1: fetch as blob
+    fetch(url).then(function(r){
+      if(!r.ok)throw new Error('fetch failed');
+      return r.blob()
+    }).then(function(blob){
+      // Convert blob to dataURL via FileReader
+      var reader=new FileReader();
+      reader.onload=function(){
+        currentImgDataUrl=reader.result; // base64 data URL
+        // Create image from this data URL — guaranteed clean
+        var img=new Image();
+        img.onload=function(){currentImg=img;redraw();cb()};
+        img.onerror=function(){cb()};
+        img.src=currentImgDataUrl;
+      };
+      reader.onerror=function(){fallbackLoad(url,cb)};
+      reader.readAsDataURL(blob);
+    }).catch(function(){
+      fallbackLoad(url,cb);
     });
   }
 
-  async function loadImages(url, token) {
-    cleanupImageResources();
-
-    try {
-      // Preview image: always try direct load first
-      const previewPromise = loadImageElement(url).then(img => {
-        if (token !== currentLoadToken) return;
-        displayImg = img;
-        redraw();
-      }).catch(() => {
-        if (token !== currentLoadToken) return;
-        displayImg = null;
-        redraw();
-      });
-
-      // Export image: fetch blob first for safest canvas export
-      let exportImg = null;
-
-      try {
-        const response = await fetch(url, { mode: 'cors', credentials: 'omit' });
-        if (!response.ok) throw new Error('Fetch failed: ' + response.status);
-
-        const blob = await response.blob();
-        if (token !== currentLoadToken) return;
-
-        currentObjectUrl = URL.createObjectURL(blob);
-        exportImg = await loadImageElement(currentObjectUrl);
-      } catch (blobErr) {
-        // fallback: anonymous crossOrigin image
-        exportImg = await loadImageElement(url, 'anonymous');
-      }
-
-      await previewPromise;
-
-      if (token !== currentLoadToken) return;
-
-      exportImgEl = exportImg;
-      setExportButtonState({ enabled: true, label: 'EXPORT PNG' });
-      setStatus('IMAGE READY', 'ok');
-    } catch (err) {
-      if (token !== currentLoadToken) return;
-
-      exportImgEl = null;
-      setExportButtonState({ enabled: false, label: 'EXPORT UNAVAILABLE' });
-      setStatus('THIS IMAGE HOST BLOCKS PNG EXPORT', 'err');
-    }
+  function fallbackLoad(url,cb){
+    // Can't fetch — load directly for preview, but export will use screenshot method
+    var img=new Image();
+    img.onload=function(){
+      currentImg=img;
+      // Try to convert to dataURL via temp canvas
+      try{
+        var tc=document.createElement('canvas');
+        tc.width=img.naturalWidth;tc.height=img.naturalHeight;
+        tc.getContext('2d').drawImage(img,0,0);
+        currentImgDataUrl=tc.toDataURL('image/png');
+      }catch(e){currentImgDataUrl=null}
+      redraw();cb();
+    };
+    img.onerror=function(){currentImg=null;redraw();cb()};
+    img.crossOrigin='anonymous';
+    img.src=url;
   }
 
-  function drawSeigaiha(ctx, w, h) {
-    const r = 52;
-    const stepX = r * 2;
-    const stepY = r;
-    const cols = Math.ceil(w / stepX) + 2;
-    const rows = Math.ceil(h / stepY) + 2;
-    const rings = [1.0, 0.78, 0.56, 0.34, 0.16];
-    const alphas = [0.055, 0.045, 0.035, 0.025, 0.015];
-
+  function drawSeigaiha(ctx,w,h){
+    var r=52,stepX=r*2,stepY=r,cols=Math.ceil(w/stepX)+2,rows=Math.ceil(h/stepY)+2;
+    var rings=[1,.78,.56,.34,.16],alphas=[.055,.045,.035,.025,.015];
     ctx.save();
-    for (let row = -1; row < rows; row++) {
-      const offset = row % 2 === 0 ? 0 : r;
-      for (let col = -1; col < cols; col++) {
-        const cx = col * stepX + offset;
-        const cy = row * stepY;
-        for (let i = 0; i < rings.length; i++) {
-          ctx.beginPath();
-          ctx.arc(cx, cy, r * rings[i], Math.PI, 2 * Math.PI);
-          ctx.strokeStyle = 'rgba(255,255,255,' + alphas[i] + ')';
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-        }
-      }
-    }
+    for(var row=-1;row<rows;row++){var off=(row%2===0)?0:r;for(var col=-1;col<cols;col++){var cx=col*stepX+off,cy=row*stepY;for(var i=0;i<rings.length;i++){ctx.beginPath();ctx.arc(cx,cy,r*rings[i],Math.PI,2*Math.PI);ctx.strokeStyle='rgba(255,255,255,'+alphas[i]+')';ctx.lineWidth=.8;ctx.stroke()}}}
     ctx.restore();
   }
 
-  function renderNoise(ctx, w, h) {
-    for (let i = 0; i < 6000; i++) {
-      ctx.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.02) + ')';
-      ctx.fillRect(Math.random() * w, Math.random() * h, 1, 1);
-    }
+  function initApp(){
+    if(appInited)return;appInited=true;
+    if(typeof PRODUCTS!=='undefined')products=PRODUCTS;
+    else if(typeof window.keepProducts!=='undefined')products=window.keepProducts;
+    else{document.getElementById('emptyMsg').textContent='COULD NOT LOAD PRODUCTS.JS';document.getElementById('emptyMsg').style.display='block';return}
+    document.getElementById('totalCount').textContent=products.length;
+    buildFilters();renderGrid();
+    document.getElementById('searchInput').addEventListener('input',renderGrid);
+    document.getElementById('gameFilter').addEventListener('change',renderGrid);
+    ['fTagline','fLine1','fLine2','fLine3','fLine4','sX','sY','sScale'].forEach(function(id){document.getElementById(id).addEventListener('input',redraw)});
+    document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal')&&window.innerWidth>=700)closeModal()});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeExport();closeModal()}});
+  }
+  function buildFilters(){var gs={};products.forEach(function(p){if(p.game)gs[p.game]=true});var sel=document.getElementById('gameFilter');Object.keys(gs).sort().forEach(function(g){var o=document.createElement('option');o.value=g;o.textContent=g;sel.appendChild(o)})}
+  function renderGrid(){
+    var s=document.getElementById('searchInput').value.toLowerCase(),g=document.getElementById('gameFilter').value,grid=document.getElementById('productGrid');grid.innerHTML='';
+    var f=products.filter(function(p){return(!s||p.name.toLowerCase().indexOf(s)!==-1)&&(g==='ALL'||p.game===g)});
+    document.getElementById('shownCount').textContent=f.length;document.getElementById('emptyMsg').style.display=f.length===0?'block':'none';
+    f.forEach(function(p){var c=document.createElement('div');c.className='product-card';c.onclick=function(){openEditor(p)};var src=getFirstImg(p.img);c.innerHTML='<div class="img-wrap">'+(src?'<img src="'+src+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">':'<span class="no-img">NO IMAGE</span>')+'</div><div class="info"><p class="name">'+p.name+'</p><div class="meta"><span class="game">'+(p.game||'')+'</span><span class="price">'+(p.price||'')+'</span></div></div>';grid.appendChild(c)})
+  }
+  function parseName(n){var p=n.split(/\s+/),cn='',num='',ext='';for(var i=0;i<p.length;i++){if(p[i].toUpperCase()==='NO.'&&p[i+1]&&/^\d+$/.test(p[i+1])){cn=p.slice(0,i).join(' ');num=p[i]+' '+p[i+1];ext=p.slice(i+2).join(' ');break}if(/^\d+\/\d+$|^[A-Z]*\d+-\d+$/i.test(p[i])){cn=p.slice(0,i).join(' ');num=p[i];ext=p.slice(i+1).join(' ');break}}if(!cn)cn=n;return{line1:cn?cn.toUpperCase()+'.':'',line2:num?num.toUpperCase()+'.':'',line3:'',line4:ext?ext.toUpperCase()+'.':''}}
+
+  function openEditor(product){
+    currentProduct=product;currentImg=null;currentImgDataUrl=null;
+    document.getElementById('modalTitle').textContent=product.name;
+    document.getElementById('modal').classList.add('active');
+    document.body.style.overflow='hidden';
+    document.getElementById('exportStatus').textContent='';document.getElementById('exportStatus').className='export-status';
+    var p=parseName(product.name);
+    document.getElementById('fTagline').value='';
+    document.getElementById('fLine1').value=p.line1;document.getElementById('fLine2').value=p.line2;
+    document.getElementById('fLine3').value=p.line3;document.getElementById('fLine4').value=p.line4;
+    document.getElementById('sX').value=0.33;document.getElementById('sY').value=0.04;document.getElementById('sScale').value=0.58;
+    var btn=document.getElementById('exportBtn');btn.textContent='LOADING IMAGE...';btn.classList.add('loading');
+    document.getElementById('modal').scrollTop=0;redraw();
+    var src=getFirstImg(product.img);
+    if(src){loadAndConvert(src,function(){btn.textContent='EXPORT PNG';btn.classList.remove('loading')})}
+    else{btn.textContent='EXPORT PNG';btn.classList.remove('loading')}
   }
 
-  function renderTo(canvas, img) {
-    const ctx = canvas.getContext('2d');
-    canvas.width = CW;
-    canvas.height = CH;
+  window.closeModal=function(){document.getElementById('modal').classList.remove('active');document.body.style.overflow='';currentProduct=null;currentImg=null;currentImgDataUrl=null};
+  window.closeExport=function(){document.getElementById('exportOverlay').classList.remove('active')};
 
-    ctx.clearRect(0, 0, CW, CH);
+  function renderTo(canvas,img){
+    var ctx=canvas.getContext('2d');canvas.width=CW;canvas.height=CH;
+    ctx.fillStyle='#0c0c0c';ctx.fillRect(0,0,CW,CH);
+    var rg=ctx.createRadialGradient(CW*.45,CH*.35,80,CW*.45,CH*.35,CW*.85);
+    rg.addColorStop(0,'rgba(255,255,255,0.02)');rg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=rg;ctx.fillRect(0,0,CW,CH);
+    drawSeigaiha(ctx,CW,CH);
+    for(var i=0;i<10000;i++){ctx.fillStyle='rgba(255,255,255,'+(Math.random()*.025)+')';ctx.fillRect(Math.random()*CW,Math.random()*CH,1,1)}
 
-    ctx.fillStyle = '#0c0c0c';
-    ctx.fillRect(0, 0, CW, CH);
+    var px=parseFloat(document.getElementById('sX').value),py=parseFloat(document.getElementById('sY').value),ps=parseFloat(document.getElementById('sScale').value),cb=CH*.55;
+    if(img){
+      var iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height,ratio=iw/ih;
+      var mH=CH*ps,mW=CW*.58,dh=mH,dw=mH*ratio;if(dw>mW){dw=mW;dh=mW/ratio}
+      var cX=CW*px,cY=CH*py;cb=cY+dh;
+      var gCX=cX+dw*.5,gCY=cY+dh*.5,gR=Math.max(dw,dh)*.65;
+      var g1=ctx.createRadialGradient(gCX,gCY,0,gCX,gCY,gR);
+      g1.addColorStop(0,'rgba(255,255,255,0.10)');g1.addColorStop(.4,'rgba(255,255,255,0.04)');g1.addColorStop(.75,'rgba(255,255,255,0.01)');g1.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle=g1;ctx.fillRect(0,0,CW,CH);
+      ctx.save();ctx.shadowColor='rgba(255,255,255,0.22)';ctx.shadowBlur=80;ctx.drawImage(img,cX,cY,dw,dh);ctx.restore();
+      ctx.drawImage(img,cX,cY,dw,dh);
+    }
+    ctx.fillStyle='#FFFFFF';ctx.font="800 80px 'Inter', sans-serif";ctx.textBaseline='top';ctx.fillText('KEEP.',55,55);
+    var tP=30,tT=cb+tP,fY=CH-55,fH=70,avH=fY-fH-tT;
+    var tag=document.getElementById('fTagline').value,tagH=tag?36:0;
+    var lines=['fLine1','fLine2','fLine3','fLine4'].map(function(id){return document.getElementById(id).value}).filter(function(l){return l});
+    var lH=68,mFS=56,tFS=24,totH=tagH+lines.length*lH;
+    if(totH>avH&&avH>0){var sc=avH/totH;mFS=Math.max(28,Math.floor(56*sc));tFS=Math.max(14,Math.floor(24*sc));lH=Math.max(34,Math.floor(68*sc));tagH=tag?Math.max(20,Math.floor(36*sc)):0}
+    var curY=tT;
+    if(tag){ctx.font="800 italic "+tFS+"px 'Inter', sans-serif";ctx.textBaseline='top';ctx.fillText(tag.toUpperCase(),55,curY);curY+=tagH}
+    ctx.font="800 "+mFS+"px 'Inter', sans-serif";ctx.textBaseline='top';lines.forEach(function(l){ctx.fillText(l.toUpperCase(),55,curY);curY+=lH});
+    ctx.font="800 56px 'Inter', sans-serif";ctx.textBaseline='bottom';ctx.fillText('NOW AVAILABLE.',55,fY);
+  }
 
-    const rg = ctx.createRadialGradient(CW * 0.45, CH * 0.35, 80, CW * 0.45, CH * 0.35, CW * 0.85);
-    rg.addColorStop(0, 'rgba(255,255,255,0.02)');
-    rg.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = rg;
-    ctx.fillRect(0, 0, CW, CH);
+  function redraw(){renderTo(document.getElementById('previewCanvas'),currentImg)}
 
-    drawSeigaiha(ctx, CW, CH);
-    renderNoise(ctx, CW, CH);
+  window.exportImage=function(){
+    var status=document.getElementById('exportStatus');
+    status.textContent='GENERATING...';status.className='export-status';
 
-    const px = parseFloat(document.getElementById('sX').value);
-    const py = parseFloat(document.getElementById('sY').value);
-    const ps = parseFloat(document.getElementById('sScale').value);
-
-    let cardBottom = CH * 0.55;
-
-    if (img) {
-      const iw = img.naturalWidth || img.width;
-      const ih = img.naturalHeight || img.height;
-      const ratio = iw / ih;
-
-      const maxH = CH * ps;
-      const maxW = CW * 0.58;
-
-      let dw = maxH * ratio;
-      let dh = maxH;
-
-      if (dw > maxW) {
-        dw = maxW;
-        dh = maxW / ratio;
+    try{
+      // If we have a dataURL version of the card image, create a fresh Image from it
+      // and render to a fresh canvas — guaranteed untainted
+      if(currentImgDataUrl){
+        var cleanImg=new Image();
+        cleanImg.onload=function(){
+          var ec=document.createElement('canvas');
+          renderTo(ec,cleanImg);
+          finishExport(ec,status);
+        };
+        cleanImg.onerror=function(){
+          // DataURL image failed somehow — export without card
+          var ec=document.createElement('canvas');
+          renderTo(ec,null);
+          finishExport(ec,status);
+          status.textContent='EXPORTED WITHOUT CARD IMAGE';status.className='export-status err';
+        };
+        cleanImg.src=currentImgDataUrl;
+      }else{
+        // No dataURL available — export without card image
+        var ec=document.createElement('canvas');
+        renderTo(ec,null);
+        finishExport(ec,status);
+        if(currentImg){
+          status.textContent='EXPORTED WITHOUT CARD (SOURCE BLOCKED CORS)';status.className='export-status err';
+        }
       }
-
-      const cX = CW * px;
-      const cY = CH * py;
-
-      cardBottom = cY + dh;
-
-      const gCX = cX + dw * 0.5;
-      const gCY = cY + dh * 0.5;
-      const gR = Math.max(dw, dh) * 0.65;
-
-      const glow = ctx.createRadialGradient(gCX, gCY, 0, gCX, gCY, gR);
-      glow.addColorStop(0, 'rgba(255,255,255,0.10)');
-      glow.addColorStop(0.4, 'rgba(255,255,255,0.04)');
-      glow.addColorStop(0.75, 'rgba(255,255,255,0.01)');
-      glow.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, CW, CH);
-
-      ctx.save();
-      ctx.shadowColor = 'rgba(255,255,255,0.22)';
-      ctx.shadowBlur = 80;
-      ctx.drawImage(img, cX, cY, dw, dh);
-      ctx.restore();
-
-      ctx.drawImage(img, cX, cY, dw, dh);
-    }
-
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = "800 80px 'Inter', sans-serif";
-    ctx.textBaseline = 'top';
-    ctx.fillText('KEEP.', 55, 55);
-
-    const tag = document.getElementById('fTagline').value.trim();
-    const lines = ['fLine1', 'fLine2', 'fLine3', 'fLine4']
-      .map(id => document.getElementById(id).value.trim())
-      .filter(Boolean);
-
-    const tPad = 30;
-    const tTop = cardBottom + tPad;
-    const footerY = CH - 55;
-    const footerHeight = 70;
-    const availableHeight = footerY - footerHeight - tTop;
-
-    let tagHeight = tag ? 36 : 0;
-    let mainFontSize = 56;
-    let tagFontSize = 24;
-    let lineHeight = 68;
-
-    const totalHeight = tagHeight + (lines.length * lineHeight);
-
-    if (totalHeight > availableHeight && availableHeight > 0) {
-      const scale = availableHeight / totalHeight;
-      mainFontSize = Math.max(28, Math.floor(56 * scale));
-      tagFontSize = Math.max(14, Math.floor(24 * scale));
-      lineHeight = Math.max(34, Math.floor(68 * scale));
-      tagHeight = tag ? Math.max(20, Math.floor(36 * scale)) : 0;
-    }
-
-    let curY = tTop;
-
-    if (tag) {
-      ctx.font = "800 italic " + tagFontSize + "px 'Inter', sans-serif";
-      ctx.textBaseline = 'top';
-      ctx.fillText(tag.toUpperCase(), 55, curY);
-      curY += tagHeight;
-    }
-
-    ctx.font = "800 " + mainFontSize + "px 'Inter', sans-serif";
-    ctx.textBaseline = 'top';
-
-    for (const line of lines) {
-      ctx.fillText(line.toUpperCase(), 55, curY);
-      curY += lineHeight;
-    }
-
-    ctx.font = "800 56px 'Inter', sans-serif";
-    ctx.textBaseline = 'bottom';
-    ctx.fillText('NOW AVAILABLE.', 55, footerY);
-  }
-
-  function redraw() {
-    renderTo(previewCanvas, displayImg);
-  }
-
-  function parseName(name) {
-    const parts = name.split(/\s+/);
-    let cn = '';
-    let num = '';
-    let ext = '';
-
-    for (let i = 0; i < parts.length; i++) {
-      if (parts[i].toUpperCase() === 'NO.' && parts[i + 1] && /^\d+$/.test(parts[i + 1])) {
-        cn = parts.slice(0, i).join(' ');
-        num = parts[i] + ' ' + parts[i + 1];
-        ext = parts.slice(i + 2).join(' ');
-        break;
-      }
-
-      if (/^\d+\/\d+$|^[A-Z]*\d+-\d+$/i.test(parts[i])) {
-        cn = parts.slice(0, i).join(' ');
-        num = parts[i];
-        ext = parts.slice(i + 1).join(' ');
-        break;
-      }
-    }
-
-    if (!cn) cn = name;
-
-    return {
-      line1: cn ? cn.toUpperCase() + '.' : '',
-      line2: num ? num.toUpperCase() + '.' : '',
-      line3: '',
-      line4: ext ? ext.toUpperCase() + '.' : ''
-    };
-  }
-
-  function buildFilters() {
-    const games = {};
-    products.forEach(p => {
-      if (p.game) games[p.game] = true;
-    });
-
-    const sel = document.getElementById('gameFilter');
-    Object.keys(games).sort().forEach(game => {
-      const opt = document.createElement('option');
-      opt.value = game;
-      opt.textContent = game;
-      sel.appendChild(opt);
-    });
-  }
-
-  function renderGrid() {
-    const search = document.getElementById('searchInput').value.toLowerCase();
-    const game = document.getElementById('gameFilter').value;
-    const grid = document.getElementById('productGrid');
-
-    grid.innerHTML = '';
-
-    const filtered = products.filter(p => {
-      const matchesSearch = !search || (p.name || '').toLowerCase().includes(search);
-      const matchesGame = game === 'ALL' || p.game === game;
-      return matchesSearch && matchesGame;
-    });
-
-    document.getElementById('shownCount').textContent = filtered.length;
-    document.getElementById('emptyMsg').style.display = filtered.length === 0 ? 'block' : 'none';
-
-    for (const p of filtered) {
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.onclick = () => openEditor(p);
-
-      const src = getFirstImg(p.img);
-      card.innerHTML =
-        '<div class="img-wrap">' +
-          (src
-            ? '<img src="' + src + '" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img>NO IMAGE</span>\'">'
-            : '<span class="no-img">NO IMAGE</span>') +
-        '</div>' +
-        '<div class="info">' +
-          '<p class="name">' + (p.name || '') + '</p>' +
-          '<div class="meta">' +
-            '<span class="game">' + (p.game || '') + '</span>' +
-            '<span class="price">' + (p.price || '') + '</span>' +
-          '</div>' +
-        '</div>';
-
-      grid.appendChild(card);
-    }
-  }
-
-  async function openEditor(product) {
-    currentProduct = product;
-    currentLoadToken += 1;
-    const myToken = currentLoadToken;
-
-    cleanupImageResources();
-    redraw();
-
-    document.getElementById('modalTitle').textContent = product.name || '';
-    modalEl.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    modalEl.scrollTop = 0;
-
-    const parsed = parseName(product.name || '');
-
-    document.getElementById('fTagline').value = '';
-    document.getElementById('fLine1').value = parsed.line1;
-    document.getElementById('fLine2').value = parsed.line2;
-    document.getElementById('fLine3').value = parsed.line3;
-    document.getElementById('fLine4').value = parsed.line4;
-    document.getElementById('sX').value = 0.33;
-    document.getElementById('sY').value = 0.04;
-    document.getElementById('sScale').value = 0.58;
-
-    setExportButtonState({ enabled: false, label: 'LOADING IMAGE...' });
-    setStatus('');
-    redraw();
-
-    const src = getFirstImg(product.img);
-    if (!src) {
-      setExportButtonState({ enabled: false, label: 'NO IMAGE' });
-      setStatus('THIS PRODUCT HAS NO IMAGE', 'err');
-      return;
-    }
-
-    await loadImages(src, myToken);
-  }
-
-  window.closeModal = function () {
-    modalEl.classList.remove('active');
-    document.body.style.overflow = '';
-    currentProduct = null;
-    currentLoadToken += 1;
-    cleanupImageResources();
-    setStatus('');
-    setExportButtonState({ enabled: false, label: 'EXPORT PNG' });
-  };
-
-  window.closeExport = function () {
-    exportOverlayEl.classList.remove('active');
-  };
-
-  window.exportImage = function () {
-    if (!exportReady || !exportImgEl) {
-      setStatus('IMAGE NOT READY FOR EXPORT', 'err');
-      return;
-    }
-
-    setStatus('GENERATING...');
-
-    try {
-      renderTo(exportCanvas, exportImgEl);
-      const dataUrl = exportCanvas.toDataURL('image/png');
-
-      if (!dataUrl || dataUrl === 'data:,' || dataUrl.length < 100) {
-        throw new Error('Invalid export data');
-      }
-
-      const safeName = 'KEEP_' + (currentProduct ? currentProduct.name : 'card')
-        .replace(/[^a-zA-Z0-9]/g, '_')
-        .slice(0, 50) + '.png';
-
-      document.getElementById('exportImg').src = dataUrl;
-      document.getElementById('downloadLink').href = dataUrl;
-      document.getElementById('downloadLink').download = safeName;
-
-      exportOverlayEl.classList.add('active');
-      setStatus('', '');
-    } catch (err) {
-      setStatus('EXPORT FAILED — IMAGE HOST IS BLOCKING CANVAS EXPORT', 'err');
+    }catch(err){
+      status.textContent='ERROR: '+err.message;status.className='export-status err';
     }
   };
 
-  function initApp() {
-    if (appInited) return;
-    appInited = true;
-
-    if (typeof PRODUCTS !== 'undefined') {
-      products = PRODUCTS;
-    } else if (typeof window.keepProducts !== 'undefined') {
-      products = window.keepProducts;
-    } else {
-      document.getElementById('emptyMsg').textContent = 'COULD NOT LOAD PRODUCTS.JS';
-      document.getElementById('emptyMsg').style.display = 'block';
-      return;
-    }
-
-    document.getElementById('totalCount').textContent = products.length;
-
-    buildFilters();
-    renderGrid();
-
-    document.getElementById('searchInput').addEventListener('input', renderGrid);
-    document.getElementById('gameFilter').addEventListener('change', renderGrid);
-
-    ['fTagline', 'fLine1', 'fLine2', 'fLine3', 'fLine4', 'sX', 'sY', 'sScale'].forEach(id => {
-      document.getElementById(id).addEventListener('input', redraw);
-    });
-
-    modalEl.addEventListener('click', e => {
-      if (e.target === modalEl && window.innerWidth >= 700) closeModal();
-    });
-
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        closeExport();
-        closeModal();
+  function finishExport(canvas,status){
+    try{
+      var dataUrl=canvas.toDataURL('image/png');
+      if(!dataUrl||dataUrl==='data:,'||dataUrl.length<200){
+        status.textContent='EXPORT FAILED';status.className='export-status err';return;
       }
-    });
-  }
-
-  function unlock() {
-    document.getElementById('gate').classList.add('hidden');
-    document.getElementById('app').classList.add('visible');
-    initApp();
-  }
-
-  window.checkPassword = async function () {
-    const pwInput = document.getElementById('pwInput');
-    const pwError = document.getElementById('pwError');
-    const hash = await sha256(pwInput.value);
-
-    if (hash === PW_HASH) {
-      sessionStorage.setItem(SESSION_KEY, 'true');
-      unlock();
-    } else {
-      pwError.textContent = 'WRONG PASSWORD';
-      pwInput.value = '';
-      pwInput.focus();
+      var safeName='KEEP_'+(currentProduct?currentProduct.name:'card').replace(/[^a-zA-Z0-9]/g,'_').slice(0,50)+'.png';
+      document.getElementById('exportImg').src=dataUrl;
+      document.getElementById('downloadLink').href=dataUrl;
+      document.getElementById('downloadLink').download=safeName;
+      document.getElementById('exportOverlay').classList.add('active');
+      status.textContent='';status.className='export-status';
+    }catch(e){
+      status.textContent='EXPORT ERROR: '+e.message;status.className='export-status err';
     }
-  };
-
-  if (sessionStorage.getItem(SESSION_KEY) === 'true') {
-    unlock();
-  } else {
-    document.getElementById('pwInput').focus();
   }
 
-  document.getElementById('pwInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') checkPassword();
-  });
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){});
 })();
 </script>
 </body>
